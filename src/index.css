@@ -1,0 +1,25 @@
+/* KIKO RESET */ 
+html {height:100%;} 
+body {height:100%; width:100%; margin:0; padding:0; font-family: Arial, sans-serif;} 
+h1, h2, h3, h4, h5, h6, p {margin:0; padding:0;} 
+a {display:inline-block; text-decoration:none; color:#2BBEE0; } 
+a:hover {text-decoration:underline; } 
+img { border: 0;} 
+input[type="text"], input[type="number"], input[type="email"], textarea { padding: 7px 10px; border: 1px solid #BFBFBF;outline: none; }
+input[type="submit"], input[type="button"], input[type="reset"], button { padding: 7px 10px; background:#D6D6D6; border:1px solid #8E8E8E; cursor:pointer; outline:none; }
+input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hover, button:hover { background:#E8E8E8; }
+*{ box-sizing:border-box; -moz-box-sizing:border-box; -webkit-box-sizing:border-box;} 
+hr.clear{clear:both; margin:0; padding:0; border:0;} 
+*::selection { background: rgba(43, 190, 224, 0.77); text-shadow: none; color: white;} 
+*::-moz-selection { background: rgba(43, 190, 224, 0.77); text-shadow: none; color: white; } 
+.animate { -webkit-transition: all 0.2s ease; 
+-moz-transition: all 0.2s ease; 
+-ms-transition: all 0.2s ease; 
+-o-transition: all 0.2s ease; 
+transition: all 0.2s ease; } 
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
