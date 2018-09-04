@@ -1,0 +1,10 @@
+const axieClassColors = {
+	"aquatic"   : "#00B8CF",
+	"beast"     : "#FFB70F",
+	"plant"     : "#6BBF00",
+	"bird"      : "#FF8ABC",
+	"bug"       : "#FF5241",
+	"reptile"   : "#A979F8",
+}
+
+export default axieClassColors;
