@@ -5,6 +5,7 @@ import AxieTitle from './AxieTitle';
 import AxieParts from './AxieParts';
 import AxieStats from './AxieStats';
 import AxieSprite from './AxieSprite';
+import AxieMoves from './AxieMoves';
 
 //CSS
 const StyledAxie = styled.div`
@@ -14,7 +15,8 @@ const StyledAxie = styled.div`
   width:450px;
 
   .axieContainer {display:flex; margin-bottom:10px;}
-  .statContainer {display:flex;}
+  .statContainer {display:flex; justify-content: space-between;}
+  .axieTitle { display: flex; justify-content: flex-start; margin-bottom:10px;}
 `;
 
 /**
@@ -36,13 +38,14 @@ class Axie extends Component {
   render(){
     return(
       <StyledAxie className="axie" id={this.state.axieID}>
+        <AxieTitle id={this.state.axieData.id} name={this.state.axieData.name} class={this.state.axieData.class} />
         <div className="axieContainer">
           <AxieParts className="axieParts" parts={this.state.axieData.parts} />
           <AxieSprite axieData={this.state.axieData} />
         </div>
-        <AxieTitle id={this.state.axieData.id} name={this.state.axieData.name} class={this.state.axieData.class} />
         <div className="statContainer">
           <AxieStats className="axieStats" stats={this.state.axieData.stats} />
+          <AxieMoves parts={this.state.axieData.parts} />
         </div>
       </StyledAxie>
     );

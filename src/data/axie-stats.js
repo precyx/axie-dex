@@ -1,8 +1,8 @@
 export const axieStats = {
 	hp: 		{base: 23, max: 61},
 	speed: 	{base: 23, max: 61},
-	skill: 	{base: 23, max: 61},
 	morale: {base: 23, max: 61},
+	skill: 	{base: 23, max: 61},
 };
 
 export const axieStatRatingColors = {
@@ -12,6 +12,8 @@ export const axieStatRatingColors = {
 	"bad" 			: "#ffc96f",
 	"terrible" 	: "#ff8c6f"
 };
+
+
 
 export const axieClassStats = {
 	aquatic:	{

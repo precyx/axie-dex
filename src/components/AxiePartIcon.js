@@ -8,6 +8,7 @@ import axieClassColors from '../data/axie-class-colors';
 const StyledAxiePartIcon = styled.div`
 	width: 26px;
 	height: 26px;
+	background: #e4e4e4;
 	background: ${props => props.color};
 	display: flex;
 	align-items: center;

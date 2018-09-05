@@ -5,15 +5,15 @@ import {axieStats} from '../data/axie-stats';
 import {axieStatRatingColors} from '../data/axie-stats';
 
 const StyledAxieStats  = styled.div`
-	width:160px;
+	width:100px;
 	font-size: 12px;
 	color: #4a4a4a;
 
-	.key {text-transform: capitalize;}
+	.key {text-transform: capitalize; opacity: 0.7;}
 	.stat {vertical-align: middle;}
 	.val {padding-left:15px;}
-	.stat_container {padding-left:15px; width:100%;}
-	.stat_val {background:#e4e4e4; height:100%; height:8px; border-radius:50px;}
+	.stat_container { display:none; padding-left:15px; width:100%;}
+	.stat_val {background:#e4e4e4; height:100%; height:8px; border-radius:20px;}
 	td {padding-bottom:5px;}
 `;
 
@@ -45,7 +45,7 @@ class AxieStats extends Component {
 		else if(p >= 0.8) 	return "good";
 		else if(p >= 0.6) 	return "average";
 		else if(p >= 0.4) 	return "bad";
-		else if(p < 0.4) 	return "terrible";
+		else if(p < 0.4) 		return "terrible";
 	}
 	
 	render() {
