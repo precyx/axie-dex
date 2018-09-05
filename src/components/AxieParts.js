@@ -13,6 +13,7 @@ const StyledParts = styled.div`
 	.part .name {margin-left:5px;}
 `;
 
+
 /**
  * Displays a list of parts of a specific Axies
  * @example <AxieParts parts={parts} /> 
@@ -28,18 +29,20 @@ class AxieParts extends Component {
 	render(){
 		var parts = this.props.parts.map( (part) => 
 			<div key={part.id} className="part">
-				<AxiePartIcon className="axiePartIcon" type={part.type} axieClass={part.class} />
-				<div className="name">{part.name}</div>
+				<AxiePartIcon className="axiePartIcon" type={part.type} axieClass={part.class} theme="dark"/>
+				<AxieName part={part}/>
 			</div>
 		);
 		return (
 			<StyledParts className="parts">
 				{parts}
-
-				
 			</StyledParts>
 		);
 	}
+}
+
+const AxieName = (props) =>{
+	return <div className="name">{props.part.name}</div>
 }
 
 export default AxieParts;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactSVG from 'react-svg';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 //custom
 import axieClassColors from '../data/axie-class-colors';
 
@@ -8,13 +8,20 @@ import axieClassColors from '../data/axie-class-colors';
 const StyledAxiePartIcon = styled.div`
 	width: 26px;
 	height: 26px;
-	background: ${props => axieClassColors[props.axieClass]};
+	background: ${props => props.color};
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
 
 	.icon {width:20px; height:20px;}
+	svg { width:20px; height:auto; fill:white;}
+
+	/* Light Theme */
+	${({ theme }) => theme === "light" && css`
+		background: white;
+		svg {fill: ${props => props.color}}
+  `}
 `;
 
 /**
@@ -24,17 +31,15 @@ const StyledAxiePartIcon = styled.div`
  * @extends {Component}
  */
 class AxiePartIcon extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		return (
-			<StyledAxiePartIcon axieClass={this.props.axieClass}>
+			<StyledAxiePartIcon 
+				color={axieClassColors[this.props.axieClass]} 
+				theme={this.props.theme} 
+				>
 				<ReactSVG 
 					className="icon" 
-					src={"./img/icons/parts/"+ this.props.type + "_24px.svg"} 
-					svgStyle={{ width: 20, fill: "white"}} 
+					src={"./img/icons/parts/"+ this.props.type + "_24px.svg"}
 				/>
 			</StyledAxiePartIcon>
 		);

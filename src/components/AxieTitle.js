@@ -12,10 +12,6 @@ const StyleAxieTitle = styled.div`
 `;
 
 class AxieTitle extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		return (
 			<StyleAxieTitle className="axieTitle">

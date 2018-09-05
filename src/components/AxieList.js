@@ -77,11 +77,10 @@ class AxieList extends Component {
 			);
 		}
 		else{
-			var img1 = require('../static/img/4321.png');
+			//var img1 = require('../static/img/4321.png');
 			return (
 				<div>
 					<h1>Loading</h1>
-					<img src={img1}/>
 				</div>
 			);
 		}
