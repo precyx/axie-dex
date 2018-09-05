@@ -25,7 +25,7 @@ class AxieList extends Component {
 		this.state = {
 			axies:null,
 			address: "0xe293390d7651234c6dfb1f41a47358b9377c004f",
-			offset: 20
+			offset: 50
 		};
 	}
 

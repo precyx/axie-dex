@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import ReactSVG from 'react-svg';
 import styled from 'styled-components';
 //custom
 import AxiePartIcon from './AxiePartIcon';
+import axieClassColors from '../data/axie-class-colors';
 
 //CSS
 const StyledParts = styled.div`
@@ -11,6 +13,9 @@ const StyledParts = styled.div`
 
 	.part {display:flex; align-items: center; margin-bottom:5px;}
 	.part .name {margin-left:5px;}
+	.partName {display:flex; align-items:center;}
+	.partName.mystic { color: #54b0e6;}
+	.partName svg { display:none; width: 12px; fill: #ff4040; margin-left:10px;}
 `;
 
 
@@ -30,7 +35,7 @@ class AxieParts extends Component {
 		var parts = this.props.parts.map( (part) => 
 			<div key={part.id} className="part">
 				<AxiePartIcon className="axiePartIcon" type={part.type} axieClass={part.class} theme="dark"/>
-				<AxieName part={part}/>
+				<PartName part={part}/>
 			</div>
 		);
 		return (
@@ -41,8 +46,14 @@ class AxieParts extends Component {
 	}
 }
 
-const AxieName = (props) =>{
-	return <div className="name">{props.part.name}</div>
+const PartName = (props) => {
+	const name = <div className="name">{props.part.name}</div>
+	const mystic_icon = props.part.mystic ? <ReactSVG svgStyle={{fill:axieClassColors[props.part.class]}} src={"./img/icons/star.svg"} /> : ""; 
+	return (
+		<div className={props.part.mystic ? "partName mystic" : "partName"}>
+			{name}{mystic_icon}
+		</div>
+	);
 }
 
 export default AxieParts;
