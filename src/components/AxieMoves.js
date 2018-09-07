@@ -69,7 +69,7 @@ class AxieMoves extends Component {
 					<td className="def">{part.moves[0].defense}</td>
 					<td className="acc">{part.moves[0].accuracy}</td>
 					<td className="sum">
-						{this.round(part.moves[0].attack *  part.moves[0].accuracy/100 + part.moves[0].defense, 1)} 
+						{+(part.moves[0].attack *  part.moves[0].accuracy/100 + part.moves[0].defense).toFixed(2)} 
 					</td>
 				</tr>
 			)

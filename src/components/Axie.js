@@ -17,7 +17,7 @@ const StyledAxie = styled.div`
 
   .axieContainer {display:flex; margin-bottom:10px;}
   .statContainer {display:flex; justify-content: space-between; margin-bottom:10px;}
-  .moveContainer {display:flex; justify-content: space-between;}
+  .moveContainer {display:flex; justify-content: space-between; margin-bottom:10px;}
   .axieTitle { display: flex; justify-content: flex-start; margin-bottom:10px;}
 `;
 
@@ -52,9 +52,10 @@ class Axie extends Component {
         </div>
         <div className="moveContainer">
           <AxieMoves className="axieMoves" parts={this.state.axieData.parts} />
+        </div>
+        <div className="badgeContainer">
           <AxieBadges axieData={this.state.axieData}/>
         </div>
-
       </StyledAxie>
     );
   }

@@ -84,8 +84,8 @@ class AxieSprite extends Component {
         const spineJsonParser = new PIXI.spine.core.SkeletonJson(spineAtlasLoader);
         const spineData = spineJsonParser.readSkeletonData(axieModel.data);
         this.axie = new PIXI.spine.Spine(spineData);
-        //this.axie.state.setAnimation(0, "walking", true);
-        //this.pixiApp.start();
+        this.axie.state.setAnimation(0, "walking", true);
+        this.pixiApp.start();
         //console.log("ww", this.axie.children[5].position.y);
       
         // Axie Website Canvas Ratio: 480x340px = 1.411764705882353

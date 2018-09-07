@@ -29,18 +29,18 @@ export function getMinMaxStatsOfParts(axieTraitsData){
 	const STATS_TO_CHECK = ["attack","defense","accuracy"];
 	const MIN_MAX_MODEL = {
 		"attack" : {
-			"min" : 999,
-			"max" : Number.NEGATIVE_INFINITY,
+			"min" : 9999,
+			"max" : 0,
 			"vals" : [],
 		},
 		"defense" : {
-			"min" : 999,
-			"max" : Number.NEGATIVE_INFINITY,
+			"min" : 9999,
+			"max" : 0,
 			"vals" : [],
 		}, 
 		"accuracy" : {
-			"min" : 999,
-			"max" : Number.NEGATIVE_INFINITY,
+			"min" : 9999,
+			"max" : 0,
 			"vals" : [],
 		}, 
 	};
@@ -50,8 +50,7 @@ export function getMinMaxStatsOfParts(axieTraitsData){
 			// if part type is a first: initialize with data
 			if(!partStats[trait.type]) partStats[trait.type] = JSON.parse(JSON.stringify(MIN_MAX_MODEL));
 			STATS_TO_CHECK.forEach((stat) => {
-				if(trait.moves[0][stat] != 0) {
-					console.log(Math.min(partStats[trait.type][stat]["min"], trait.moves[0][stat]));
+				if(trait.moves[0][stat] !== 0) {
 					partStats[trait.type][stat]["min"] = Math.min(partStats[trait.type][stat]["min"], trait.moves[0][stat]);
 					partStats[trait.type][stat]["max"] = Math.max(partStats[trait.type][stat]["max"], trait.moves[0][stat]);
 				}
