@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import './App.css';
 import AxieList from "./components/AxieList";
 import {axieTraits} from "./data/axie-traits";
-import {getMinMaxStatsOfParts} from "./data/axie-data-transform";
+import {getMinMaxStatsOfPartsByType} from "./data/axie-data-transform";
 
 class App extends Component {
   constructor(props){
     super(props);
-    console.log(getMinMaxStatsOfParts(axieTraits));
+    console.log(getMinMaxStatsOfPartsByType(axieTraits));
   }
 
   render() {

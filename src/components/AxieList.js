@@ -4,6 +4,8 @@ import axios from 'axios';
 // custom
 import Axie from "./Axie";
 import {buildAxiesByAddressAPI} from "../services/axie-data-service.js";
+import Textfield from "./ui/Textfield";
+import Button from "./ui/Button";
 
 //CSS
 const AxieListStyle = styled.div`
@@ -13,6 +15,24 @@ const AxieListStyle = styled.div`
 	margin:0 auto;
 	padding:20px;
 `;
+const AxieControlStyled = styled.div`
+	width:90%;
+	margin:0 auto;
+	padding:35px;
+	padding-bottom:0;
+	h2 {margin-bottom:15px;}
+`;
+const Error = styled.div`
+	font-size:14px; 
+	font-style:italic;
+	padding:15px 20px;
+	border-radius:9px;
+	background: #fffaf9;
+	border: 1px solid #ecb4b4;
+	color: #e07070;
+`;
+
+
 
 /**
  * Displays a list of Axies 
@@ -42,16 +62,24 @@ class AxieList extends Component {
 			this.setState({
 				axies : data.data.axies.slice(0,this.state.limit),
 			});
+		}).catch((error)=>{
+			// handle error
+			this.setState({
+				error:{
+					name:"Error: Axie API 'axiesByAddress' down"
+				}
+			});
+			console.log(error);
 		})
 	}
 
-	loadPrevPage(){
+	loadPrevPage = () => {
 		this.setState(
 			(prevState) => ({offset: +prevState.offset-12}),
 			this.getAxiesByAddress
 		);
 	}
-	loadNextPage(){
+	loadNextPage = () => {
 		this.setState(
 			(prevState) => ({offset: +prevState.offset+12}),
 			this.getAxiesByAddress
@@ -60,6 +88,7 @@ class AxieList extends Component {
 
 
 	changeAddress = (event) =>{
+		console.log("adr change", event);
     this.setState({address: event.target.value});
   }
   changeOffset = (event) =>{
@@ -77,14 +106,20 @@ class AxieList extends Component {
 
 			return(
 				<div>
-					<input type="text" value={this.state.address} onChange={this.changeAddress} className="address" placeholder="Address" />
-					<input type="text" value={this.state.offset} onChange={this.changeOffset} className="offset"  placeholder="Offset" />
-					<input type="text" value={this.state.limit} onChange={this.changeLimit} className="limit"  placeholder="Limit" />
-					<button onClick={this.getAxiesByAddress}>Load Axies</button>
-					<div>
-						<button className="prev" onClick={() => this.loadPrevPage()}>Prev</button>
-						<button className="next" onClick={() => this.loadNextPage()}>Next</button>
-					</div>
+					<AxieControlStyled>
+						<h2>Get Axies By Address</h2>
+						<div className="controlBar">
+
+						<Textfield id="axie_list_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.changeAddress} />
+						<Textfield id="axie_list_offset" value={this.state.offset} name="Offset" placeholder="Offset" onChange={this.changeOffset} />
+						<Textfield id="axie_list_limit" value={this.state.limit} name="Limit" placeholder="Limit" onChange={this.changeLimit} />
+							<Button onClick={this.getAxiesByAddress} name={"Load Axies"} />
+							<div>
+								<Button className="prev" onClick={this.loadPrevPage} name={"Prev"} />
+								<Button className="next" onClick={this.loadNextPage} name={"Next"} />
+							</div>
+						</div>
+					</AxieControlStyled>
 					<AxieListStyle className="axies">
 						{axies}
 					</AxieListStyle>
@@ -92,12 +127,21 @@ class AxieList extends Component {
 			);
 		}
 		else{
+			if(this.state.error){
+				return (
+					<Error>
+						{this.state.error.name}
+					</Error>
+				)
+			}
+			else {
+				return (
+					<div>
+						<h1>Loading</h1>
+					</div>
+				);
+			}
 			//var img1 = require('../static/img/4321.png');
-			return (
-				<div>
-					<h1>Loading</h1>
-				</div>
-			);
 		}
 	}
 }

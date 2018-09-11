@@ -38,26 +38,42 @@ class Axie extends Component {
   }
 
   render(){
-    return(
-      <StyledAxie className="axie" id={this.state.axieID}>
-        <AxieTitle id={this.state.axieData.id} name={this.state.axieData.name} class={this.state.axieData.class} />
-        <div className="axieContainer">
-          <AxieParts className="axieParts" parts={this.state.axieData.parts} />
-          <AxieSprite axieData={this.state.axieData} />
-        </div>
-        <div className="badgeContainer">
-        </div>
-        <div className="statContainer">
-          <AxieStats className="axieStats" stats={this.state.axieData.stats} />
-        </div>
-        <div className="moveContainer">
-          <AxieMoves className="axieMoves" parts={this.state.axieData.parts} />
-        </div>
-        <div className="badgeContainer">
-          <AxieBadges axieData={this.state.axieData}/>
-        </div>
-      </StyledAxie>
-    );
+
+    var canRender = true;
+    switch(this.state.axieData.stage){
+      case 1 : canRender = false;
+      case 2 : canRender = false;
+    }
+
+    if(canRender){
+      return(
+        <StyledAxie className="axie" id={this.state.axieID}>
+          <AxieTitle id={this.state.axieData.id} name={this.state.axieData.name} class={this.state.axieData.class} />
+          <div className="axieContainer">
+            <AxieParts className="axieParts" parts={this.state.axieData.parts} />
+            <AxieSprite axieData={this.state.axieData} />
+          </div>
+          <div className="badgeContainer">
+          </div>
+          <div className="statContainer">
+            <AxieStats className="axieStats" stats={this.state.axieData.stats} />
+          </div>
+          <div className="moveContainer">
+            <AxieMoves className="axieMoves" parts={this.state.axieData.parts} />
+          </div>
+          <div className="badgeContainer">
+            <AxieBadges axieData={this.state.axieData}/>
+          </div>
+        </StyledAxie>
+      );
+    }
+    else {
+      return (
+        <StyledAxie className="axie" id={this.state.axieID}>
+          <p>Axie stage: {this.state.axieData.stage}</p>
+        </StyledAxie>
+      )
+    }
   }
 
 

@@ -18,7 +18,7 @@ const AxieMovesStyled = styled.div`
 	.move > td.image {padding:0; padding-bottom:5px;}
 	.move .atk {color:#d66666;}
 	.move .def {color:#1ba91b;}
-	.move .acc {color:#5296b1;}
+	.move .acc {color:#b865d2;}
 	.move .sum {color:#f392b9;}
 
 	.moveTypeIcon {width:16px; height:16px; border-radius:3px; display:flex; align-items: center; justify-content:center;}
@@ -47,7 +47,11 @@ class AxieMoves extends Component {
 
 	setBattleParts(){
 		var battleParts = getBattleParts(this.props.parts);
-		this.setState({battleParts:battleParts})
+		this.setState({battleParts:battleParts}, this.calcTotalPartValue);
+	}
+
+	calcTotalPartValue(){
+
 	}
 
 	round(number, places){
@@ -68,7 +72,7 @@ class AxieMoves extends Component {
 					<td className="atk">{part.moves[0].attack}</td>
 					<td className="def">{part.moves[0].defense}</td>
 					<td className="acc">{part.moves[0].accuracy}</td>
-					<td className="sum">
+					<td style={{display:"none"}} className="sum">
 						{+(part.moves[0].attack *  part.moves[0].accuracy/100 + part.moves[0].defense).toFixed(2)} 
 					</td>
 				</tr>

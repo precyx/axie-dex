@@ -17,44 +17,56 @@ export function getBattleParts(parts){
 
 
 /**
- * Returns a JSON with all the min & max stats for each {part type} (back, mouth, tail, horn)
+ * Returns a JSON with all the [min, max] stats for each [partType] (back, mouth, tail, horn)
  * Currently checks only MOVE 0
- * @export
+ * @export getMinMaxStatsOfPartsByType
  * @param {*} axieTraitsData
  */
-export function getMinMaxStatsOfParts(axieTraitsData){
+export function getMinMaxStatsOfPartsByType(axieTraitsData){
 	var partStats = {};
 	//
+	//const CLASSES = ["aquatic", "plant", "beast", "reptile", "bird", "bug"]; @unused
 	const BATTLE_PART_TYPES = ["mouth", "back", "horn", "tail"];
-	const STATS_TO_CHECK = ["attack","defense","accuracy"];
+	const STATS_TO_CHECK = ["attack","defense","accuracy", "attackTrueHit"];
 	const MIN_MAX_MODEL = {
 		"attack" : {
 			"min" : 9999,
 			"max" : 0,
-			"vals" : [],
 		},
 		"defense" : {
 			"min" : 9999,
 			"max" : 0,
-			"vals" : [],
 		}, 
 		"accuracy" : {
 			"min" : 9999,
 			"max" : 0,
-			"vals" : [],
-		}, 
+		},
+		"attackTrueHit" : {
+			"min" : 9999,
+			"max" : 0
+		}
 	};
 	for(let traitElem in axieTraitsData){
 		var trait = axieTraitsData[traitElem];
 		if(BATTLE_PART_TYPES.includes(trait.type)){
 			// if part type is a first: initialize with data
 			if(!partStats[trait.type]) partStats[trait.type] = JSON.parse(JSON.stringify(MIN_MAX_MODEL));
+			// check stats in loop
 			STATS_TO_CHECK.forEach((stat) => {
-				if(trait.moves[0][stat] !== 0) {
-					partStats[trait.type][stat]["min"] = Math.min(partStats[trait.type][stat]["min"], trait.moves[0][stat]);
-					partStats[trait.type][stat]["max"] = Math.max(partStats[trait.type][stat]["max"], trait.moves[0][stat]);
+				// check true hit
+				if(stat == "attackTrueHit"){
+					if(trait.moves[0]["attack"] !== 0) {
+						partStats[trait.type]["attackTrueHit"]["min"] = Math.min(partStats[trait.type]["attackTrueHit"]["min"], trait.moves[0]["attack"] * trait.moves[0]["accuracy"] / 100);
+						partStats[trait.type]["attackTrueHit"]["max"] = Math.max(partStats[trait.type]["attackTrueHit"]["max"], trait.moves[0]["attack"] * trait.moves[0]["accuracy"] / 100);
+					}
 				}
-				partStats[trait.type][stat]["vals"].push(trait.moves[0][stat]);
+				// check normal stats
+				else {
+					if(trait.moves[0][stat] !== 0) {
+						partStats[trait.type][stat]["min"] = Math.min(partStats[trait.type][stat]["min"], trait.moves[0][stat]);
+						partStats[trait.type][stat]["max"] = Math.max(partStats[trait.type][stat]["max"], trait.moves[0][stat]);
+					}
+				}
 			});
 		}
 	}
