@@ -26,24 +26,26 @@ export function getMinMaxStatsOfPartsByType(axieTraitsData){
 	var partStats = {};
 	//
 	//const CLASSES = ["aquatic", "plant", "beast", "reptile", "bird", "bug"]; @unused
+	const DEFAULT_MIN = 9999999;
+	const DEFAULT_MAX = 0;
 	const BATTLE_PART_TYPES = ["mouth", "back", "horn", "tail"];
 	const STATS_TO_CHECK = ["attack","defense","accuracy", "attackTrueHit"];
 	const MIN_MAX_MODEL = {
 		"attack" : {
-			"min" : 9999,
-			"max" : 0,
+			"min" : DEFAULT_MIN,
+			"max" : DEFAULT_MAX,
 		},
 		"defense" : {
-			"min" : 9999,
-			"max" : 0,
+			"min" : DEFAULT_MIN,
+			"max" : DEFAULT_MAX,
 		}, 
 		"accuracy" : {
-			"min" : 9999,
-			"max" : 0,
+			"min" : DEFAULT_MIN,
+			"max" : DEFAULT_MAX,
 		},
 		"attackTrueHit" : {
-			"min" : 9999,
-			"max" : 0
+			"min" : DEFAULT_MIN,
+			"max" : DEFAULT_MAX
 		}
 	};
 	for(let traitElem in axieTraitsData){
@@ -70,5 +72,17 @@ export function getMinMaxStatsOfPartsByType(axieTraitsData){
 			});
 		}
 	}
+	// add summs of each stat
+	partStats["sums"] = JSON.parse(JSON.stringify(MIN_MAX_MODEL));
+	BATTLE_PART_TYPES.forEach((type)=>{
+		STATS_TO_CHECK.forEach((stat)=>{
+			// reset defaults
+			partStats["sums"][stat]["min"] = partStats["sums"][stat]["min"] === DEFAULT_MIN ? 0 : partStats["sums"][stat]["min"];
+			partStats["sums"][stat]["max"] = partStats["sums"][stat]["max"] === DEFAULT_MAX ? 0 : partStats["sums"][stat]["max"];
+			// increment
+			partStats["sums"][stat]["min"] += partStats[type][stat]["min"];
+			partStats["sums"][stat]["max"] += partStats[type][stat]["max"];
+		});
+	});
 	return partStats;
 }

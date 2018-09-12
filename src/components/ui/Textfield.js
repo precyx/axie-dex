@@ -19,7 +19,7 @@ class Textfield extends Component {
 	render() {
 		return (
 			<StyledTextfield>
-				<label for={this.props.id}>{this.props.name}</label>
+				<label htmlFor={this.props.id}>{this.props.name}</label>
 				<input id={this.props.id} type="text" value={this.props.value} onChange={this.props.onChange} placeholder={this.props.placeholder} />
 			</StyledTextfield>
 		);

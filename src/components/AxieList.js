@@ -4,6 +4,7 @@ import axios from 'axios';
 // custom
 import Axie from "./Axie";
 import {buildAxiesByAddressAPI} from "../services/axie-data-service.js";
+import {buildAxieByIdAPI} from "../services/axie-data-service.js";
 import Textfield from "./ui/Textfield";
 import Button from "./ui/Button";
 
@@ -16,11 +17,13 @@ const AxieListStyle = styled.div`
 	padding:20px;
 `;
 const AxieControlStyled = styled.div`
+	display:flex;
 	width:90%;
 	margin:0 auto;
 	padding:35px;
 	padding-bottom:0;
 	h2 {margin-bottom:15px;}
+	.getAxieByIdContainer {margin-left:40px;}
 `;
 const Error = styled.div`
 	font-size:14px; 
@@ -46,12 +49,49 @@ class AxieList extends Component {
 			axies:null,
 			address: "0xe293390d7651234c6dfb1f41a47358b9377c004f",
 			offset: 50,
-			limit: 12
+			limit: 12,
+			others: [4688, 4169],
+			topTanks: [3784, 1101, 4190, 1660, 2624, 387, 174, 2967, 2277, 2755, 2911, 2597, 858, 595, 313, 13, 1238, 199, 182, 5133],
+			topAttackers: [2152, 1126, 1000, 340, 4463, 1413, 2007, 3342, 346, 1766, 4107, 2497, 44],
+			axieIdList: [3889, 837, 265, 4026, 3969, 1260],
+			ui_axie_id: 10,
 		};
 	}
 
 	componentWillMount(){
-		this.getAxiesByAddress();
+		//this.getAxiesByAddress();
+		this.getAxiesByIds();
+	}
+
+	getAxiesByIds = () => {
+		var promises = [];
+		this.state.axieIdList.forEach(id => {
+			var api = buildAxieByIdAPI(id);
+			var p = new Promise((resolve,reject)=>{
+				axios.get(api).then((data)=>{
+					resolve(data.data);
+				});
+			});
+			promises.push(p);
+		});
+		Promise.all(promises).then((axies)=>{
+			console.log("ax",axies);
+			this.setState({
+				axies: axies
+			})
+		});
+
+	}
+
+	getAxieById = () => {
+		var api = buildAxieByIdAPI(this.state.ui_axie_id);
+		axios.get(api).then((data) => {
+			var newAxie = data.data;
+			console.log("X", data);
+			this.setState((state) => ({
+				axies : [newAxie, ...state.axies]
+			}));
+		})
 	}
 
 	getAxiesByAddress = () => {
@@ -96,6 +136,9 @@ class AxieList extends Component {
   }
   changeLimit = (event) =>{
     this.setState({limit: event.target.value});
+	}
+	changeId = (event) =>{
+    this.setState({ui_axie_id: event.target.value});
   }
 
 	render() {
@@ -107,18 +150,26 @@ class AxieList extends Component {
 			return(
 				<div>
 					<AxieControlStyled>
-						<h2>Get Axies By Address</h2>
-						<div className="controlBar">
 
-						<Textfield id="axie_list_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.changeAddress} />
-						<Textfield id="axie_list_offset" value={this.state.offset} name="Offset" placeholder="Offset" onChange={this.changeOffset} />
-						<Textfield id="axie_list_limit" value={this.state.limit} name="Limit" placeholder="Limit" onChange={this.changeLimit} />
-							<Button onClick={this.getAxiesByAddress} name={"Load Axies"} />
-							<div>
-								<Button className="prev" onClick={this.loadPrevPage} name={"Prev"} />
-								<Button className="next" onClick={this.loadNextPage} name={"Next"} />
+						<div className="getAxieByAddressContainer">
+							<h2>Get Axies By Address</h2>
+							<div className="controlBar">
+							<Textfield id="axie_list_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.changeAddress} />
+							<Textfield id="axie_list_offset" value={this.state.offset} name="Offset" placeholder="Offset" onChange={this.changeOffset} />
+							<Textfield id="axie_list_limit" value={this.state.limit} name="Limit" placeholder="Limit" onChange={this.changeLimit} />
+								<Button onClick={this.getAxiesByAddress} name={"Load Axies"} />
+								<div>
+									<Button className="prev" onClick={this.loadPrevPage} name={"Prev"} />
+									<Button className="next" onClick={this.loadNextPage} name={"Next"} />
+								</div>
 							</div>
 						</div>
+						<div className="getAxieByIdContainer">
+							<h2>Get Axie By Id</h2>
+							<Textfield id="axie_list_id" value={this.state.ui_axie_id} name="Axie ID" placeholder="Axie ID" onChange={this.changeId} />
+							<Button onClick={this.getAxieById} name={"Get Axie"} />
+						</div>
+
 					</AxieControlStyled>
 					<AxieListStyle className="axies">
 						{axies}

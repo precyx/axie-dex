@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import ReactSVG from 'react-svg';
+import Chart from 'chart.js';
 //own
 import {getBattleParts} from '../data/axie-data-transform';
 import {minMaxPartStatsByType} from '../data/axie-stats';
+import axieClassColors from '../data/axie-class-colors';
 import {axieStats} from '../data/axie-stats';
+import {hexToRGB} from '../data/utils';
 import AxieStatBar from '../components/AxieStatBar';
 
 //CSS
@@ -22,6 +26,15 @@ const StyledAxieBadges = styled.div`
 	.stats .stat {display:flex; align-items:center; margin-bottom:5px;}
 	.stats .stat .label {width:100px;}
 	.stats span { font-weight: bold; color: #7d7d7d; margin-left: 5px;}
+	.stats .val {width:80px;}
+	.stats .container {width:110px;  background: #efefef; border-radius: 50px;}
+
+	.badges {margin-bottom:10px;}
+	.badge { display: inline-flex; margin-right:5px; flex-flow: column; text-align: center;}
+	.badge .bg {width:50px; height:50px; background:#dedede; border-radius:50%; display:flex; align-items:center; justify-content:center;}
+	.badge .bg { background: ${props => props.color}  }
+	.badge svg {width:30px; fill:black; opacity:0.6;}
+	.badge .desc { font-weight: bold; width: 20px; height: 20px; background: rgba(0, 0, 0, 0.6); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; margin-top: -18px; margin-left: 33px;}
 `;
 
 /**
@@ -60,10 +73,10 @@ class AxieBadges extends Component {
 		var ExtendedStats = this.state.ratingDone ? (
 			<div className="stats">
 				<div className="stat atk">
-					<div className="label">Atk {this.state.atk} <span>(L{this.state.attackLevel})</span> </div> <AxieStatBar val={this.state.atk}/> {this.state.totals.atk}
+					<div className="label">Atk {this.state.atk} </div> <AxieStatBar val={this.state.atk}/> {this.state.totals.atk}
 				</div>
 				<div className="stat atk">
-					<div className="label">Ath {this.state.ath} <span>(L{this.state.athLevel})</span> </div> <AxieStatBar val={this.state.ath}/> {this.state.totals.ath}
+					<div className="label">Ath {this.state.ath} </div> <AxieStatBar val={this.state.ath}/> {this.state.totals.ath}
 				</div>
 				<div className="stat def">
 					<div className="label">Hp {this.state.hp} </div> <AxieStatBar val={this.state.hp}/>
@@ -72,7 +85,7 @@ class AxieBadges extends Component {
 					<div className="label">Def {this.state.def} </div> <AxieStatBar val={this.state.def}/>
 				</div>
 				<div className="stat def">
-					<div className="label">Tank {this.state.tnk} <span>(L{this.state.tankLevel})</span> </div> <AxieStatBar val={this.state.tnk}/>{this.state.totals.def + this.props.axieData.stats.hp}
+					<div className="label">Tank {this.state.tnk} </div> <AxieStatBar val={this.state.tnk}/>{this.state.totals.def + this.props.axieData.stats.hp}
 				</div>
 				<div className="stat acc">
 					<div className="label">Acc {this.state.acc}</div> <AxieStatBar val={this.state.acc}/>
@@ -86,7 +99,28 @@ class AxieBadges extends Component {
 			</div>
 		) : "";
 
-		var Stats = this.state.ratingDone ? (
+
+		var HalfComplexStats = this.state.ratingDone ? (
+			<div className="stats">
+				<div className="stat atk">
+					<div className="label">Ath {this.state.ath} </div> <AxieStatBar val={this.state.ath}/> {this.state.totals.ath}
+				</div>
+				<div className="stat def">
+					<div className="label">Tank {this.state.tnk} </div> <AxieStatBar val={this.state.tnk}/>{this.state.totals.def + this.props.axieData.stats.hp}
+				</div>
+				<div className="stat acc">
+					<div className="label">Acc {this.state.acc}</div> <AxieStatBar val={this.state.acc}/>
+				</div>
+			  <div className="stat spd">
+					<div className="label">Spd {this.state.spd}</div> <AxieStatBar val={this.state.spd}/>
+				</div>
+				<div className="stat mor">
+					<div className="label">Mor {this.state.mor}</div> <AxieStatBar val={this.state.mor}/>
+				</div>
+			</div>
+		) : "";
+
+		var Stats2 = this.state.ratingDone ? (
 			<div className="stats">
 				<div className="stat atk">
 					<div className="label">Ath {this.state.ath} <span>(L{this.state.athLevel})</span> </div> <AxieStatBar val={this.state.ath}/> {this.state.totals.ath}
@@ -98,10 +132,35 @@ class AxieBadges extends Component {
 			</div>
 		) : "";
 
+		var Stats = this.state.ratingDone ? (
+			<div className="stats">
+				<div className="stat atk">
+					<div className="label">Dammage</div>
+					<div className="val">{ (this.state.totals.ath / 4).toFixed(1)} </div>
+					<AxieStatBar val={this.state.ath}/> 
+				</div>
+				<div className="stat def">
+					<div className="label">Tankiness</div>
+					<div className="val">{this.state.totals.def + this.props.axieData.stats.hp}</div>
+					<AxieStatBar val={this.state.tnk}/>
+				</div>
+			</div>
+		) : "";
+
+		var Badges = this.state.ratingDone ? (
+			<div className="badges">
+				{this.state.tankLevel && this.state.tankLevel > 0 ? <Badge icon={"./img/icons/stats/defense.svg"} level={this.state.tankLevel} /> : ""} 
+				{this.state.attackLevel && this.state.athLevel > 0? <Badge icon={"./img/icons/stats/attack.svg"} level={this.state.athLevel} /> : ""} 
+			</div>
+		) : "";
+
+
 
 		return (
-			<StyledAxieBadges>
-				{Stats}
+			<StyledAxieBadges color={axieClassColors[this.props.axieData.class]}>
+				<canvas style={{display:"none"}} id={"radar_" + this.props.axieData.id}></canvas>
+				{Badges}
+				{HalfComplexStats}
 			</StyledAxieBadges>
 		);
 	}
@@ -144,6 +203,9 @@ class AxieBadges extends Component {
 			scores["attackTrueHit"] = scores["attackTrueHit"] ? scores["attackTrueHit"] : 0; 
 			scores["attackTrueHit"] += part.moves[0]["attack"] * part.moves[0]["accuracy"] /100  / minMaxPartStatsByType[part.type]["attackTrueHit"]["max"];
 			console.log("val", part.moves[0]["attack"] * part.moves[0]["accuracy"] /100, "max", minMaxPartStatsByType[part.type]["attackTrueHit"]["max"])
+			// calc def score 2
+			scores["defense2"] = scores["defense2"] ? scores["defense2"] : 0; 
+			scores["defense2"] += part.moves[0]["defense"];
 		});
 		// harmonize score to scala 1-10
 		stats2.forEach(stat=>{
@@ -159,42 +221,71 @@ class AxieBadges extends Component {
 		});
 		// harmonize other stats
 		scores["attackTrueHit"] = +(scores["attackTrueHit"]*10/4).toFixed(1);
+		scores["defense2"] = +(scores["defense2"]/minMaxPartStatsByType["sums"]["defense"]["max"]*10).toFixed(1);
+		scores["hp2"] = +(this.props.axieData.stats["hp"] / axieStats["hp"].max*10).toFixed(1);
 		//
 		this.setState({
 			atk:scores["attack"],
 			ath:scores["attackTrueHit"],
 			def:scores["defense"],
 			acc:scores["accuracy"],
-			hp:scores["hp"],
+			hp:scores["hp2"],
 			spd:scores["speed"],
 			mor:scores["morale"],
 			skl:scores["skill"],
-			tnk:+((scores["defense"]+scores["hp"])/2).toFixed(2),
-		}, this.calcBadges);
+			tnk:+((scores["defense"]+scores["hp2"])/2).toFixed(2),
+		}, this.renderChart);
+	}
+
+	renderChart(){
+		var myRadarChart = new Chart(document.getElementById("radar_"+this.props.axieData.id), {
+				type: 'radar',
+				data: {
+					labels : ["Ath", "Def", "Acc", "Spd", "Mor"],
+					datasets : [{
+						data: [this.state.ath, this.state.tnk, this.state.spd, this.state.mor, this.state.acc],
+						backgroundColor: [
+							hexToRGB(axieClassColors[this.props.axieData.class], 0.55),
+						],
+						borderColor: [
+							hexToRGB(axieClassColors[this.props.axieData.class], 0.85),
+						],
+					}]
+				},
+				options: {
+					scale: {
+							ticks: {
+									suggestedMin: 0,
+									suggestedMax: 10
+							}
+					},
+					legend: {
+						display: false
+					},
+			}
+		});
+		this.calcBadges();
 	}
 
 	calcBadges(){
 		//rate tankiness (def+hp)
 		var tankLevel = 0;
-		if(this.state.tnk >= 6.8) tankLevel = 1;
-		if(this.state.tnk >= 7.3) tankLevel = 2;
-		if(this.state.tnk >= 8) 	tankLevel = 3;
-		if(this.state.tnk >= 8.5) tankLevel = 4;
-		if(this.state.tnk >= 9)	 	tankLevel = 5;
+		if(this.state.tnk >= 6.5) tankLevel = 1;
+		if(this.state.tnk >= 7.5) tankLevel = 2;
+		if(this.state.tnk >= 8.5) tankLevel = 3;
+		if(this.state.tnk >= 9.5) tankLevel = 4;
 		// rate attack (atk)
 		var attackLevel = 0;
-		if(this.state.atk >= 6.8) 	attackLevel = 1;
-		if(this.state.atk >= 7.3) 	attackLevel = 2;
-		if(this.state.atk >= 8) 		attackLevel = 3;
-		if(this.state.atk >= 8.5) 	attackLevel = 4;
-		if(this.state.atk >= 9) 		attackLevel = 5;
+		if(this.state.atk >= 6.5) 	attackLevel = 1;
+		if(this.state.atk >= 7.5) 	attackLevel = 2;
+		if(this.state.atk >= 8.5) 	attackLevel = 3;
+		if(this.state.atk >= 9.5) 	attackLevel = 4;
 		// rate attack true hit (ath)
 		var athLevel = 0;
-		if(this.state.ath >= 6.8) 	athLevel = 1;
-		if(this.state.ath >= 7.3) 	athLevel = 2;
-		if(this.state.ath >= 8) 		athLevel = 3;
-		if(this.state.ath >= 8.5) 	athLevel = 4;
-		if(this.state.ath >= 9) 		athLevel = 5;
+		if(this.state.ath >= 6.5) 	athLevel = 1;
+		if(this.state.ath >= 7.5) 	athLevel = 2;
+		if(this.state.ath >= 8.5) 	athLevel = 3;
+		if(this.state.ath >= 9.5) 	athLevel = 4;
 		//
 		this.setState({
 			tankLevel: tankLevel,
@@ -219,3 +310,16 @@ class AxieBadges extends Component {
 }
 
 export default AxieBadges;
+
+class Badge extends Component {
+	render() {
+		return (
+			<div className="badge">
+				<div className="bg">
+					<ReactSVG src={this.props.icon} />
+				</div>
+				<div className="desc">{this.props.level}</div>
+			</div>
+		);
+	}
+}

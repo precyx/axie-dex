@@ -124,5 +124,23 @@ export const minMaxPartStatsByType = {
       "min": 11.1,
       "max": 25.42
     }
+  },
+  "sums": {
+    "attack": {
+      "min": 55,
+      "max": 110
+    },
+    "defense": {
+      "min": 7,
+      "max": 69
+    },
+    "accuracy": {
+      "min": 264,
+      "max": 394
+    },
+    "attackTrueHit": {
+      "min": 40.7,
+      "max": 91.74
+    }
   }
 };

@@ -5,9 +5,10 @@ import {getRatingByStatPercentage} from "../data/axie-stats";
 import {axieStatRatingColors} from "../data/axie-stats";
 
 const StyledAxieStatBar = styled.div`
+	width:100%;
   display:flex;
 	.blob {width:8px; height:8px; border-radius:50%; background:grey; margin-left:3px;}
-	.container {width:250px; height:10px;}
+	.container {width:100%; height:10px;}
 	.bar {background:grey; height:100%; border-radius:50px;}
 `;
 

@@ -13,7 +13,7 @@ const StyledAxie = styled.div`
   border-right: 1px solid #e2e2e2;
   border-bottom: 1px solid #e2e2e2;
   padding: 15px;
-  width:450px;
+  width:400px;
 
   .axieContainer {display:flex; margin-bottom:10px;}
   .statContainer {display:flex; justify-content: space-between; margin-bottom:10px;}
@@ -55,15 +55,19 @@ class Axie extends Component {
           </div>
           <div className="badgeContainer">
           </div>
-          <div className="statContainer">
-            <AxieStats className="axieStats" stats={this.state.axieData.stats} />
+          <div className="statMoveContainer" style={{display:"none"}}>
+            <div className="statContainer">
+              <AxieStats className="axieStats" stats={this.state.axieData.stats} />
+            </div>
+
           </div>
-          <div className="moveContainer">
-            <AxieMoves className="axieMoves" parts={this.state.axieData.parts} />
-          </div>
+
           <div className="badgeContainer">
             <AxieBadges axieData={this.state.axieData}/>
           </div>
+          <div className="moveContainer">
+              <AxieMoves className="axieMoves" parts={this.state.axieData.parts} />
+            </div>
         </StyledAxie>
       );
     }
