@@ -4,6 +4,7 @@ import './App.css';
 import AxieList from "./components/AxieList";
 import {axieTraits} from "./data/axie-traits";
 import {getMinMaxStatsOfPartsByType} from "./data/axie-data-transform";
+import ReactTooltip from 'react-tooltip';
 
 class App extends Component {
   constructor(props){

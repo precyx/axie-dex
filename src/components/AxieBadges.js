@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactSVG from 'react-svg';
 import Chart from 'chart.js';
+import ReactTooltip from 'react-tooltip'
 //own
 import {getBattleParts} from '../data/axie-data-transform';
 import {minMaxPartStatsByType} from '../data/axie-stats';
@@ -31,10 +32,10 @@ const StyledAxieBadges = styled.div`
 
 	.badges {margin-bottom:10px;}
 	.badge { display: inline-flex; margin-right:5px; flex-flow: column; text-align: center;}
-	.badge .bg {width:50px; height:50px; background:#dedede; border-radius:50%; display:flex; align-items:center; justify-content:center;}
+	.badge .bg {width:35px; height:35px; background:#dedede; border-radius:50%; display:flex; align-items:center; justify-content:center;}
 	.badge .bg { background: ${props => props.color}  }
-	.badge svg {width:30px; fill:black; opacity:0.6;}
-	.badge .desc { font-weight: bold; width: 20px; height: 20px; background: rgba(0, 0, 0, 0.6); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; margin-top: -18px; margin-left: 33px;}
+	.badge svg {width:25px; fill:black; opacity:0.6;}
+	.badge .desc { font-weight: bold; font-size:11px; width: 18px; height: 18px; background: rgba(0, 0, 0, 0.6); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; margin-top: -16px; margin-left: 24px;}
 `;
 
 /**
@@ -47,6 +48,7 @@ class AxieBadges extends Component {
 
 	constructor(props){
 		super(props);
+		console.log("KJKLJ",this.props.axieData);
 		this.state = {
 			battleParts: null
 		};
@@ -147,10 +149,25 @@ class AxieBadges extends Component {
 			</div>
 		) : "";
 
+		if(this.state.ratingDone){
+			var atkTooltipText = 
+			<div>
+				{this.state.totals.ath} DPR
+			</div>
+			var tnkTooltipText = (
+				<div>
+					{this.state.totals.def + this.props.axieData.stats.hp} TNK
+				</div>
+			);
+		}
 		var Badges = this.state.ratingDone ? (
 			<div className="badges">
-				{this.state.tankLevel && this.state.tankLevel > 0 ? <Badge icon={"./img/icons/stats/defense.svg"} level={this.state.tankLevel} /> : ""} 
-				{this.state.attackLevel && this.state.athLevel > 0? <Badge icon={"./img/icons/stats/attack.svg"} level={this.state.athLevel} /> : ""} 
+				{(this.state.tankLevel && this.state.tankLevel > 0) ? 
+					<Badge icon={"./img/icons/stats/defense.svg"} level={this.state.tankLevel} id={'tankLevelTooltip_'+this.props.axieData.id} tooltipText={tnkTooltipText}/>
+				:""} 
+				{(this.state.attackLevel && this.state.athLevel > 0) ?
+					<Badge icon={"./img/icons/stats/attack.svg"} level={this.state.athLevel} id={'attackLevelTooltip_'+this.props.axieData.id} tooltipText={atkTooltipText}/>
+				:""} 
 			</div>
 		) : "";
 
@@ -160,7 +177,6 @@ class AxieBadges extends Component {
 			<StyledAxieBadges color={axieClassColors[this.props.axieData.class]}>
 				<canvas style={{display:"none"}} id={"radar_" + this.props.axieData.id}></canvas>
 				{Badges}
-				{HalfComplexStats}
 			</StyledAxieBadges>
 		);
 	}
@@ -202,7 +218,6 @@ class AxieBadges extends Component {
 			// calc attackTrueHit score
 			scores["attackTrueHit"] = scores["attackTrueHit"] ? scores["attackTrueHit"] : 0; 
 			scores["attackTrueHit"] += part.moves[0]["attack"] * part.moves[0]["accuracy"] /100  / minMaxPartStatsByType[part.type]["attackTrueHit"]["max"];
-			console.log("val", part.moves[0]["attack"] * part.moves[0]["accuracy"] /100, "max", minMaxPartStatsByType[part.type]["attackTrueHit"]["max"])
 			// calc def score 2
 			scores["defense2"] = scores["defense2"] ? scores["defense2"] : 0; 
 			scores["defense2"] += part.moves[0]["defense"];
@@ -315,10 +330,15 @@ class Badge extends Component {
 	render() {
 		return (
 			<div className="badge">
-				<div className="bg">
-					<ReactSVG src={this.props.icon} />
+				<div className="badgeInner" data-tip data-for={this.props.id}>
+					<div className="bg">
+						<ReactSVG src={this.props.icon} />
+					</div>
+					<div className="desc">{this.props.level}</div>
 				</div>
-				<div className="desc">{this.props.level}</div>
+				<ReactTooltip id={this.props.id} type='dark' effect='solid' place="top">
+					{this.props.tooltipText}
+				</ReactTooltip>
 			</div>
 		);
 	}

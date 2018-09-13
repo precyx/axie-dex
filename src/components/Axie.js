@@ -7,18 +7,21 @@ import AxieStats from './AxieStats';
 import AxieSprite from './AxieSprite';
 import AxieMoves from './AxieMoves';
 import AxieBadges from './AxieBadges';
+import AxieSalesData from './AxieSalesData';
 
 //CSS
 const StyledAxie = styled.div`
-  border-right: 1px solid #e2e2e2;
-  border-bottom: 1px solid #e2e2e2;
+  border: 1px solid #e2e2e2;
   padding: 15px;
-  width:400px;
+  width: 280px;
+  margin: 10px;
+  border-radius: 30px;
 
-  .axieContainer {display:flex; margin-bottom:10px;}
+  .axieTitleContainer {height:60px;}
+  .axieContainer {display:flex; margin-bottom:5px;}
   .statContainer {display:flex; justify-content: space-between; margin-bottom:10px;}
   .moveContainer {display:flex; justify-content: space-between; margin-bottom:10px;}
-  .axieTitle { display: flex; justify-content: flex-start; margin-bottom:10px;}
+  .axieTitle { display: flex; justify-content: flex-start; margin-bottom:5px;}
 `;
 
 /**
@@ -48,26 +51,31 @@ class Axie extends Component {
     if(canRender){
       return(
         <StyledAxie className="axie" id={this.state.axieID}>
-          <AxieTitle id={this.state.axieData.id} name={this.state.axieData.name} class={this.state.axieData.class} />
+          <div className="axieTitleContainer">
+            <AxieTitle id={this.state.axieData.id} name={this.state.axieData.name} class={this.state.axieData.class} />
+            <AxieBadges axieData={this.state.axieData}/>
+            {this.state.axieData.auction && <AxieSalesData auctionData={this.state.axieData.auction}/> } 
+          </div>
           <div className="axieContainer">
-            <AxieParts className="axieParts" parts={this.state.axieData.parts} />
+            <div style={{display:"none"}}>
+              <AxieParts className="axieParts" parts={this.state.axieData.parts} />
+            </div>
             <AxieSprite axieData={this.state.axieData} />
           </div>
           <div className="badgeContainer">
           </div>
-          <div className="statMoveContainer" style={{display:"none"}}>
+          <div className="statMoveContainer" style={{display:"block"}}>
             <div className="statContainer">
               <AxieStats className="axieStats" stats={this.state.axieData.stats} />
             </div>
-
+            <div className="moveContainer" >
+              <AxieMoves className="axieMoves" parts={this.state.axieData.parts} />
+            </div>
           </div>
 
           <div className="badgeContainer">
-            <AxieBadges axieData={this.state.axieData}/>
           </div>
-          <div className="moveContainer">
-              <AxieMoves className="axieMoves" parts={this.state.axieData.parts} />
-            </div>
+
         </StyledAxie>
       );
     }

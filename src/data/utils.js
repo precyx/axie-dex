@@ -9,3 +9,7 @@ export function hexToRGB(hex, alpha) {
 			return "rgb(" + r + ", " + g + ", " + b + ")";
 	}
 }
+
+export function weiToEth(wei){
+	return wei/1000000000000000000;
+}

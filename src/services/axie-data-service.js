@@ -24,3 +24,10 @@ export function buildAxieByIdAPI(id){
     else throw new Error("id is required. e.g 259");
     return url;
 }
+
+export function buildAxiesAPI(offset, additionalParams){
+    var url = "https://axieinfinity.com/api/axies";
+    if(offset) url+= "?offset="+offset;
+    if(additionalParams) url+= additionalParams;
+    return url;
+}
