@@ -56,7 +56,7 @@ export function getMinMaxStatsOfPartsByType(axieTraitsData){
 			// check stats in loop
 			STATS_TO_CHECK.forEach((stat) => {
 				// check true hit
-				if(stat == "attackTrueHit"){
+				if(stat === "attackTrueHit"){
 					if(trait.moves[0]["attack"] !== 0) {
 						partStats[trait.type]["attackTrueHit"]["min"] = Math.min(partStats[trait.type]["attackTrueHit"]["min"], trait.moves[0]["attack"] * trait.moves[0]["accuracy"] / 100);
 						partStats[trait.type]["attackTrueHit"]["max"] = Math.max(partStats[trait.type]["attackTrueHit"]["max"], trait.moves[0]["attack"] * trait.moves[0]["accuracy"] / 100);

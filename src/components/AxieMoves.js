@@ -101,10 +101,10 @@ function MoveTypeIcon (props){
 	);
 }
 
-function Move(){
+/*function Move(){
 	return (
 		<div className="move"></div>
 	);
-}
+}*/
 
 export default AxieMoves;

@@ -13,7 +13,7 @@ import AxieSalesData from './AxieSalesData';
 const StyledAxie = styled.div`
   border: 1px solid #e2e2e2;
   padding: 15px;
-  width: 280px;
+  width: 275px;
   margin: 10px;
   border-radius: 30px;
 
@@ -44,8 +44,9 @@ class Axie extends Component {
 
     var canRender = true;
     switch(this.state.axieData.stage){
-      case 1 : canRender = false;
-      case 2 : canRender = false;
+      case 1 : canRender = false; break;
+      case 2 : canRender = false; break;
+      default : canRender = true;
     }
 
     if(canRender){
