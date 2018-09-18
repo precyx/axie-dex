@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 // own
-import Axies from '../Axies';
+import AxieList from '../AxieList';
 import Textfield from '../ui/Textfield';
 import Button from '../ui/Button';
 import {buildAxiesByAddressAPI} from "../../services/axie-data-service.js";
@@ -76,7 +76,6 @@ class Profile extends Component {
 	render() {
 		return (
 			<StyledProfile>
-				
 				<BasicCenterContainer>
 					<div className="getAxieByAddressContainer">
 					<h2>Get Axies By Address</h2>
@@ -92,9 +91,8 @@ class Profile extends Component {
 					</div>
 				</div>
 				</BasicCenterContainer>
-
-			<Axies axies={this.state.axies}/>
-		</StyledProfile>
+				<AxieList axies={this.state.axies}/>
+			</StyledProfile>
 		);
 	}
 }

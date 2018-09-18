@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 // own
-import {weiToEth} from '../data/utils';
+import {weiToEth} from '../services/utils';
 
 //CSS
 const StyledAxieSalesData = styled.div`

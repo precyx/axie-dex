@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const StyledBasicCenterContainer = styled.div`
@@ -6,7 +6,7 @@ const StyledBasicCenterContainer = styled.div`
 	margin:0 auto; 
 `;
 
-class BasicCenterContainer extends Component {
+class BasicCenterContainer extends React.PureComponent {
 	render() {
 		return (
 			<StyledBasicCenterContainer>

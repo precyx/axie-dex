@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 // own
 import Axie from './Axie';
 import BasicCenterContainer from './containers/BasicCenterContainer';
 
 //CSS
-const StyledAxies = styled.div`
+const StyledAxieList = styled.div`
 	display:flex;
 	flex-flow: wrap;
 `;
 
-class Axies extends Component {
+class AxieList extends React.PureComponent {
 	constructor(props){
 		super(props);
 		this.state = {
@@ -24,12 +24,12 @@ class Axies extends Component {
 		}
 		return (
 			<BasicCenterContainer>
-				<StyledAxies>
+				<StyledAxieList>
 						{axies}
-				</StyledAxies>
+				</StyledAxieList>
 			</BasicCenterContainer>
 		);
 	}
 }
 
-export default Axies;
+export default AxieList;

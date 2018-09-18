@@ -24,7 +24,6 @@ const StyledAxieSprite = styled.div`
 class AxieSprite extends Component {
 	constructor(props) {
 		super(props);
-		this.pixiApp = null;
 		this.state = {
 			scale_factor:  0.2, 
 			axieData:   this.props.axieData,
@@ -35,7 +34,8 @@ class AxieSprite extends Component {
 			canvasID:   "canvas"+this.props.axieData.id,
 			canvasW:    0,
 			canvasH:    0,
-			axie:       null,
+      axie:       null,
+      pixiApp:    null
 		};
 	}
 
@@ -54,22 +54,25 @@ class AxieSprite extends Component {
 	
   componentDidMount(){
     this.setupPixi();
-    this.renderAxie();
 	}
 	
 	componentWillUnmount() {
-		this.pixiApp.destroy(true);
+		this.state.pixiApp.destroy(true);
 	}
 	
 
   setupPixi(){
-    this.pixiApp = new PIXI.Application({
+    var pixiApp = new PIXI.Application({
       view:document.getElementById(this.state.canvasID),
       width:480,
       height:340,
       transparent:true,
       //forceCanvas:true,
     });
+    this.setState(
+      {pixiApp:pixiApp}, 
+      this.renderAxie
+    );
   }
 
   renderAxie(){
@@ -85,15 +88,18 @@ class AxieSprite extends Component {
         const spineData = spineJsonParser.readSkeletonData(axieModel.data);
         this.axie = new PIXI.spine.Spine(spineData);
         this.axie.state.setAnimation(0, "walking", true);
-        this.pixiApp.start();
+        
         //console.log("ww", this.axie.children[5].position.y);
       
         // Axie Website Canvas Ratio: 480x340px = 1.411764705882353
         //console.log("cc", this.pixiApp.view.height);
         //console.log("bb", this.axie.height);
         //console.log("aa", this.axie);
-        this.pixiApp.stage.addChild(this.axie);
-        this.setScale();
+        if(this.state.pixiApp){
+          //this.state.pixiApp.start();
+          this.state.pixiApp.stage.addChild(this.axie);
+          this.setScale();
+        }
       });
     });
   }
@@ -119,13 +125,13 @@ class AxieSprite extends Component {
       canvasW: 480 *0.5,//this.axie.width * PADDING_FACTOR, 
       canvasH: 340 *0.5//this.axie.height * PADDING_FACTOR
     })
-    this.pixiApp.renderer.resize(
+    this.state.pixiApp.renderer.resize(
       this.state.canvasW,
       this.state.canvasH
     );
     this.axie.position.set(
-      this.pixiApp.view.width/2 + this.axie.width/10, 
-      this.pixiApp.view.height/2 + this.axie.height/1.8
+      this.state.pixiApp.view.width/2 + this.axie.width/10, 
+      this.state.pixiApp.view.height/2 + this.axie.height/1.8
     );
   }
 

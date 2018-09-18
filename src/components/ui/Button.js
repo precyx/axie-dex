@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 
@@ -12,7 +12,7 @@ const StyledButton = styled.button`
 	:hover {background: #E8E8E8;}
 `;
 
-class Button extends Component {
+class Button extends React.PureComponent {
 	render() {
 		return (
 			<StyledButton className="button" onClick={this.props.onClick}>

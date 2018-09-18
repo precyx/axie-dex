@@ -8,6 +8,7 @@ import AxieSprite from './AxieSprite';
 import AxieMoves from './AxieMoves';
 import AxieBadges from './AxieBadges';
 import AxieSalesData from './AxieSalesData';
+import AxieScores from './AxieScores';
 
 //CSS
 const StyledAxie = styled.div`

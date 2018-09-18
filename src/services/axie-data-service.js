@@ -18,6 +18,10 @@ export function buildAxiesByAddressAPI(address, offset){
     return url;
 }
 
+/**
+ * @param {Number} id
+ * @returns
+ */
 export function buildAxieByIdAPI(id){
     var url = "https://axieinfinity.com/api/axies/";
     if(id) url += id;
@@ -25,6 +29,11 @@ export function buildAxieByIdAPI(id){
     return url;
 }
 
+/**
+ * @param {Number} offset
+ * @param {String} additionalParams
+ * @returns
+ */
 export function buildAxiesAPI(offset, additionalParams){
     var url = "https://axieinfinity.com/api/axies";
     if(offset) url+= "?offset="+offset;

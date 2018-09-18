@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 // own
-import Axies from '../Axies';
 import Textfield from '../ui/Textfield';
 import Button from '../ui/Button';
 import {buildAxiesAPI} from "../../services/axie-data-service.js";
 import BasicCenterContainer from "../containers/BasicCenterContainer"; 
+import AxieList from '../AxieList';
 
 //CSS
 const StyledEncyclopedia = styled.div`
@@ -91,7 +91,7 @@ class Encyclopedia extends Component {
 						</div>
 					</div>
 				</BasicCenterContainer>
-				<Axies axies={this.state.axies}/>
+				<AxieList axies={this.state.axies}/>
 			</StyledEncyclopedia>
 		);
 	}

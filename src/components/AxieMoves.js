@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactSVG from 'react-svg';
 import styled from 'styled-components';
 //own
-import {getBattleParts} from '../data/axie-data-transform';
+import {getBattleParts} from '../services/axie-part-and-stats-transform';
 import axieClassColors from '../data/axie-class-colors';
 
 //CSS
@@ -61,11 +61,11 @@ class AxieMoves extends Component {
 	}
 
 	render() {
-		var moves = "";
+	var moves = (<tr><td></td></tr>);
 		if(this.state.battleParts) {
 			moves = this.state.battleParts.map((part)=>
 				<tr key={part.id} className="move">
-					<td className="image"><MoveTypeIcon moveClass={part.class} moveType={part.moves[0].type}/> </td>
+					<td className="image"><MoveTypeIcon moveClass={part.class} moveType={part.moves[0].type}/></td>
 					<td className="name"> 
 						<div className="val">{part.moves[0].name}</div>
 					</td>
@@ -73,7 +73,7 @@ class AxieMoves extends Component {
 					<td className="def">{part.moves[0].defense}</td>
 					<td className="acc">{part.moves[0].accuracy}</td>
 					<td style={{display:"none"}} className="sum">
-						{+(part.moves[0].attack *  part.moves[0].accuracy/100 + part.moves[0].defense).toFixed(2)} 
+						{+(part.moves[0].attack*part.moves[0].accuracy/100+part.moves[0].defense).toFixed(2)} 
 					</td>
 				</tr>
 			)
@@ -82,9 +82,7 @@ class AxieMoves extends Component {
 		return (
 			<AxieMovesStyled>
 				<table className="moves">
-					<tbody>
-						{moves}
-					</tbody>
+					<tbody>{moves}</tbody>
 				</table>
 			</AxieMovesStyled>
 		);
