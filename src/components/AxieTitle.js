@@ -16,6 +16,11 @@ const StyleAxieTitle = styled.div`
 	svg {width:16px;}
 `;
 
+/**
+ * Renders {name, id, class icon} of an {axie}
+ * @class AxieTitle
+ * @example <AxieTitle name={name} class={axieClass} id={id}/>
+ */
 class AxieTitle extends Component {
 	render() {
 		return (

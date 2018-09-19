@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@pixi/filter-outline": "^2.6.0",
     "axios": "^0.18.0",
     "babel-plugin-styled-components": "^1.6.0",
     "chart.js": "^2.7.2",
+    "pixi-filters": "^2.6.1",
     "pixi-spine": "^1.5.16",
     "pixi.js": "^4.8.1",
     "react": "^16.4.2",
@@ -13,6 +15,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.5",
+    "react-spinner-material": "^1.0.17",
     "react-svg": "^6.0.6",
     "react-tooltip": "^3.8.4",
     "styled-components": "^3.4.5"

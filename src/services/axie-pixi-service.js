@@ -5,13 +5,14 @@ import 'pixi-spine';
 import axios from 'axios';
 
 /**
- * gets axie spine from pixi
+ * Gets the {spine} from an {axie}
  * @export
+ * @param {Axie} axie with {model, atlas, img}
  */
-export function getAxieSpine(axieData){
-	let axieModel = axieData.figure.model;
-	let axieAtlas = axieData.figure.atlas;
-	let axieImg = axieData.figure.images[axieData.id+".png"];
+export function getAxieSpine(axie){
+	let axieModel = axie.figure.model;
+	let axieAtlas = axie.figure.atlas;
+	let axieImg = axie.figure.images[axie.id+".png"];
 	//
 	var newDateParam = ("?" + new Date().getTime());
 	return axios.get(axieModel + newDateParam).then((axieModel)=> {
@@ -26,5 +27,25 @@ export function getAxieSpine(axieData){
 			let axie = new PIXI.spine.Spine(spineData);
 			return axie;
 		});
+	});
+}
+/**
+ * Gets {spines} from {axies}
+ * @param {Array} axies
+ * @returns {Array} with {axie spines}
+ */
+export function getSpinesOfAxies(axies){
+	var promises = [];
+	for(var i=0; i < axies.length; i++){
+		var axie = axies[i];
+		if(axie.figure) {
+			var p = getAxieSpine(axie).then((aSpine)=>{
+				return aSpine;
+			});
+			promises.push(p);
+		}
+	}
+	return Promise.all(promises).then((axie_spines)=>{
+		return axie_spines;
 	});
 }
