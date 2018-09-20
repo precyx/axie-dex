@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import ReactSVG from 'react-svg';
 //custom
@@ -21,7 +21,7 @@ const StyleAxieTitle = styled.div`
  * @class AxieTitle
  * @example <AxieTitle name={name} class={axieClass} id={id}/>
  */
-class AxieTitle extends Component {
+class AxieTitle extends React.PureComponent {
 	render() {
 		return (
 			<StyleAxieTitle className="axieTitle" axieClass={this.props.class}>

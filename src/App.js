@@ -14,7 +14,7 @@ import Teambuilder from './components/sites/Teambuilder';
 
 
 const StyledApp = styled.div`
-  .header {width:100%; height:50px; background: #f7f7f7; margin-bottom:50px;}
+  .header {width:100%; height:50px; background: #f7f7f7; }
   .header .center {width:90%; padding:0 35px; height:100%; margin:0 auto; display:flex; }
   .header a { display: flex; align-items: center; margin-right:10px; color: #5d5d5d; font-size:14px; padding:0 15px; }
   .header a.selected { border-bottom:2px solid #a146ef; color:#a146ef; font-weight:bold; }

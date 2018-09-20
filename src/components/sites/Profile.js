@@ -5,7 +5,7 @@ import axios from 'axios';
 import AxieList from '../AxieList';
 import Textfield from '../ui/Textfield';
 import Button from '../ui/Button';
-import {buildAxiesByAddressAPI} from "../../services/axie-data-service.js";
+import {AXIE_DATA} from "../../services/axie-data-service.js";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
 
 //CSS
@@ -33,7 +33,7 @@ class Profile extends Component {
 	 */
 	getAxiesByAddress = () => {
 		//this.setState({axies: null});
-		var api = buildAxiesByAddressAPI(this.state.address, this.state.offset);
+		var api = AXIE_DATA.buildAxiesByAddressAPI(this.state.address, this.state.offset);
 		axios.get(api).then(data=>{
 			console.log("d", data.data.axies);
 			this.setState({

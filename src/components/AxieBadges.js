@@ -26,7 +26,7 @@ const StyledAxieBadges = styled.div`
  * @class AxieBadges
  * @extends {Component}
  */
-class AxieBadges extends Component {
+class AxieBadges extends React.PureComponent {
 	constructor(props){
 		super(props);
 		this.state = {

@@ -4,7 +4,13 @@ export class Grid{
 	//
 	elems = [];
 	//
-	constructor(){
+	/**
+	 * @param {Number} rows
+	 * @param {Number} cols
+	 */
+	constructor(rows, cols){
+		this.rows = rows ? rows : 30;
+		this.cols = cols ? cols : 8;
 		this.createGrid();
 	}
 	/**
@@ -36,4 +42,14 @@ export class Grid{
 			}
 		});
 	}
+	/**
+	 * @param {id} Number
+	 */
+	/*getElemById(id){
+		for(let i = 0; i < this.rows; i++){
+			for(let j = 0; j < this.cols; j++){
+				if(this.grid[i][j])
+			}
+		}
+	}*/
 }
