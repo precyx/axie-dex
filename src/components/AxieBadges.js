@@ -6,8 +6,8 @@ import ReactTooltip from 'react-tooltip'
 import {getBattleParts, getTotalStats, rateStats} from '../services/axie-part-and-stats-transform';
 //
 import {minMaxPartStatsByType} from '../data/axie-stats';
-import axieClassColors from '../data/axie-class-colors';
 import {axieStats} from '../data/axie-stats';
+import axieClassColors from '../data/axie-class-colors';
 
 //CSS
 const StyledAxieBadges = styled.div`

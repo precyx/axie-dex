@@ -17,24 +17,31 @@ import {Grid} from "../classes/Grid";
 import {Axie} from "../classes/Axie";
 import AxieTitle from "../AxieTitle";
 import AxieBadges from "../AxieBadges";
+import AxieComponent from "../Axie";
+import Button from "../ui/Button";
 
 //CSS
 const StyledTeamBuilder = styled.div`
 	margin-top:10px;
 
+	canvas { width:100%; height:100%;}
 	h1 {margin-bottom:15px;}
-	.count { margin-left: 30px; color: grey;}
 	h3 { color: grey; font-weight: normal; font-size: 18px; margin-bottom: 10px;}
 	.titlebar {display:flex;}
-	canvas { border: 1px solid #e2e2e2; width:100%; height:100%;}
+	.count { margin-left: 30px; color: grey;}
 
-	#axie_teambuilder_container {position:relative; width:100%; height:calc(100vh - 200px); border: 1px solid #e2e2e2;     overflow: hidden;}
+	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 200px); border: 1px solid #e2e2e2;     overflow: hidden;}
 	.spinner {position: absolute; left:50%; top:50%; margin-top:-30px; margin-left:-30px;}
 
-	.overlayUI {position:absolute; left:10px; top:10px; pointer-events: none; display:flex; align-items:center;}
+	.mixer_container {display:flex; }
+
+	.overlayUI {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
 	.overlayUI .axieTitle .name { display:none; }
 	.overlayUI .axieTitle .id { font-size:14; font-weight:bold; color:grey; }
+
+	.selectedAxie {margin-left:20px; }
+	.selectedAxie .axie { /*box-shadow: 0 2px 22px #0000004a;*/}
 `;
 
 // class
@@ -69,14 +76,15 @@ class Teambuilder extends Component {
 			// axie
 			AXIE_BASE_W: 570,
 			AXIE_SIZE_RATIO: 1.41,
-			axieW: 80, // 120 = good
+			axieW: 120, // 120 = good
 			axies: null,
 			axie_spines: null,
 			axies_with_spine: null,
 			// ui
-			address: "0x4ce15b37851a4448a28899062906a02e51dee267",
+			address: "0x21099184e7b0be245e3eed492288a07de2c64fd7",
 			offset: 0,
 			hide_UI: false,
+			selectedAxie: null,
 			//
 			loading_complete: false,
 		}
@@ -147,10 +155,10 @@ class Teambuilder extends Component {
 		AXIE_PIXI.getSpinesOfAxies(this.state.axies).then((axieSpines)=>{
 			this.setState({
 				axie_spines: axieSpines
-			}, this.mapAxiesWithSpines);
+			}, this.createAxies);
 		});
 	}
-	mapAxiesWithSpines(){
+	createAxies(){
 		var axiesWithSpine = [];
 		if(this.state.axies.length !== this.state.axie_spines.length) throw new Error("axies and axie spines need to be of equal element number to be mapped correctly.");
 		for(let i = 0; i < this.state.axies.length; i++){
@@ -194,7 +202,7 @@ class Teambuilder extends Component {
 		var startX = 120; //120
 		var startY = 180; //180
 		var SCALE = this.state.axieW / this.state.AXIE_BASE_W;
-		var ROW_SHIFT = 0//(y % 2 == 0) ? gapX : 0;
+		var ROW_SHIFT = (y % 2 == 0) ? gapX : 0;
 		// set scale
 		axie.spineData.scale.set(SCALE * this.state.CRISP_MULTIPLIER);
 		// set position
@@ -217,6 +225,16 @@ class Teambuilder extends Component {
 		});
 		axie.spineData.on("pointerout", (e)=>{
 			axie.spineData.filters = null;
+		});
+		axie.spineData.on("click", (e)=>{
+			console.log("Click", axie);
+			this.setState({
+				selectedAxie: null,
+			}, ()=>{
+				this.setState({
+					selectedAxie: axie,
+				})
+			});
 		});
 	}
 
@@ -268,16 +286,11 @@ class Teambuilder extends Component {
 	 */
 	setCanvasSize(w,h){
 		this.pixiApp.renderer.resize(w * this.state.CRISP_MULTIPLIER, h * this.state.CRISP_MULTIPLIER);
-		
-		//his.pixiApp.view.width = 500//w * this.state.CRISP_MULTIPLIER;
-		//his.pixiApp.view.height = 500//h * this.state.CRISP_MULTIPLIER;
 		this.pixiBg.width = w * this.state.CRISP_MULTIPLIER;
 		this.pixiBg.height = h * this.state.CRISP_MULTIPLIER;
-
 		this.setState((prevState) => ({
 			canvasW: w,
 			canvasH: h,
-
 		}));
 	}
 
@@ -293,6 +306,25 @@ class Teambuilder extends Component {
 	}
 
 	
+	/**
+	 * Calculates the {x, y} positions of a specific {axie_spine} inside the canvas
+	 * Used to render UI on top of {canvas}
+	 * @param {AxieSpine} axie_spine
+	 * @returns {Object} 
+	 */
+	getPositionOfAxie(axie_spine){
+		return {
+			x: (axie_spine.x + this.axieContainer.x - this.state.axieW*2+20) / this.state.CRISP_MULTIPLIER,
+			y: (axie_spine.y + this.axieContainer.y - this.state.axieW/this.state.AXIE_SIZE_RATIO*3+30) / this.state.CRISP_MULTIPLIER,
+		}
+	}
+
+
+	closeSelectedAxie = () => {
+		this.setState({
+			selectedAxie: null
+		}, this.resizeCanvasToContainer);
+	}
 
 	render() {
 
@@ -303,7 +335,11 @@ class Teambuilder extends Component {
 					<div 
 					className="overlayUI" 
 					key={axie.axieData.id} 
-					style={{left:(axie.spineData.x + this.axieContainer.x - 130) / 1.6 + "px", top:(axie.spineData.y + this.axieContainer.y-150) / 1.6 + "px"}} >
+					style={{ 
+						left:this.getPositionOfAxie(axie.spineData).x + "px", 
+						top: this.getPositionOfAxie(axie.spineData).y + "px"
+					}}
+					>
 						<AxieTitle  
 						className="inner" 
 						id={axie.axieData.id} 
@@ -311,7 +347,6 @@ class Teambuilder extends Component {
 						class={axie.axieData.class} />
 						<AxieBadges axieData={axie.axieData} />
 					</div>
-
 					: ""
 				}
 			);
@@ -335,17 +370,25 @@ class Teambuilder extends Component {
 						<h2 className="count">{this.state.axies ? this.state.axies.length : 0}</h2>
 					</div>
 					<h3>{this.state.address}</h3>
-					<div id="axie_teambuilder_container">
-						{!this.state.loading_complete ? (
-							<Spinner className="spinner" size={60} spinnerColor={"#a146ef"} spinnerWidth={4} visible={true}/>
-						) : ""}
 
-						<canvas style={{width: this.state.canvasW, height: this.state.canvasH }} id={this.state.canvasID}>No Canvas support.</canvas>
-
-						<div className="overlays">
-							{axie_overlays}
+					<div className="mixer_container">
+						<div id="axie_teambuilder_container">
+							{!this.state.loading_complete ? (
+								<Spinner className="spinner" size={60} spinnerColor={"#a146ef"} spinnerWidth={4} visible={true}/>
+							) : ""}
+							<canvas style={{width: this.state.canvasW, height: this.state.canvasH }} id={this.state.canvasID}>No Canvas support.</canvas>
+							<div className="overlays">
+								{axie_overlays}
+							</div>
 						</div>
+						{this.state.selectedAxie ? 
+							<div className="selectedAxie">
+								<Button name="Close" onClick={this.closeSelectedAxie} />
+								<AxieComponent data={this.state.selectedAxie.axieData}/>
+							</div>
+						: ""}
 					</div>
+
 
 				</BasicCenterContainer>	
 			</StyledTeamBuilder>

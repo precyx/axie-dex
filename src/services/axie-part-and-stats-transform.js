@@ -105,7 +105,7 @@ export function getTotalStats(battleParts){
 		totals.ath  += move0.attack * move0.accuracy/100;
 		totals.sum  += (move0.attack * move0.defense/100 + move0.defense).toFixed(1);
 	});
-	totals["ath"] = totals["ath"].toFixed(1);
+	totals["ath"] = Math.round(totals["ath"]);
 	return totals;
 }
 

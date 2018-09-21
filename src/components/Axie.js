@@ -17,6 +17,7 @@ const StyledAxie = styled.div`
   width: 275px;
   margin: 10px;
   border-radius: 30px;
+  background:white;
 
   .axieTitleContainer {height:60px;}
   .axieContainer {display:flex; margin-bottom:5px;}

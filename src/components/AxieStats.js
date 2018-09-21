@@ -17,6 +17,12 @@ const StyledAxieStats  = styled.div`
 	td {padding-bottom:5px;}
 `;
 
+/**
+ *
+ * @example <AxieStats stats={stats}/>
+ * @class AxieStats
+ * @extends {Component}
+ */
 class AxieStats extends Component {
 	constructor(props){
 		super(props);
