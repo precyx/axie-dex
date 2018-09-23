@@ -17,8 +17,10 @@ import {Grid} from "../classes/Grid";
 import {Axie} from "../classes/Axie";
 import AxieTitle from "../AxieTitle";
 import AxieBadges from "../AxieBadges";
+import AxieScores from "../AxieScores";
 import AxieComponent from "../Axie";
 import Button from "../ui/Button";
+import Textfield from "../ui/Textfield";
 
 //CSS
 const StyledTeamBuilder = styled.div`
@@ -28,9 +30,10 @@ const StyledTeamBuilder = styled.div`
 	h1 {margin-bottom:15px;}
 	h3 { color: grey; font-weight: normal; font-size: 18px; margin-bottom: 10px;}
 	.titlebar {display:flex;}
+	.addressBar {}
 	.count { margin-left: 30px; color: grey;}
 
-	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 200px); border: 1px solid #e2e2e2;     overflow: hidden;}
+	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 250px); border: 1px solid #e2e2e2;     overflow: hidden;}
 	.spinner {position: absolute; left:50%; top:50%; margin-top:-30px; margin-left:-30px;}
 
 	.mixer_container {display:flex; }
@@ -93,6 +96,9 @@ class Teambuilder extends Component {
 	
 	componentDidMount() {
 		this.setupPixiApp();
+	}
+	componentWillUnmount(){
+		this.reset();
 	}
 	
 	setupPixiApp(){
@@ -195,8 +201,8 @@ class Teambuilder extends Component {
 	 */
 	renderAxie(axie, x, y){
 		if(!axie.spineData) return; // needs spine to be rendered
-		var EXTRA_GAP_X = 100; //60 //100
-		var EXTRA_GAP_Y = 100; //50 //150
+		var EXTRA_GAP_X = 130; //60 //100
+		var EXTRA_GAP_Y = 150; //50 //150
 		var gapX = this.state.axieW + EXTRA_GAP_X;
 		var gapY = this.state.axieW / this.state.AXIE_SIZE_RATIO + EXTRA_GAP_Y;
 		var startX = 120; //120
@@ -273,9 +279,8 @@ class Teambuilder extends Component {
 				this.drag.position.y += e.data.originalEvent.movementY *this.state.CRISP_MULTIPLIER;
 			}
 		});
-		
 		//
-		window.addEventListener('resize', () => { this.resizeCanvasToContainer() } );
+		this.addResizeListener();
 		//setInterval(() => {this.resizeCanvasToContainer()}, 1000);
 	}
 
@@ -314,8 +319,8 @@ class Teambuilder extends Component {
 	 */
 	getPositionOfAxie(axie_spine){
 		return {
-			x: (axie_spine.x + this.axieContainer.x - this.state.axieW*2+20) / this.state.CRISP_MULTIPLIER,
-			y: (axie_spine.y + this.axieContainer.y - this.state.axieW/this.state.AXIE_SIZE_RATIO*3+30) / this.state.CRISP_MULTIPLIER,
+			x: (axie_spine.x + this.axieContainer.x - this.state.axieW*2+50) / this.state.CRISP_MULTIPLIER,
+			y: (axie_spine.y + this.axieContainer.y - this.state.axieW/this.state.AXIE_SIZE_RATIO*3+60) / this.state.CRISP_MULTIPLIER,
 		}
 	}
 
@@ -324,6 +329,48 @@ class Teambuilder extends Component {
 		this.setState({
 			selectedAxie: null
 		}, this.resizeCanvasToContainer);
+	}
+
+	
+	handleChange = name => event => {
+		this.setState({
+			[name]: event.target.value,
+		});
+	};
+
+	changeAddress = () => {
+		this.setState({
+			grid: new Grid(500, 15),
+			axies: null,
+			axie_spines: null,
+			axies_with_spine: null,
+			loading_complete: false
+		}, this.reset);
+	}
+
+	reset(){
+		// remove listeners
+		this.removeResizeListener();
+		// clean up canvas children
+		for (var i = this.pixiApp.stage.children.length - 1; i >= 0; i--) {	this.pixiApp.stage.removeChild(this.pixiApp.stage.children[i]);};
+		this.pixiApp.stage.destroy(true);
+		this.pixiApp.stage = null;
+		// reset objects
+		this.pixiApp = null;
+		this.pixiBg = null; //pixi.Graphics
+		this.axieContainer = null; //pixi.Container
+		this.setupPixiApp();
+	}
+
+
+	addResizeListener() {
+		window.addEventListener('resize', this.handleResize );
+	}
+	removeResizeListener(){
+		window.addEventListener('resize', this.handleResize );
+	}
+	handleResize = () => {
+		this.resizeCanvasToContainer();
 	}
 
 	render() {
@@ -369,7 +416,11 @@ class Teambuilder extends Component {
 						<h2>Axie Team Builder</h2>
 						<h2 className="count">{this.state.axies ? this.state.axies.length : 0}</h2>
 					</div>
-					<h3>{this.state.address}</h3>
+					<div className="addressBar">
+						<Textfield id="teambuilder_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
+						<Button onClick={this.changeAddress} name={"Load Axies"} />
+					</div>
+						<h3>{this.state.address}</h3>
 
 					<div className="mixer_container">
 						<div id="axie_teambuilder_container">
