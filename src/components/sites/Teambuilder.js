@@ -80,11 +80,12 @@ class Teambuilder extends Component {
 			AXIE_BASE_W: 570,
 			AXIE_SIZE_RATIO: 1.41,
 			axieW: 120, // 120 = good
+			axieH: null, // @warning should be calculated
 			axies: null,
 			axie_spines: null,
 			axies_with_spine: null,
 			// ui
-			address: "0x21099184e7b0be245e3eed492288a07de2c64fd7",
+			address: "0x10ae9fad9b0c70a0e578dd57e33dc8618aecfd22",
 			offset: 0,
 			hide_UI: false,
 			selectedAxie: null,
@@ -133,9 +134,10 @@ class Teambuilder extends Component {
 		//
 		this.setState({
 			canvasW: w,
-			canvasH: h
+			canvasH: h,
+			axieH: this.state.axieW / this.state.AXIE_SIZE_RATIO,
 		}, 
-		this.getManyAxies);
+		this.getAllAxies);
 	}
 	/**
 	 * Gets Axies ordered highest to lowest ID and limited to 12
@@ -149,7 +151,7 @@ class Teambuilder extends Component {
 			}, this.loadAxieSpines);
 		});
 	}
-	getManyAxies = () => {
+	getAllAxies = () => {
 		AXIE_DATA.getAllAxiesByAddress(this.state.address).then((axies)=>{
 			console.log("many axies", axies);
 			this.setState({
@@ -208,7 +210,7 @@ class Teambuilder extends Component {
 		var startX = 120; //120
 		var startY = 180; //180
 		var SCALE = this.state.axieW / this.state.AXIE_BASE_W;
-		var ROW_SHIFT = (y % 2 == 0) ? gapX : 0;
+		var ROW_SHIFT = (y % 2 != 0) ? gapX : 0;
 		// set scale
 		axie.spineData.scale.set(SCALE * this.state.CRISP_MULTIPLIER);
 		// set position
@@ -312,15 +314,75 @@ class Teambuilder extends Component {
 
 	
 	/**
-	 * Calculates the {x, y} positions of a specific {axie_spine} inside the canvas
-	 * Used to render UI on top of {canvas}
-	 * @param {AxieSpine} axie_spine
-	 * @returns {Object} 
+	 * @unused
 	 */
-	getPositionOfAxie(axie_spine){
+	/*getPositionOfAxie(axie_spine){
 		return {
 			x: (axie_spine.x + this.axieContainer.x - this.state.axieW*2+50) / this.state.CRISP_MULTIPLIER,
 			y: (axie_spine.y + this.axieContainer.y - this.state.axieW/this.state.AXIE_SIZE_RATIO*3+60) / this.state.CRISP_MULTIPLIER,
+		}
+	}*/
+
+	/**
+	 * Calculates the {x, y} positions of a specific {axie_spine} inside the canvas, you can also choose which {position} you want to retrieve like:
+	 * Used to render UI on top of {canvas}
+	 * @param {AxieSpine} axie_spine 
+	 * @param {String} position choose a position (top_left, top, bottom_right, left) etc... default is (top_left)
+	 * @returns {Object} 
+	 */
+	getPositionOfAxie(axie_spine, position){
+		var CM = this.state.CRISP_MULTIPLIER;
+		var TOP_LEFT = {
+			"x": (axie_spine.x + this.axieContainer.x) -this.state.axieW / this.state.AXIE_SIZE_RATIO * CM,
+			"y": (axie_spine.y + this.axieContainer.y) -this.state.axieW / this.state.AXIE_SIZE_RATIO * CM,
+		}
+		var offset = {x:0, y:0};
+		//
+		switch(position){
+			case "top_left" : 
+				offset.x = 0;
+				offset.y = 0;
+			break;
+			case "top" : 
+				offset.x = this.state.axieW/2 * CM;
+				offset.y = 0;
+			break;
+			case "top_right" : 
+				offset.x = this.state.axieW * CM;
+				offset.y = 0;
+			break;
+			case "right" :
+				offset.x = this.state.axieW * CM;
+				offset.y = this.state.axieH/2 * CM;
+			break;
+			case "bottom_right" :
+				offset.x = this.state.axieW * CM;
+				offset.y = this.state.axieH * CM;
+			break;
+			case "bottom" :
+				offset.x = this.state.axieW/2 * CM;
+				offset.y = this.state.axieH * CM;
+			break;
+			case "bottom_left" :
+				offset.x = 0;
+				offset.y = this.state.axieH * CM;
+			break;
+			case "left" :
+				offset.x = 0;
+				offset.y = this.state.axieH/2 * CM;
+			break;
+			case "center" :
+				offset.x = this.state.axieW/2 * CM;
+				offset.y = this.state.axieH/2 * CM;
+			break;
+			default:
+				offset.x = 0;
+				offset.y = 0;
+		}
+		//
+		return {
+			x: (TOP_LEFT.x + offset.x) / this.state.CRISP_MULTIPLIER,
+			y: (TOP_LEFT.y + offset.y) / this.state.CRISP_MULTIPLIER
 		}
 	}
 
@@ -383,8 +445,8 @@ class Teambuilder extends Component {
 					className="overlayUI" 
 					key={axie.axieData.id} 
 					style={{ 
-						left:this.getPositionOfAxie(axie.spineData).x + "px", 
-						top: this.getPositionOfAxie(axie.spineData).y + "px"
+						left:this.getPositionOfAxie(axie.spineData, "top_left").x - 20 + "px", 
+						top: this.getPositionOfAxie(axie.spineData, "top_left").y - 40 + "px"
 					}}
 					>
 						<AxieTitle  
