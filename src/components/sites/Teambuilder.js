@@ -480,15 +480,16 @@ class Teambuilder extends Component {
 
 				<BasicCenterContainer>
 
-					<div className="titlebar">
-						<h2>Axie Team Builder</h2>
-						<h2 className="count">{this.state.axies ? this.state.axies.length : 0}</h2>
-					</div>
+
 					<div className="addressBar">
 						<Textfield id="teambuilder_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
 						<Button onClick={this.changeAddress} name={"Load Axies"} />
 					</div>
-						<h3>{this.state.address}</h3>
+					<h3>{this.state.address}</h3>
+					<div className="titlebar">
+						<h2>Axie Team Builder</h2>
+						<h2 className="count">{this.state.axies ? this.state.axies.length : 0}</h2>
+					</div>
 
 					<div className="teambuilder_view">
 					{this.state.selectedAxie ? 

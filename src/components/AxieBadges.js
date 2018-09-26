@@ -57,7 +57,7 @@ class AxieBadges extends React.PureComponent {
 		) : "";
 
 		return (
-			<StyledAxieBadges color={axieClassColors[this.props.axieData.class]}>
+			<StyledAxieBadges color={axieClassColors[this.props.axieData.class] || axieClassColors[this.props.axieData.clazz]}>
 				{Badges}
 			</StyledAxieBadges>
 		);

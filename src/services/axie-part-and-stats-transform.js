@@ -6,10 +6,20 @@
  */
 export function getBattleParts(parts){
 	let battleParts = [];
+	var partTypes = ["back", "ears", "eyes", "horn", "mouth", "tail"];
 	let battlePartTypes = ["mouth", "back", "horn", "tail"];
-	parts.forEach(part => {
-		if(battlePartTypes.includes(part.type)) battleParts.push(part);
-	});
+	// solve array
+	if(Array.isArray(parts)){
+		parts.forEach(part => {
+			if(battlePartTypes.includes(part.type)) battleParts.push(part);
+		});
+	}
+	// solve object
+	else if(parts !== null && typeof parts === "object"){
+		partTypes.forEach(partType =>{
+			if(battlePartTypes.includes(partType)) battleParts.push(parts[partType]);
+		});
+	}
 	return battleParts;
 }
 

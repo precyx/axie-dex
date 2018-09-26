@@ -27,16 +27,17 @@ class AxieSprite extends Component {
 		this.state = {
 			scale_factor:  0.2, 
 			axieData:   this.props.axieData,
-			axieImg:    this.props.axieData.figure.images[this.props.axieData.id + ".png"],
-			axieAtlas:  this.props.axieData.figure.atlas,
-			axieModel:  this.props.axieData.figure.model,
+			axieImg:    this.props.axieData.figure.images ? this.props.axieData.figure.images[this.props.axieData.id + ".png"] : this.props.axieData.figure.axie.image.replace(/^http:\/\//i, 'https://'), //old API //images[this.props.axieData.id + ".png"],
+			axieAtlas:  this.props.axieData.figure.atlas ? this.props.axieData.figure.atlas : this.props.axieData.figure.axie.atlas.replace(/^http:\/\//i, 'https://'),
+			axieModel:  this.props.axieData.figure.model ? this.props.axieData.figure.model : this.props.axieData.figure.axie.spineModel.replace(/^http:\/\//i, 'https://'),
 			axieID:     "axie_"+this.props.axieData.id,
 			canvasID:   "canvas"+this.props.axieData.id,
 			canvasW:    0,
 			canvasH:    0,
       axie:       null,
       pixiApp:    null
-		};
+    };
+    //console.log(this.state.axieImg, this.state.axieAtlas, this.state.axieModel);
 	}
 
 	render() {
@@ -87,7 +88,10 @@ class AxieSprite extends Component {
         const spineJsonParser = new PIXI.spine.core.SkeletonJson(spineAtlasLoader);
         const spineData = spineJsonParser.readSkeletonData(axieModel.data);
         this.axie = new PIXI.spine.Spine(spineData);
-        this.axie.state.setAnimation(0, "walking", true);
+        //
+        //console.log(this.axie.spineData.animations);
+        var animation = this.axie.spineData.animations[56] || this.axie.spineData.animations[2] || this.axieSpineData.animations[0];
+        this.axie.state.setAnimation(0, animation.name, true);
         
         //console.log("ww", this.axie.children[5].position.y);
       

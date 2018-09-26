@@ -4,7 +4,7 @@ import axios from 'axios';
 // own
 import Textfield from '../ui/Textfield';
 import Button from '../ui/Button';
-import {AXIE_DATA} from "../../services/axie-data-service.js";
+import {AXIE_DATA_V1} from "../../services/axie-data-service.js";
 import BasicCenterContainer from "../containers/BasicCenterContainer"; 
 import AxieList from '../AxieList';
 
@@ -33,8 +33,9 @@ class Encyclopedia extends Component {
 	 * @memberof AxieList
 	 */
 	getAxies = () => {
-		var api = AXIE_DATA.buildAxiesAPI(this.state.offset, this.state.additionalParams);
+		var api = AXIE_DATA_V1.buildAxiesAPI(this.state.offset, this.state.additionalParams);
 		axios.get(api).then((data)=>{
+			//console.log("xx", data);
 			this.setState({
 				axies : data.data.axies
 			});

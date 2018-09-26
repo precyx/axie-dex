@@ -32,12 +32,26 @@ class AxieParts extends Component {
 		}
 	}
 	render(){
-		var parts = this.props.parts.map( (part) => 
-			<div key={part.id} className="part">
-				<AxiePartIcon className="axiePartIcon" type={part.type} axieClass={part.class} theme="dark"/>
-				<PartName part={part}/>
-			</div>
-		);
+		var parts = "";
+		// solve array
+		if(Array.isArray(this.props.parts)){
+			parts = this.props.parts.map( (part) => 
+				<div key={part.id} className="part">
+					<AxiePartIcon className="axiePartIcon" type={part.type} axieClass={part.class} theme="dark"/>
+					<PartName part={part}/>
+				</div>
+			);
+		}
+		// solve object
+		else if(this.props.parts !== null && typeof this.props.parts === 'object'){
+			var partTypes = ["back", "ears", "eyes", "horn", "mouth", "tail"];
+			parts = partTypes.map((partType) => (
+				<div key={partType} className="part">
+					<AxiePartIcon className="axiePartIcon" type={this.props.parts[partType]} axieClass={this.props.parts[partType].class} theme="dark"/>
+					<PartName part={this.props.parts[partType]} />
+				</div>
+			));
+		}
 		return (
 			<StyledParts className="parts">
 				{parts}

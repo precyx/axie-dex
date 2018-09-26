@@ -12,7 +12,7 @@ const StyledAxieSalesData = styled.div`
 class AxieSalesData extends Component {
 	constructor(props){
 		super(props);
-		console.log("k", this.props.auctionData);
+		//console.log("k", this.props.auctionData);
 	}
 	render() {
 

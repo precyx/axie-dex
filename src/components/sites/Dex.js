@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 // custom
 import Axie from "../Axie";
-import {AXIE_DATA} from "../../services/axie-data-service";
+import {AXIE_DATA, AXIE_DATA_V1} from "../../services/axie-data-service";
 import Textfield from "../ui/Textfield";
 import Button from "../ui/Button";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
