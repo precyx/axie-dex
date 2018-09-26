@@ -35,7 +35,7 @@ class Encyclopedia extends Component {
 	getAxies = () => {
 		var api = AXIE_DATA_V1.buildAxiesAPI(this.state.offset, this.state.additionalParams);
 		axios.get(api).then((data)=>{
-			//console.log("xx", data);
+			console.log("Get axies:", data);
 			this.setState({
 				axies : data.data.axies
 			});

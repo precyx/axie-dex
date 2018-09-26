@@ -36,13 +36,10 @@ const StyledTeamBuilder = styled.div`
 	.addressBar {}
 	.count { margin-left: 30px; color: grey;}
 	.spinner {position: absolute; left:50%; top:50%; margin-top:-30px; margin-left:-30px;}
-
 	/* container */
 	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 250px); border: 1px solid #e2e2e2; overflow: hidden; margin-right:20px;}
-
 	/* axie teams */
 	.axieTeams {margin-left:20px;}
-
 	/* overlay ui */
 	.overlayUI {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
@@ -51,6 +48,8 @@ const StyledTeamBuilder = styled.div`
 	/* selected axie */
 	.selectedAxie {position:absolute; }
 	.selectedAxie .axie { margin: 0; box-shadow: 0 2px 22px #0000004a; border:none;}
+	/* blackscreen */
+	.blackscreen {position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.25); user-select: none; pointer-events: none;}
 `;
 
 // class
@@ -213,8 +212,8 @@ class Teambuilder extends Component {
 		var EXTRA_GAP_Y = 150; //50 //150
 		var gapX = this.state.axieW + EXTRA_GAP_X;
 		var gapY = this.state.axieW / this.state.AXIE_SIZE_RATIO + EXTRA_GAP_Y;
-		var startX = 120; //120
-		var startY = 180; //180
+		var startX = 0//120; //120
+		var startY = 0//180; //180
 		var SCALE = this.state.axieW / this.state.AXIE_BASE_W;
 		var ROW_SHIFT = (y % 2 != 0) ? gapX : 0;
 		// set scale
@@ -497,9 +496,14 @@ class Teambuilder extends Component {
 								<Spinner className="spinner" size={60} spinnerColor={"#a146ef"} spinnerWidth={4} visible={true}/>
 							) : ""}
 							<canvas style={{width: this.state.canvasW, height: this.state.canvasH }} id={this.state.canvasID}>No Canvas support.</canvas>
+
 							<div className="overlays">
 								{axie_overlays}
 							</div>
+							{this.state.selectedAxie ?
+								<div className="blackscreen">
+								</div>
+							: ""}
 							{this.state.selectedAxie && !this.state.hide_UI ? 
 								<div className="selectedAxie"
 								style={{ 
@@ -510,9 +514,9 @@ class Teambuilder extends Component {
 									<AxieComponent data={this.state.selectedAxie.axieData}/>
 								</div>
 							: ""}
+
 						</div>
 						<AxieTeams className="axieTeams" selectedAxie={this.state.selectedAxie}/>
-
 					</div>
 
 

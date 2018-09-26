@@ -3,23 +3,25 @@ import PropTypes from 'prop-types';
 import styled, { css } from "styled-components";
 // own
 import AxieTeam from "./AxieTeam";
+import {AXIE_DATA_V1} from "../services/axie-data-service";
 // CSS
 const StyledAxieTeams = styled.div`
 	padding:25px 0;
-	width:350px;
+	width:550px;
 	height:100%;
 	border: 1px solid #e2e2e2;
+	height: calc(100vh - 250px);
 	/* containers */
 	.gapContainer {padding:0 25px;}
 	/* teams */
-	.teams { max-height: 300px; overflow-y: scroll;}
+	.teams { height: calc(100% - 120px); overflow-y: scroll; border-top: 1px solid #e4e4e4;}
 	/* new team button */
 	.newTeamBtn {margin-top:15px; width:100%; background:#f4f4f4; color: #6e6e6e; font-weight:bold; padding:15px 5px; text-align:center; border-radius:8px; cursor:pointer;}
 	.newTeamBtn:hover {background:#ececec;}
 
 		/* focus state */
 		${({ selectedAxie }) => selectedAxie && css`
-			width: 550px;
+			width: 1200px;
 			box-shadow: 0 5px 18px rgba(0, 0, 0, 0.32);
 			border: none;
 			.teams {cursor: pointer;}
@@ -64,18 +66,23 @@ class AxieTeams extends Component {
 	}
 	addNewTeamMember = (teamToUpdate) => {
 		if(!this.props.selectedAxie) return;
-		// update teams
-		var newTeams = [...this.state.teams];
-		const index = this.state.teams.findIndex(team => team.id === teamToUpdate.id);
-		newTeams[index] = teamToUpdate;
-		// update members
-		var newMembers = [...teamToUpdate.members, new TeamMember(this.props.selectedAxie)];
-		newTeams[index].members = newMembers;
-		this.setState({
-			teams: newTeams,
-		}, () => {
-			console.log("t", this.state.teams);
+		// get axie image
+		AXIE_DATA_V1.getAxieById(this.props.selectedAxie.id).then((data)=>{
+			var axieImage = data.figure.static.idle;
+			// update teams
+			var newTeams = [...this.state.teams];
+			const index = this.state.teams.findIndex(team => team.id === teamToUpdate.id);
+			newTeams[index] = teamToUpdate;
+			// update members
+			var newMembers = [...teamToUpdate.members, new TeamMember(this.props.selectedAxie, axieImage)];
+			newTeams[index].members = newMembers;
+			this.setState({
+				teams: newTeams,
+			}, () => {
+				console.log("t", this.state.teams);
+			});
 		});
+
 	
 	}
 
@@ -115,8 +122,10 @@ export default AxieTeams;
 
 class TeamMember {
 	axie = null;
-	constructor(axie){
+	image = null;
+	constructor(axie, image){
 		this.axie = axie;
+		this.image = image;
 	}
 }
 

@@ -100,9 +100,12 @@ class AxieSprite extends React.PureComponent {
         //console.log("bb", this.axie.height);
         //console.log("aa", this.axie);
         if(this.state.pixiApp){
-          //this.state.pixiApp.start();
-          this.state.pixiApp.stage.addChild(this.axie);
-          this.setScale();
+          if(this.state.pixiApp.stage){
+            //this.state.pixiApp.start();
+            this.state.pixiApp.stage.addChild(this.axie);
+            this.setScale();
+          }
+
         }
       });
     });

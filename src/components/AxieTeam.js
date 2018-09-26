@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
+// own
+import AxieBadges from "./AxieBadges";
 
+// CSS
 const StyledAxieTeam = styled.div`
 	/* component */
 	display:flex; 
@@ -9,7 +12,13 @@ const StyledAxieTeam = styled.div`
 	width: 100%;
 	padding: 15px 25px;
 	padding-right:15px;
-	:hover {background: whitesmoke;}
+	border-bottom: 1px solid #e4e4e4;
+	/* team */
+	.team_title {font-size: 15px; color: #a146ef; font-weight: bold; margin-bottom: 10px;}
+	/* teammember */
+	.members {display:flex;}
+	.teammember .title {font-size:12px; color:grey;}
+	.teammember .img {width:100px; height:auto; margin-right:0;}
 	/* name */
 	.name {font-size: 12px; color: grey;}
 	/* delete button */
@@ -39,7 +48,11 @@ class AxieTeam extends React.PureComponent {
 		console.log("m", this.props.members);
 		if(this.props.members.length){
 			members = this.props.members.map((member)=>(
-				<div key={member.axie.id} className="member">axie #{member.axie.id}</div>
+					<div key={member.axie.id} className="teammember">
+						<div className="title">#{member.axie.id}</div>
+						<img className="img" src={member.image} />
+						<AxieBadges axieData={member.axie.axieData}/>
+					</div>
 			));
 		}
 
@@ -47,7 +60,7 @@ class AxieTeam extends React.PureComponent {
 		return (
 			<StyledAxieTeam onClick={this.props.onClick}>
 			<div className="left">
-				<p className="name">{this.state.name}</p>
+				<p className="team_title">{this.state.name}</p>
 				<div className="members">{members}</div>
 			</div>
 			<div className="right">

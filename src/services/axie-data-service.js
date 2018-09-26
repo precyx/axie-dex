@@ -152,4 +152,10 @@ export const AXIE_DATA_V1 = {
         else throw new Error("id is required. e.g 259");
         return url;
     },
+    getAxieById(id){
+        var url = this.buildAxieByIdAPI(id);
+        return axios.get(url).then((data)=>{
+            return data.data;
+        });
+    }
 }
