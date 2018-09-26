@@ -46,10 +46,10 @@ export const AXIE_DATA = {
                 var p = new Promise((resolve, reject)=>{
                     AXIE_DATA.getAxiesByAddress(address, i * axiesPerPage).then(data=>{
                         axies_cache = [...data.axies, ...axies_cache];
-                        console.log("OK", axies_cache);
+                        //console.log("OK", axies_cache);
                         resolve();
                     }).catch((err)=>{
-                        console.log("ERR", err);
+                        //console.log("ERR", err);
                     })
                 });
                 promises.push(p);

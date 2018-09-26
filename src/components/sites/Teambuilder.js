@@ -21,30 +21,36 @@ import AxieScores from "../AxieScores";
 import AxieComponent from "../Axie";
 import Button from "../ui/Button";
 import Textfield from "../ui/Textfield";
+import AxieTeams from '../AxieTeams';
 
 //CSS
 const StyledTeamBuilder = styled.div`
+	/* view */
+	.teambuilder_view {display:flex; }
+	/* component */
 	margin-top:10px;
-
 	canvas { width:100%; height:100%;}
 	h1 {margin-bottom:15px;}
 	h3 { color: grey; font-weight: normal; font-size: 18px; margin-bottom: 10px;}
 	.titlebar {display:flex;}
 	.addressBar {}
 	.count { margin-left: 30px; color: grey;}
-
-	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 250px); border: 1px solid #e2e2e2;     overflow: hidden;}
 	.spinner {position: absolute; left:50%; top:50%; margin-top:-30px; margin-left:-30px;}
 
-	.mixer_container {display:flex; }
+	/* container */
+	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 250px); border: 1px solid #e2e2e2; overflow: hidden; margin-right:20px;}
 
+	/* axie teams */
+	.axieTeams {margin-left:20px;}
+
+	/* overlay ui */
 	.overlayUI {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
 	.overlayUI .axieTitle .name { display:none; }
 	.overlayUI .axieTitle .id { font-size:14; font-weight:bold; color:grey; }
-
-	.selectedAxie {margin-left:20px; }
-	.selectedAxie .axie { /*box-shadow: 0 2px 22px #0000004a;*/}
+	/* selected axie */
+	.selectedAxie {margin-right:20px; }
+	.selectedAxie .axie { margin: 0; /*box-shadow: 0 2px 22px #0000004a;*/}
 `;
 
 // class
@@ -85,7 +91,7 @@ class Teambuilder extends Component {
 			axie_spines: null,
 			axies_with_spine: null,
 			// ui
-			address: "0x10ae9fad9b0c70a0e578dd57e33dc8618aecfd22",
+			address: "0x5ea1d56d0dde1ca5b50c277275855f69edefa169",
 			offset: 0,
 			hide_UI: false,
 			selectedAxie: null,
@@ -145,7 +151,7 @@ class Teambuilder extends Component {
 	 */
 	getAxies = () => {
 		AXIE_DATA.getAxiesByAddress(this.state.address, this.state.offset).then((data)=>{
-			console.log("axies", data);
+			//console.log("axies", data);
 			this.setState({
 				axies : data.axies,
 			}, this.loadAxieSpines);
@@ -153,7 +159,7 @@ class Teambuilder extends Component {
 	}
 	getAllAxies = () => {
 		AXIE_DATA.getAllAxiesByAddress(this.state.address).then((axies)=>{
-			console.log("many axies", axies);
+			//console.log("many axies", axies);
 			this.setState({
 				axies : axies,
 			}, this.loadAxieSpines);
@@ -172,7 +178,7 @@ class Teambuilder extends Component {
 		for(let i = 0; i < this.state.axies.length; i++){
 			axiesWithSpine.push(new Axie(this.state.axies[i], this.state.axie_spines[i]));
 		}
-		console.log("sup", axiesWithSpine);
+		//console.log("sup", axiesWithSpine);
 		this.setState({
 			axies_with_spine: axiesWithSpine,
 		}, this.renderAxies);
@@ -186,7 +192,7 @@ class Teambuilder extends Component {
 		// fill axies into {2d grid}
 		grid.insertElems(this.state.axies_with_spine);
 		// render axies in a grid
-		console.log(grid);
+		//console.log(grid);
 		for(let i = 0; i < grid.rows; i++){
 			for(let j = 0; j < grid.cols; j++){
 				var axie = grid.elems[i][j];
@@ -235,7 +241,7 @@ class Teambuilder extends Component {
 			axie.spineData.filters = null;
 		});
 		axie.spineData.on("click", (e)=>{
-			console.log("Click", axie);
+			//console.log("Click", axie);
 			this.setState({
 				selectedAxie: null,
 			}, ()=>{
@@ -252,7 +258,7 @@ class Teambuilder extends Component {
 			Math.round(this.state.canvasW),
 			Math.round(this.state.canvasH)
 		);
-		console.log(this.state.grid);
+		//console.log(this.state.grid);
 		this.pixiApp.start();
 		this.setState({loading_complete:true});
 		//
@@ -261,7 +267,7 @@ class Teambuilder extends Component {
 			console.log("click", e);
 			this.axieContainer.y -= 20;
 		});*/
-		console.log(this.state.axies_with_spine);
+		//console.log(this.state.axies_with_spine);
 
 		this.pixiApp.stage.on("mousedown", (e) => {
 			this.drag = this.axieContainer;
@@ -484,7 +490,13 @@ class Teambuilder extends Component {
 					</div>
 						<h3>{this.state.address}</h3>
 
-					<div className="mixer_container">
+					<div className="teambuilder_view">
+					{this.state.selectedAxie ? 
+							<div className="selectedAxie">
+								<Button name="Close" onClick={this.closeSelectedAxie} />
+								<AxieComponent data={this.state.selectedAxie.axieData}/>
+							</div>
+						: ""}
 						<div id="axie_teambuilder_container">
 							{!this.state.loading_complete ? (
 								<Spinner className="spinner" size={60} spinnerColor={"#a146ef"} spinnerWidth={4} visible={true}/>
@@ -494,12 +506,8 @@ class Teambuilder extends Component {
 								{axie_overlays}
 							</div>
 						</div>
-						{this.state.selectedAxie ? 
-							<div className="selectedAxie">
-								<Button name="Close" onClick={this.closeSelectedAxie} />
-								<AxieComponent data={this.state.selectedAxie.axieData}/>
-							</div>
-						: ""}
+						<AxieTeams className="axieTeams" selectedAxie={this.state.selectedAxie}/>
+
 					</div>
 
 
