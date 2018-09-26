@@ -36,7 +36,7 @@ const StyledAxieScores = styled.div`
  * @class AxieScores
  * @extends {Component}
  */
-class AxieScores extends Component {
+class AxieScores extends React.PureComponent {
 	constructor(props){
 		super(props);
 		this.state = {

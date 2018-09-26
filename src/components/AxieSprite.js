@@ -21,7 +21,7 @@ const StyledAxieSprite = styled.div`
  * @class AxieSprite
  * @extends {Component}
  */
-class AxieSprite extends Component {
+class AxieSprite extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {

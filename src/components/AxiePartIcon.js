@@ -31,7 +31,7 @@ const StyledAxiePartIcon = styled.div`
  * @class AxiePartIcon
  * @extends {Component}
  */
-class AxiePartIcon extends Component {
+class AxiePartIcon extends React.PureComponent {
 	render() {
 		return (
 			<StyledAxiePartIcon 

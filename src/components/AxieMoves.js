@@ -33,7 +33,7 @@ const AxieMovesStyled = styled.div`
  * @class AxieMoves
  * @extends {Component}
  */
-class AxieMoves extends Component {
+class AxieMoves extends React.PureComponent {
 	constructor(props){
 		super(props);
 		this.state = {

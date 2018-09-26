@@ -25,7 +25,7 @@ const StyledParts = styled.div`
  * @class AxieParts
  * @extends {Component}
  */
-class AxieParts extends Component {
+class AxieParts extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {

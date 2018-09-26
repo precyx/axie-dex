@@ -12,7 +12,7 @@ const StyledAxieStatBar = styled.div`
 	.bar {background:grey; height:100%; border-radius:50px;}
 `;
 
-class AxieStatBar extends Component {
+class AxieStatBar extends React.PureComponent {
 	constructor(props){
 		super(props);
 		this.state = {

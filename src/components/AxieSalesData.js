@@ -9,7 +9,7 @@ const StyledAxieSalesData = styled.div`
     color: #6f6f6f;
 `;
 
-class AxieSalesData extends Component {
+class AxieSalesData extends React.PureComponent {
 	constructor(props){
 		super(props);
 		//console.log("k", this.props.auctionData);

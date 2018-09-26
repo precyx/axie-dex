@@ -17,7 +17,7 @@ const StyledAxieTeam = styled.div`
 	.deleteButton:hover {color:#383838;}
 `;
 
-class AxieTeam extends Component {
+class AxieTeam extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {

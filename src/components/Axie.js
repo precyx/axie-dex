@@ -30,9 +30,9 @@ const StyledAxie = styled.div`
  * Displays an Axie with image, parts
  * @example <Axie data={axie} />
  * @class Axie
- * @extends {Component}
+ * @extends {React.PureComponent}
  */
-class Axie extends Component {
+class Axie extends React.PureComponent {
   constructor(props){
       super(props);
       //

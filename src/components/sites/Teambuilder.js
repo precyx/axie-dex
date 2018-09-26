@@ -49,8 +49,8 @@ const StyledTeamBuilder = styled.div`
 	.overlayUI .axieTitle .name { display:none; }
 	.overlayUI .axieTitle .id { font-size:14; font-weight:bold; color:grey; }
 	/* selected axie */
-	.selectedAxie {margin-right:20px; }
-	.selectedAxie .axie { margin: 0; /*box-shadow: 0 2px 22px #0000004a;*/}
+	.selectedAxie {position:absolute; }
+	.selectedAxie .axie { margin: 0; box-shadow: 0 2px 22px #0000004a; border:none;}
 `;
 
 // class
@@ -492,12 +492,6 @@ class Teambuilder extends Component {
 					</div>
 
 					<div className="teambuilder_view">
-					{this.state.selectedAxie ? 
-							<div className="selectedAxie">
-								<Button name="Close" onClick={this.closeSelectedAxie} />
-								<AxieComponent data={this.state.selectedAxie.axieData}/>
-							</div>
-						: ""}
 						<div id="axie_teambuilder_container">
 							{!this.state.loading_complete ? (
 								<Spinner className="spinner" size={60} spinnerColor={"#a146ef"} spinnerWidth={4} visible={true}/>
@@ -506,6 +500,16 @@ class Teambuilder extends Component {
 							<div className="overlays">
 								{axie_overlays}
 							</div>
+							{this.state.selectedAxie && !this.state.hide_UI ? 
+								<div className="selectedAxie"
+								style={{ 
+									left:this.getPositionOfAxie(this.state.selectedAxie.spineData, "left").x - 300 + "px", 
+									top: this.getPositionOfAxie(this.state.selectedAxie.spineData, "left").y - 250 + "px"
+								}}>
+									<Button name="Close" onClick={this.closeSelectedAxie} />
+									<AxieComponent data={this.state.selectedAxie.axieData}/>
+								</div>
+							: ""}
 						</div>
 						<AxieTeams className="axieTeams" selectedAxie={this.state.selectedAxie}/>
 
