@@ -9,22 +9,27 @@ const StyledAxieTeams = styled.div`
 	padding:25px 0;
 	width:550px;
 	height:100%;
-	border: 1px solid #e2e2e2;
 	height: calc(100vh - 250px);
+	background: white;
 	/* containers */
-	.gapContainer {padding:0 25px;}
+	.gapContainer {padding:0 25px; display:flex; justify-content:center;}
 	/* teams */
-	.teams { height: calc(100% - 120px); overflow-y: scroll; border-top: 1px solid #e4e4e4;}
+	.teams { height: calc(100% - 120px); overflow-y: scroll; border-top: 1px solid #e4e4e4; background:white;}
+	.team { border-bottom: 1px solid #e6e6e6; border-radius: 0; padding-bottom: 12px; margin: 0;}
 	/* new team button */
-	.newTeamBtn {margin-top:15px; width:100%; background:#f4f4f4; color: #6e6e6e; font-weight:bold; padding:15px 5px; text-align:center; border-radius:8px; cursor:pointer;}
-	.newTeamBtn:hover {background:#ececec;}
+	.newTeamBtn {margin-top:15px; user-select:none; width:180px; background:#a146ef; color: white; font-weight:bold; padding:15px 5px; text-align:center; border-radius:8px; cursor:pointer;}
+	.newTeamBtn:hover {background:#ca62ff;}
 
 		/* focus state */
 		${({ selectedAxie }) => selectedAxie && css`
 			width: 1200px;
-			box-shadow: 0 5px 18px rgba(0, 0, 0, 0.32);
 			border: none;
-			.teams {cursor: pointer;}
+			background: #f1f1f1;
+			.teams {background: #f1f1f1; border:none;}
+			.teams .team {cursor: pointer; padding: 15px 15px; border:2px solid white; border-radius:8px; margin:10px;}
+			.teams .team:hover {border:2px solid #a146ef;}
+			.teams .team .deleteButton {display:none;}
+			.teams .team .teammember .removeAxieButton {display:none;}
   `}
 `;
 
@@ -44,7 +49,21 @@ class AxieTeams extends Component {
 	}
 
 	componentDidMount() {
+		this.fillStandardTeams();
+	}
 
+	fillStandardTeams(){
+		var teams = [];
+		for(let i = 0; i < 3; i++){
+			var t = new Team();
+			t.name = "#"+(i+1) + " New Team";
+			t.id = (i+1);
+			teams.push(t);
+		}
+		this.setState({
+			teams: teams,
+			counter: 3,
+		})
 	}
 
 	createNewTeam = () => {
@@ -80,10 +99,27 @@ class AxieTeams extends Component {
 				teams: newTeams,
 			}, () => {
 				console.log("t", this.state.teams);
+				// trigger event
+				this.props.onAxieDeposit(this.props.selectedAxie);
 			});
 		});
+	}
 
-	
+	removeAxieFromTeam = (teamToUpdate, teamMemberToDelete) => {
+		// delete member
+		var changedTeam = Object.assign({}, teamToUpdate);
+		changedTeam.members = changedTeam.members.filter((member) => member.axie.id !== teamMemberToDelete.axie.id);
+		// update teams
+		var newTeams = [...this.state.teams];
+		const index = this.state.teams.findIndex(team => team.id === teamToUpdate.id);
+		newTeams[index] = changedTeam;
+		//
+		this.setState({
+			teams: newTeams,
+		});
+		console.log("°2",changedTeam);
+		console.log("t", teamToUpdate);
+		console.log("m", teamMemberToDelete);
 	}
 
 	render() {
@@ -94,15 +130,16 @@ class AxieTeams extends Component {
 					className="team" 
 					key={i} 
 					name={team.name}
-					members={team.members}
+					team={team}
 					onClick={() => this.addNewTeamMember(team)} 
 					handleDelete={() => this.handleDelete(team)}
+					removeAxieFromTeam={this.removeAxieFromTeam}
 					/>
 			))
 		}
 
 		return (
-			<StyledAxieTeams selectedAxie={this.props.selectedAxie}>
+			<StyledAxieTeams className="axieTeams" selectedAxie={this.props.selectedAxie}>
 				<div className="gapContainer">
 					<h2>Axie Teams</h2>
 				</div>

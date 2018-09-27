@@ -26,20 +26,23 @@ import AxieTeams from '../AxieTeams';
 //CSS
 const StyledTeamBuilder = styled.div`
 	/* view */
-	.teambuilder_view {display:flex; }
+	.teambuilder_view {display:flex; border: 1px solid #e2e2e2;}
 	/* component */
-	margin-top:10px;
+	margin-top:40px;
 	canvas { width:100%; height:100%;}
 	h1 {margin-bottom:15px;}
 	h3 { color: grey; font-weight: normal; font-size: 18px; margin-bottom: 10px;}
-	.titlebar {display:flex;}
-	.addressBar {}
+	.titlebar {display:flex; justify-content:center;}
+	.buttonbar {display:flex;}
+	.buttonbar > div {margin-right:10px;}
+	.addressContainer {position:relative;}
+	.addressBar {position: absolute; z-index: 100; background: white; padding: 20px; box-shadow: 0 4px 12px #00000066; border-radius: 8px; top: 36px;}
 	.count { margin-left: 30px; color: grey;}
 	.spinner {position: absolute; left:50%; top:50%; margin-top:-30px; margin-left:-30px;}
 	/* container */
-	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 250px); border: 1px solid #e2e2e2; overflow: hidden; margin-right:20px;}
+	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 250px); overflow: hidden; }
 	/* axie teams */
-	.axieTeams {margin-left:20px;}
+	.axieTeams {border-left: 1px solid #e2e2e2;}
 	/* overlay ui */
 	.overlayUI {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
@@ -50,6 +53,8 @@ const StyledTeamBuilder = styled.div`
 	.selectedAxie .axie { margin: 0; box-shadow: 0 2px 22px #0000004a; border:none;}
 	/* blackscreen */
 	.blackscreen {position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.25); user-select: none; pointer-events: none;}
+	/* close btn */
+	.closeButton {position:relative; top: 40px; left:200px;}
 `;
 
 // class
@@ -75,7 +80,10 @@ class Teambuilder extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			grid: new Grid(500, 15),
+			// grid
+			GRID_ROWS: 500,
+			GRID_COLS: 12,
+			// canvas
 			containerID: "axie_teambuilder_container",
 			canvasID: "axie_teambuilder_canvas",
 			canvasW: 1400,
@@ -85,15 +93,16 @@ class Teambuilder extends Component {
 			AXIE_BASE_W: 570,
 			AXIE_SIZE_RATIO: 1.41,
 			axieW: 120, // 120 = good
-			axieH: null, // @warning should be calculated
+			axieH: null, // is calculated
 			axies: null,
 			axie_spines: null,
 			axies_with_spine: null,
 			// ui
-			address: "0x5ea1d56d0dde1ca5b50c277275855f69edefa169",
+			address: "0x2643796cb6b4e715140f09c352ea26afff1a7d93",
 			offset: 0,
 			hide_UI: false,
 			selectedAxie: null,
+			showAddressUI: false,
 			//
 			loading_complete: false,
 		}
@@ -118,8 +127,30 @@ class Teambuilder extends Component {
 			transparent: true,
       //forceCanvas:true,
 		});
+		pixiApp.start();
 		pixiApp.stage.interactive = true;
 		pixiApp.stage.buttonMode = true;
+		// pixi mouse events
+		pixiApp.stage.on("mousedown", (e) => {
+			this.drag = this.axieContainer;
+			this.setState({
+				hide_UI : true
+			});
+		});
+		pixiApp.stage.on("mouseup", (e) => {
+			this.drag = false;
+			this.setState({
+				hide_UI : false
+			});
+		});
+		pixiApp.stage.on("mousemove", (e) =>{
+			if(this.drag){
+				this.drag.position.x += e.data.originalEvent.movementX *this.state.CRISP_MULTIPLIER;
+				this.drag.position.y += e.data.originalEvent.movementY *this.state.CRISP_MULTIPLIER;
+			}
+		});
+		// resize listeners
+		this.addResizeListener();
 		//
 		/*var camera = new PIXI.Container();
 		pixiApp.stage.addChild(camera);*/
@@ -129,6 +160,7 @@ class Teambuilder extends Component {
 		pixiBg.drawRect(0,0,w * this.state.CRISP_MULTIPLIER, h * this.state.CRISP_MULTIPLIER);  
 		pixiBg.endFill();  
 		pixiApp.stage.addChild(pixiBg);
+		pixiBg.interactive = true;
 		// create axie container
 		var axieContainer = new PIXI.Container();
 		pixiApp.stage.addChild(axieContainer);
@@ -186,19 +218,20 @@ class Teambuilder extends Component {
 	/**
 	 * Renders multiple {axies} in a {2d grid}
 	 */
-	renderAxies(){
-		let grid = this.state.grid;
+	renderAxies = () => {
+		this.removeAxiesFromContainer();
+		let grid = new Grid(this.state.GRID_ROWS, this.state.GRID_COLS);
 		// fill axies into {2d grid}
 		grid.insertElems(this.state.axies_with_spine);
 		// render axies in a grid
-		//console.log(grid);
 		for(let i = 0; i < grid.rows; i++){
 			for(let j = 0; j < grid.cols; j++){
 				var axie = grid.elems[i][j];
 				if(axie) this.renderAxie(axie, j, i);
 			}
 		}
-		this.startPixi();
+		this.setState({loading_complete:true}, this.resizeCanvasToContainer);
+		
 	}
 	/**
 	 * Renders a single {axiespine}
@@ -212,26 +245,34 @@ class Teambuilder extends Component {
 		var EXTRA_GAP_Y = 150; //50 //150
 		var gapX = this.state.axieW + EXTRA_GAP_X;
 		var gapY = this.state.axieW / this.state.AXIE_SIZE_RATIO + EXTRA_GAP_Y;
-		var startX = 0//120; //120
-		var startY = 0//180; //180
+		var startX = 120//120; //120
+		var startY = 180//180; //180
 		var SCALE = this.state.axieW / this.state.AXIE_BASE_W;
 		var ROW_SHIFT = (y % 2 != 0) ? gapX : 0;
 		// set scale
 		axie.spineData.scale.set(SCALE * this.state.CRISP_MULTIPLIER);
 		// set position
-		axie.spineData.x = 50;
-		axie.spineData.y = 50;
+		/*axie.spineData.x = 50;
+		axie.spineData.y = 50;*/
 		axie.spineData.position.set(
 			(x * gapX + startX) * this.state.CRISP_MULTIPLIER + ROW_SHIFT,
 			(y * gapY + startY) * this.state.CRISP_MULTIPLIER,
 		);
 		// set animation
 		//axie.spineData.state.setAnimation(0, "walking", true);
+		//
 		// add child
 		this.axieContainer.addChild(axie.spineData);
-		// handle events
+		// check disabled
+		if(axie.otherData.disabled) {
+			axie.spineData.alpha = 0.2;
+			return;
+		}
+		else{
+		// set filters
 		var outlineFilter = new OutlineFilter(8, 0x7cc9ff);
 		var outlineFilter2 = new OutlineFilter(8, 0xbbdd33);
+		// handle events
 		axie.spineData.interactive = true;
 		axie.spineData.on('pointerover', (e)=>{
 			e.target.filters = [outlineFilter];
@@ -250,45 +291,6 @@ class Teambuilder extends Component {
 			});
 		});
 	}
-
-	startPixi(){
-		// Resize Canvas to display crisp sprites
-		this.setCanvasSize(
-			Math.round(this.state.canvasW),
-			Math.round(this.state.canvasH)
-		);
-		//console.log(this.state.grid);
-		this.pixiApp.start();
-		this.setState({loading_complete:true});
-		//
-		this.pixiBg.interactive = true;
-		/*this.pixiBg.on("click", (e) =>{
-			console.log("click", e);
-			this.axieContainer.y -= 20;
-		});*/
-		//console.log(this.state.axies_with_spine);
-
-		this.pixiApp.stage.on("mousedown", (e) => {
-			this.drag = this.axieContainer;
-			this.setState({
-				hide_UI : true
-			});
-		});
-		this.pixiApp.stage.on("mouseup", (e) => {
-			this.drag = false;
-			this.setState({
-				hide_UI : false
-			});
-		});
-		this.pixiApp.stage.on("mousemove", (e) =>{
-			if(this.drag){
-				this.drag.position.x += e.data.originalEvent.movementX *this.state.CRISP_MULTIPLIER;
-				this.drag.position.y += e.data.originalEvent.movementY *this.state.CRISP_MULTIPLIER;
-			}
-		});
-		//
-		this.addResizeListener();
-		//setInterval(() => {this.resizeCanvasToContainer()}, 1000);
 	}
 
 	/**
@@ -306,9 +308,6 @@ class Teambuilder extends Component {
 		}));
 	}
 
-	/**
-	 * @experimental
-	 */
 	resizeCanvasToContainer(){
 		//console.log(this.state);
 		var w = document.getElementById(this.state.containerID).clientWidth;
@@ -317,16 +316,6 @@ class Teambuilder extends Component {
 		this.setCanvasSize(w,h);
 	}
 
-	
-	/**
-	 * @unused
-	 */
-	/*getPositionOfAxie(axie_spine){
-		return {
-			x: (axie_spine.x + this.axieContainer.x - this.state.axieW*2+50) / this.state.CRISP_MULTIPLIER,
-			y: (axie_spine.y + this.axieContainer.y - this.state.axieW/this.state.AXIE_SIZE_RATIO*3+60) / this.state.CRISP_MULTIPLIER,
-		}
-	}*/
 
 	/**
 	 * Calculates the {x, y} positions of a specific {axie_spine} inside the canvas, you can also choose which {position} you want to retrieve like:
@@ -412,21 +401,29 @@ class Teambuilder extends Component {
 			axie_spines: null,
 			axies_with_spine: null,
 			loading_complete: false
-		}, this.reset);
+		}, () => {
+			this.reset();
+			this.setupPixiApp();
+		});
+	}
+
+	removeAxiesFromContainer() {
+		for (var i = this.axieContainer.children.length - 1; i >= 0; i--) {	
+			this.axieContainer.removeChild(this.axieContainer.children[i]);
+		}
 	}
 
 	reset(){
 		// remove listeners
 		this.removeResizeListener();
 		// clean up canvas children
-		for (var i = this.pixiApp.stage.children.length - 1; i >= 0; i--) {	this.pixiApp.stage.removeChild(this.pixiApp.stage.children[i]);};
+		this.removeAxiesFromContainer();
 		this.pixiApp.stage.destroy(true);
 		this.pixiApp.stage = null;
 		// reset objects
 		this.pixiApp = null;
 		this.pixiBg = null; //pixi.Graphics
 		this.axieContainer = null; //pixi.Container
-		this.setupPixiApp();
 	}
 
 
@@ -438,6 +435,28 @@ class Teambuilder extends Component {
 	}
 	handleResize = () => {
 		this.resizeCanvasToContainer();
+	}
+
+	depositAxieInTeamBuilder = (depositedAxie) => {
+		this.setState({
+			selectedAxie: null
+		});
+		depositedAxie.otherData.disabled = true;
+		this.renderAxies();
+		console.log("d", depositedAxie);
+	}
+
+
+	reRenderAxies = () => {
+		this.setState((prevState)=> ({	
+			axies_with_spine: prevState.axies_with_spine.splice(0, prevState.axies_with_spine.length-1),
+		}), this.renderAxies);
+	}
+
+	toggleAddress = () => {
+		this.setState((prevState) => ({
+			showAddressUI: !prevState.showAddressUI,
+		}));
 	}
 
 	render() {
@@ -479,15 +498,23 @@ class Teambuilder extends Component {
 
 				<BasicCenterContainer>
 
-
-					<div className="addressBar">
-						<Textfield id="teambuilder_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
-						<Button onClick={this.changeAddress} name={"Load Axies"} />
-					</div>
-					<h3>{this.state.address}</h3>
+					
 					<div className="titlebar">
 						<h2>Axie Team Builder</h2>
 						<h2 className="count">{this.state.axies ? this.state.axies.length : 0}</h2>
+					</div>
+					<div className="buttonbar">
+						<div className="addressContainer">
+							<Button name="Toggle Address" onClick={this.toggleAddress}/>
+							{ this.state.showAddressUI ? 
+							<div className="addressBar">
+								<Textfield id="teambuilder_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
+								<h3>{this.state.address}</h3>
+								<Button onClick={this.changeAddress} name={"Load Axies"} />
+							</div>
+							: ""}
+						</div>
+						<Button name="Trigger rerender" onClick={this.reRenderAxies} />
 					</div>
 
 					<div className="teambuilder_view">
@@ -507,16 +534,19 @@ class Teambuilder extends Component {
 							{this.state.selectedAxie && !this.state.hide_UI ? 
 								<div className="selectedAxie"
 								style={{ 
-									left:this.getPositionOfAxie(this.state.selectedAxie.spineData, "left").x - 300 + "px", 
-									top: this.getPositionOfAxie(this.state.selectedAxie.spineData, "left").y - 250 + "px"
+									left:this.getPositionOfAxie(this.state.selectedAxie.spineData, "center").x - 135 + "px", 
+									top: this.getPositionOfAxie(this.state.selectedAxie.spineData, "center").y - 250 + "px"
 								}}>
-									<Button name="Close" onClick={this.closeSelectedAxie} />
+									<Button className="closeButton" name="Close" onClick={this.closeSelectedAxie} />
 									<AxieComponent data={this.state.selectedAxie.axieData}/>
 								</div>
 							: ""}
 
 						</div>
-						<AxieTeams className="axieTeams" selectedAxie={this.state.selectedAxie}/>
+						<AxieTeams 
+							className="axieTeams" 
+							selectedAxie={this.state.selectedAxie} 
+							onAxieDeposit={this.depositAxieInTeamBuilder} />
 					</div>
 
 
