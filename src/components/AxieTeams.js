@@ -7,15 +7,15 @@ import {AXIE_DATA_V1} from "../services/axie-data-service";
 // CSS
 const StyledAxieTeams = styled.div`
 	padding:25px 0;
-	width:550px;
+	width:700px;
 	height:100%;
-	height: calc(100vh - 250px);
+	height: calc(100vh - 210px);
 	background: white;
 	/* containers */
 	.gapContainer {padding:0 25px; display:flex; justify-content:center;}
 	/* teams */
-	.teams { height: calc(100% - 120px); overflow-y: scroll; border-top: 1px solid #e4e4e4; background:white;}
-	.team { border-bottom: 1px solid #e6e6e6; border-radius: 0; padding-bottom: 12px; margin: 0;}
+	.teams { height: calc(100% - 110px); overflow-y: scroll; border-top: 1px solid #e4e4e4; background:white;}
+	.team { /*border-bottom: 1px solid #e6e6e6;*/ border-radius: 0; padding-bottom: 12px; margin: 0;}
 	/* new team button */
 	.newTeamBtn {margin-top:15px; user-select:none; width:180px; background:#a146ef; color: white; font-weight:bold; padding:15px 5px; text-align:center; border-radius:8px; cursor:pointer;}
 	.newTeamBtn:hover {background:#ca62ff;}
@@ -75,12 +75,14 @@ class AxieTeams extends Component {
 			counter: prevState.counter + 1,
 		}));
 	}
-	handleDelete = (teamToDelete) => {
+	deleteTeam = (teamToDelete) => {
 		var teams = [...this.state.teams];
 		this.setState({
 			teams: this.state.teams.filter(function(team) { 
 				return team !== teamToDelete 
 			})
+		}, () => {
+			this.props.onTeamDelete(teamToDelete);
 		});
 	}
 	addNewTeamMember = (teamToUpdate) => {
@@ -98,7 +100,7 @@ class AxieTeams extends Component {
 			this.setState({
 				teams: newTeams,
 			}, () => {
-				console.log("t", this.state.teams);
+				//console.log("t", this.state.teams);
 				// trigger event
 				this.props.onAxieDeposit(this.props.selectedAxie);
 			});
@@ -116,10 +118,12 @@ class AxieTeams extends Component {
 		//
 		this.setState({
 			teams: newTeams,
+		}, () => {
+			this.props.onTeamMemberDelete(teamMemberToDelete, newTeams);
 		});
-		console.log("°2",changedTeam);
+		/*console.log("°2",changedTeam);
 		console.log("t", teamToUpdate);
-		console.log("m", teamMemberToDelete);
+		console.log("m", teamMemberToDelete);*/
 	}
 
 	render() {
@@ -132,7 +136,7 @@ class AxieTeams extends Component {
 					name={team.name}
 					team={team}
 					onClick={() => this.addNewTeamMember(team)} 
-					handleDelete={() => this.handleDelete(team)}
+					deleteTeam={() => this.deleteTeam(team)}
 					removeAxieFromTeam={this.removeAxieFromTeam}
 					/>
 			))

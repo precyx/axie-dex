@@ -20,9 +20,10 @@ const StyledAxieTeam = styled.div`
 	.team_title {font-size: 15px; color: #a146ef; font-weight: bold;}
 	/* teammember */
 	.members {display:flex; margin-top:10px;}
+	.teammember { border-radius: 8px; padding: 5px; padding-bottom:10px;  margin-right: 10px; box-shadow: 0 1px 7px rgba(0, 0, 0, 0.16);}
 	.teammember .title {font-size:12px; color:grey; margin-bottom:5px;}
-	.teammember .img {width:100px; height:auto; margin-right:0; margin-top:10px;}
-	.teammember .img_box {width:100px; height:85px; position:relative;}
+	.teammember .img {width:120px; height:auto; margin-right:0; margin-top:10px;}
+	.teammember .img_box {width:120px; height:90px; position:relative;}
 	.teammember .axie_badges {position: absolute; top:0; left:0;}
 	.teammember .removeAxieButton {display:none; position: absolute; bottom:0; left:0; user-select:none; color:grey; width:25px; height:25px; cursor:pointer; font-size: 12px; align-items: center; justify-content: center; border-radius: 50%; }
 	.teammember:hover .removeAxieButton {display:flex;}
@@ -76,7 +77,7 @@ class AxieTeam extends React.PureComponent {
 					{members ? <div className="members">{members}</div> : ""}
 				</div>
 				<div className="right">
-					<div className="deleteButton" onClick={this.props.handleDelete}>X</div>
+					<div className="deleteButton" onClick={this.props.deleteTeam}>X</div>
 				</div>
 			</StyledAxieTeam>
 		);
