@@ -32,18 +32,18 @@ class App extends Component {
         <StyledApp>
           <div className="header">
             <div className="center">
+              <NavLink activeClassName="selected" to="/teambuilder">Teambuilder</NavLink>
               <NavLink activeClassName="selected" to="/dex">Dex</NavLink>
               <NavLink activeClassName="selected" to="/market">Encyclopedia</NavLink>
               <NavLink activeClassName="selected" to="/profile">Profile</NavLink>
-              <NavLink activeClassName="selected" to="/teambuilder">Teambuilder</NavLink>
             </div>
           </div>
           <Switch>
+            <Route exact path="/teambuilder" component={Teambuilder}/>
             <Route exact path="/dex" component={Dex}/>
             <Route exact path="/market" component={Encyclopedia}/>
             <Route exact path="/profile" component={Profile}/>
-            <Route exact path="/teambuilder" component={Teambuilder}/>
-            <Redirect from='/' to='/dex'/>
+            <Redirect from='/' to='/teambuilder'/>
           </Switch>
         </StyledApp>
       </Router>

@@ -6,19 +6,20 @@ import AxieTeam from "./AxieTeam";
 import {AXIE_DATA_V1} from "../services/axie-data-service";
 // CSS
 const StyledAxieTeams = styled.div`
-	padding:25px 0;
-	width:700px;
+	padding:0 0;
+	width:1000px;
 	height:100%;
 	height: calc(100vh - 210px);
 	background: white;
 	/* containers */
 	.gapContainer {padding:0 25px; display:flex; justify-content:center;}
 	/* teams */
-	.teams { height: calc(100% - 110px); overflow-y: scroll; border-top: 1px solid #e4e4e4; background:white;}
-	.team { /*border-bottom: 1px solid #e6e6e6;*/ border-radius: 0; padding-bottom: 12px; margin: 0;}
+	.teams { height: calc(100% - 65px); overflow-y: scroll;  background:white;}
+	.team { /*border-bottom: 1px solid #e6e6e6;*/ border-radius: 0; padding-bottom: 10px; margin: 0;}
 	/* new team button */
-	.newTeamBtn {margin-top:15px; user-select:none; width:180px; background:#a146ef; color: white; font-weight:bold; padding:15px 5px; text-align:center; border-radius:8px; cursor:pointer;}
+	.newTeamBtn {margin-top:15px; user-select:none; width:140px; background:#a146ef; color: white; font-weight:bold; padding:10px 5px; text-align:center; border-radius:8px; cursor:pointer;}
 	.newTeamBtn:hover {background:#ca62ff;}
+	.buttonContainer {border-top: 1px solid #e4e4e4; padding-bottom:10px;}
 
 		/* focus state */
 		${({ selectedAxie }) => selectedAxie && css`
@@ -144,13 +145,10 @@ class AxieTeams extends Component {
 
 		return (
 			<StyledAxieTeams className="axieTeams" selectedAxie={this.props.selectedAxie}>
-				<div className="gapContainer">
-					<h2>Axie Teams</h2>
-				</div>
 				<div className="teams">
 					{teams}
 				</div>
-				<div className="gapContainer">
+				<div className="gapContainer buttonContainer">
 					<div className="newTeamBtn" onClick={this.createNewTeam}>New Team</div>
 				</div>
 			</StyledAxieTeams>

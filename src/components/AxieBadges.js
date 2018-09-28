@@ -62,7 +62,7 @@ class AxieBadges extends React.PureComponent {
 				{(this.state.tankLevel && this.state.tankLevel > 0) ? 
 					<Badge icon={"./img/icons/stats/defense.svg"} level={this.state.tankLevel} id={'tankLevelTooltip_'+this.props.axieData.id} tooltipText={tnkTooltipText}/>
 				:""} 
-				{(this.state.attackLevel && this.state.athLevel > 0) ?
+				{(this.state.athLevel && this.state.athLevel > 0) ?
 					<Badge icon={"./img/icons/stats/attack.svg"} level={this.state.athLevel} id={'attackLevelTooltip_'+this.props.axieData.id} tooltipText={atkTooltipText}/>
 				:""} 
 			</div>
@@ -104,12 +104,6 @@ class AxieBadges extends React.PureComponent {
 		if(this.state.tnk >= 7.5) tankLevel = 2;
 		if(this.state.tnk >= 8.5) tankLevel = 3;
 		if(this.state.tnk >= 9.5) tankLevel = 4;
-		// rate attack (atk)
-		var attackLevel = 0;
-		if(this.state.atk >= 6.5) 	attackLevel = 1;
-		if(this.state.atk >= 7.5) 	attackLevel = 2;
-		if(this.state.atk >= 8.5) 	attackLevel = 3;
-		if(this.state.atk >= 9.5) 	attackLevel = 4;
 		// rate attack true hit (ath)
 		var athLevel = 0;
 		if(this.state.ath >= 6.5) 	athLevel = 1;
@@ -119,7 +113,6 @@ class AxieBadges extends React.PureComponent {
 		//
 		this.setState({
 			tankLevel: tankLevel,
-			attackLevel: attackLevel,
 			athLevel: athLevel,
 			ratingDone: true
 		});

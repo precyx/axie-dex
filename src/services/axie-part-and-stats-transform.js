@@ -1,3 +1,6 @@
+import {axieStats} from '../data/axie-stats';
+import {minMaxPartStatsByType} from '../data/axie-stats';
+
 /**
  * Returns the Battle parts of all 6 parts 
  * @export
@@ -153,6 +156,7 @@ export function rateStats(axieData, axieStats, battleParts, minMaxPartStatsByTyp
 		scores["defense2"] += part.moves[0]["defense"];
 	});
 	// harmonize score to scala 1-10
+	//console.log("X", axieData);
 	stats2.forEach(stat=>{
 		let val = axieData.stats[stat];
 		let min = axieStats[stat].base;
@@ -170,4 +174,33 @@ export function rateStats(axieData, axieStats, battleParts, minMaxPartStatsByTyp
 	scores["hp2"] = +(axieData.stats["hp"] / axieStats["hp"].max*10).toFixed(1);
 	//
 	return scores;
+}
+
+
+export function calcBadges(axieData){
+	if(axieData.stage < 3) return;
+	var battleParts = getBattleParts(axieData.parts);
+	var totals = getTotalStats(battleParts);
+	var scores = rateStats(axieData, axieStats, battleParts, minMaxPartStatsByType);
+	//
+	//rate tankiness (def+hp)
+	var tankLevel = 0;
+	var tankScore = (scores["defense"] + scores["hp2"]) / 2;
+	if(tankScore >= 6.5) tankLevel = 1;
+	if(tankScore >= 7.5) tankLevel = 2;
+	if(tankScore >= 8.5) tankLevel = 3;
+	if(tankScore >= 9.5) tankLevel = 4;
+	// rate attack true hit (ath)
+	var athLevel = 0;
+	var attackScore = scores["attackTrueHit"]; 
+	if(attackScore >= 6.5) athLevel = 1;
+	if(attackScore >= 7.5) athLevel = 2;
+	if(attackScore >= 8.5) athLevel = 3;
+	if(attackScore >= 9.5) athLevel = 4;
+	//
+	return{
+		tankLevel: tankLevel,
+		athLevel: athLevel,
+	};
+	//console.log("automated", tkLv);
 }

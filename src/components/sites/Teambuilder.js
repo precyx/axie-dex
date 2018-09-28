@@ -10,6 +10,7 @@ import 'pixi-spine';
 import "pixi-filters";
 import { OutlineFilter } from '@pixi/filter-outline';
 // own
+import {calcBadges} from "../../services/axie-part-and-stats-transform";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
 import {AXIE_DATA} from "../../services/axie-data-service.js";
 import {AXIE_PIXI} from "../../services/axie-pixi-service";
@@ -20,6 +21,7 @@ import AxieBadges from "../AxieBadges";
 import AxieScores from "../AxieScores";
 import AxieComponent from "../Axie";
 import Button from "../ui/Button";
+import IconButton from "../ui/IconButton";
 import Textfield from "../ui/Textfield";
 import AxieTeams from '../AxieTeams';
 
@@ -28,12 +30,12 @@ const StyledTeamBuilder = styled.div`
 	/* view */
 	.teambuilder_view {display:flex; border: 1px solid #e2e2e2;}
 	/* component */
-	margin-top:40px;
+	margin-top:20px;
 	canvas { width:100%; height:100%;}
-	h1 {margin-bottom:15px;}
+	h2 {margin-bottom:15px; font-size:32px; color:#444;}
 	h3 { color: grey; font-weight: normal; font-size: 18px; margin-bottom: 10px;}
 	.titlebar {display:flex; justify-content:center;}
-	.buttonbar {display:flex;}
+	.buttonbar {display:flex; margin-bottom:10px;}
 	.buttonbar > div {margin-right:10px;}
 	.addressContainer {position:relative;}
 	.addressBar {position: absolute; z-index: 100; background: white; padding: 20px; box-shadow: 0 4px 12px #00000066; border-radius: 8px; top: 36px;}
@@ -55,6 +57,11 @@ const StyledTeamBuilder = styled.div`
 	.blackscreen {position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.25); user-select: none; pointer-events: none;}
 	/* close btn */
 	.closeButton {position:relative; top: 40px; left:200px;}
+	/* filtering */
+	.filterBar {display:inline-flex; border: 1px solid #e8e8e8; margin-bottom:10px; border-radius:8px; background:white;}
+	.filterGroup {display:flex; border-right: 1px solid #e8e8e8; margin-right:10px; padding:10px 15px;   }
+	.filterGroup:last-child {border:none; margin:0; }
+	.filterGroup > div { margin-right:5px;}
 `;
 
 // class
@@ -64,18 +71,6 @@ class Teambuilder extends Component {
 	pixiApp = null;
 	pixiBg = null; //pixi.Graphics
 	axieContainer = null; //pixi.Container,
-
-	// teambuilder config
-	config = { //@unused
-		// axie
-		axieW: 100,
-		axieGapX: 100,
-		axieGapY: 200,
-		axieCrispMultiplier: 1.6,
-		// grid
-		gridRows: 8,
-		gridCols: 400,
-	}
 	//
 	constructor(props) {
 		super(props);
@@ -90,14 +85,16 @@ class Teambuilder extends Component {
 			canvasH: 2500,
 			CRISP_MULTIPLIER: 1.6,
 			ZOOM : 1,
+			ZOOM_CHANGE: 0.1,
 			// axie
 			AXIE_BASE_W: 570,
 			AXIE_SIZE_RATIO: 1.41,
-			axieW: 120, // 120 = good
+			axieW: 180, // 120 = good
 			axieH: null, // is calculated
 			axies: null,
 			axie_spines: null,
 			axies_with_spine: null,
+			axie_groups: {},
 			// ui
 			address: "0x2643796cb6b4e715140f09c352ea26afff1a7d93",
 			offset: 0,
@@ -152,6 +149,7 @@ class Teambuilder extends Component {
 		});
 		// resize listeners
 		this.addResizeListener();
+		this.addWheelListener();
 		//
 		/*var camera = new PIXI.Container();
 		pixiApp.stage.addChild(camera);*/
@@ -208,11 +206,16 @@ class Teambuilder extends Component {
 		var axiesWithSpine = [];
 		if(this.state.axies.length !== this.state.axie_spines.length) throw new Error("axies and axie spines need to be of equal element number to be mapped correctly.");
 		for(let i = 0; i < this.state.axies.length; i++){
-			axiesWithSpine.push(new Axie(this.state.axies[i], this.state.axie_spines[i]));
+			var newAxie = new Axie(this.state.axies[i], this.state.axie_spines[i]);
+			newAxie.ratings = calcBadges(this.state.axies[i]);
+			//console.log("n",newAxie);
+			axiesWithSpine.push(newAxie);
 		}
 		//console.log("sup", axiesWithSpine);
+		var newAxieGroups = Object.assign(this.state.axie_groups, {"all": axiesWithSpine});
 		this.setState({
 			axies_with_spine: axiesWithSpine,
+			axie_groups: newAxieGroups,
 		}, this.renderAxies);
 	}
 
@@ -221,7 +224,14 @@ class Teambuilder extends Component {
 	 */
 	renderAxies = () => {
 		this.removeAxiesFromContainer();
-		let grid = new Grid(this.state.GRID_ROWS, this.state.GRID_COLS);
+		//console.log("kk", this.state.axies_with_spine);
+		//
+		if(!this.state.axies_with_spine.length) return;
+		//
+		var num_cols = Math.round(Math.sqrt(this.state.axies_with_spine.length));
+		var num_rows = num_cols + 150;
+		//console.log(num_cols);
+		let grid = new Grid(num_rows, num_cols);
 		// fill axies into {2d grid}
 		grid.insertElems(this.state.axies_with_spine);
 		// render axies in a grid
@@ -244,8 +254,8 @@ class Teambuilder extends Component {
 		var CM = this.state.CRISP_MULTIPLIER;
 		var ZM = this.state.ZOOM;
 		//
-		var EXTRA_GAP_X = 70 * this.state.ZOOM; //60 //100
-		var EXTRA_GAP_Y = 70 * this.state.ZOOM; //50 //150
+		var EXTRA_GAP_X = 100 * this.state.ZOOM; //60 //100 //90 no ui
+		var EXTRA_GAP_Y = 120 * this.state.ZOOM; //50 //150 //40 no ui
 		var gapX = this.state.axieW / CM * ZM + EXTRA_GAP_X * this.state.ZOOM;
 		var gapY = this.state.axieW / CM / this.state.AXIE_SIZE_RATIO * ZM + EXTRA_GAP_Y;
 		var startX = 120//120; //120
@@ -387,33 +397,6 @@ class Teambuilder extends Component {
 		}
 	}
 
-
-	closeSelectedAxie = () => {
-		this.setState({
-			selectedAxie: null
-		}, this.resizeCanvasToContainer);
-	}
-
-	
-	handleChange = name => event => {
-		this.setState({
-			[name]: event.target.value,
-		});
-	};
-
-	changeAddress = () => {
-		this.setState({
-			grid: new Grid(500, 15),
-			axies: null,
-			axie_spines: null,
-			axies_with_spine: null,
-			loading_complete: false
-		}, () => {
-			this.reset();
-			this.setupPixiApp();
-		});
-	}
-
 	removeAxiesFromContainer() {
 		for (var i = this.axieContainer.children.length - 1; i >= 0; i--) {	
 			this.axieContainer.removeChild(this.axieContainer.children[i]);
@@ -431,18 +414,17 @@ class Teambuilder extends Component {
 		this.pixiApp = null;
 		this.pixiBg = null; //pixi.Graphics
 		this.axieContainer = null; //pixi.Container
+		this.setState({
+			axie_groups: {}
+		});
 	}
 
 
-	addResizeListener() {
-		window.addEventListener('resize', this.handleResize );
-	}
-	removeResizeListener(){
-		window.addEventListener('resize', this.handleResize );
-	}
-	handleResize = () => {
-		this.resizeCanvasToContainer();
-	}
+
+
+	/*
+	* Events
+	*/
 
 	/**
 	 * @event {onDepositAxieInTeamBuilder}
@@ -453,7 +435,7 @@ class Teambuilder extends Component {
 		});
 		depositedAxie.otherData.disabled = true;
 		this.renderAxies();
-		console.log("d", depositedAxie);
+		//console.log("d", depositedAxie);
 	}
 	/**
 	 * @event {onTeamDelete}
@@ -482,44 +464,135 @@ class Teambuilder extends Component {
 		}, this.renderAxies());
 	}
 
+	addResizeListener() {
+		window.addEventListener('resize', this.handleResize );
+	}
+	removeResizeListener(){
+		window.addEventListener('resize', this.handleResize );
+	}
+	handleResize = () => {
+		this.resizeCanvasToContainer();
+	}
+	addWheelListener() {
+		document.getElementById(this.state.containerID).addEventListener("wheel", this.handleWheel)
+	}
+	handleWheel = (event) => {
+		//console.log(event.deltaY);
+		if(event.deltaY > 0){
+			this.zoomOut();
+		}
+		else if(event.deltaY < 0){
+			this.zoomIn();
+		}
+	}
+
+
+	
+/**
+ * Filtering 
+ */
 
 	reRenderAxies = () => {
 		this.setState((prevState)=> ({	
 			axies_with_spine: prevState.axies_with_spine.splice(0, prevState.axies_with_spine.length-1),
 		}), this.renderAxies);
 	}
+	showAllAxies = () => {
+		var newAxies = [...this.state.axie_groups["all"]];
+		//console.log("ll",newAxies);
+		this.setState((prevState)=>({
+			axies_with_spine: newAxies,
+		}), this.renderAxies);
+	}
+	showAxiesByRating = (ratingType, ratingLevel) => {
+		var newAxies = [];
+		this.state.axie_groups["all"].forEach((axie)=>{
+			if(!axie.ratings) return;
+			if(axie.ratings[ratingType] == ratingLevel) newAxies.push(axie);
+		});
+		this.setState((prevState)=>({
+			axies_with_spine: newAxies,
+		}), this.renderAxies);
+	}
+	showAxiesByClass = (classType) => {
+		var newAxies = [];
+		this.state.axie_groups["all"].forEach((axie)=>{
+			if(axie.axieData.class == classType) newAxies.push(axie);
+		});
+		this.setState((prevState)=>({
+			axies_with_spine: newAxies,
+		}), this.renderAxies);
+	}
 
+
+
+	/**
+	 * UI
+	 */
+	zoomIn = () => {
+		var correctedX = this.axieContainer.x + (this.axieContainer.x * (1+this.state.ZOOM_CHANGE) - this.axieContainer.x);
+		var correctedY = this.axieContainer.y + (this.axieContainer.y * (1+this.state.ZOOM_CHANGE) - this.axieContainer.y);
+		this.axieContainer.position.set(correctedX, correctedY);
+		this.setState((prevState) => ({
+			ZOOM: prevState.ZOOM + this.state.ZOOM_CHANGE,
+		}), this.renderAxies);
+	}
+	zoomOut = () => {
+		var correctedX = this.axieContainer.x - (this.axieContainer.x - this.axieContainer.x * (1 - this.state.ZOOM_CHANGE) );
+		var correctedY = this.axieContainer.y - (this.axieContainer.y - this.axieContainer.y * (1 - this.state.ZOOM_CHANGE) );
+		this.axieContainer.position.set(correctedX, correctedY);
+		//console.log(this.axieContainer.x);
+		this.setState((prevState) => ({
+			ZOOM: prevState.ZOOM - this.state.ZOOM_CHANGE,
+		}), this.renderAxies);
+	}
 	toggleAddress = () => {
 		this.setState((prevState) => ({
 			showAddressUI: !prevState.showAddressUI,
 		}));
 	}
 
-	zoomIn = () => {
-		this.setState((prevState) => ({
-			ZOOM: prevState.ZOOM + 0.1,
-		}), this.renderAxies);
-	}
-	zoomOut = () => {
-		this.setState((prevState) => ({
-			ZOOM: prevState.ZOOM - 0.1,
-		}), this.renderAxies);
+	closeSelectedAxie = () => {
+		this.setState({
+			selectedAxie: null
+		}, this.resizeCanvasToContainer);
 	}
 
 	
+	handleChange = name => event => {
+		this.setState({
+			[name]: event.target.value,
+		});
+	};
+
+	changeAddress = () => {
+		this.setState({
+			axies: null,
+			axie_spines: null,
+			axies_with_spine: null,
+			loading_complete: false
+		}, () => {
+			this.reset();
+			this.setupPixiApp();
+		});
+	}
+	
 
 	render() {
-
 		var axie_overlays = "";
-		if(this.state.loading_complete && !this.state.hide_UI){
+		if(this.state.axies_with_spine && 
+			 this.state.axies_with_spine.length < 130 && 
+			 this.state.ZOOM > 0.8 &&
+			 this.state.loading_complete && 
+			 !this.state.hide_UI){
 			axie_overlays = this.state.axies_with_spine.map((axie) => { 
 					return (axie.spineData) ? 
 					<div 
 					className="overlayUI" 
 					key={axie.axieData.id} 
 					style={{ 
-						left:this.getPositionOfAxie(axie.spineData, "top_left").x - 10*this.state.ZOOM + "px", 
-						top: this.getPositionOfAxie(axie.spineData, "top_left").y - 25*this.state.ZOOM + "px"
+						left:this.getPositionOfAxie(axie.spineData, "top_left").x - 30*this.state.ZOOM + "px", 
+						top: this.getPositionOfAxie(axie.spineData, "top_left").y - 45*this.state.ZOOM + "px"
 					}}
 					>
 						<AxieTitle  
@@ -527,49 +600,70 @@ class Teambuilder extends Component {
 						id={axie.axieData.id} 
 						name={axie.axieData.name} 
 						class={axie.axieData.class} />
-						<AxieBadges axieData={axie.axieData} size="tiny"/>
+						<AxieBadges axieData={axie.axieData} size="normal"/>
 					</div>
 					: ""
 				}
 			);
 		}
 
-		/*if(this.state.loading_complete){
-			console.log("tt", this.axieContainer.x);
-			this.state.axies_with_spine.forEach(axie => {
-				if(axie.spineData) console.log("#"+axie.id, axie.spineData.x);
-			});
-		}*/
-
-
 		return (
 			<StyledTeamBuilder>
-
 				<BasicCenterContainer>
-
-					
 					<div className="titlebar">
 						<h2>Axie Team Builder</h2>
-						<h2 className="count">{this.state.axies ? this.state.axies.length : 0}</h2>
+						<h2 className="count">
+							{this.state.axies_with_spine ? this.state.axies_with_spine.length : 0} 
+							{this.state.axie_groups["all"] ? " / " + this.state.axie_groups["all"].length : ""} 
+						</h2>
 					</div>
 					<div className="buttonbar">
-						<div className="addressContainer">
-							<Button name="Toggle Address" onClick={this.toggleAddress}/>
-							{ this.state.showAddressUI ? 
-							<div className="addressBar">
-								<Textfield id="teambuilder_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
-								<h3>{this.state.address}</h3>
-								<Button onClick={this.changeAddress} name={"Load Axies"} />
-							</div>
-							: ""}
+						<div style={{"display":"none"}} class="zoomButtons">
+							<Button name="Zoom In" onClick={this.zoomIn} />
+							<Button name="Zoom Out" onClick={this.zoomOut} />
 						</div>
-						<Button name="Trigger rerender" onClick={this.reRenderAxies} />
-						<Button name="Zoom In" onClick={this.zoomIn} />
-						<Button name="Zoom Out" onClick={this.zoomOut} />
+						<div style={{"display":"none"}} className="testButtons">
+							<Button name="Trigger rerender" onClick={this.reRenderAxies} />
+						</div>
 					</div>
+					<div className="filterBar">
+							<div className="filterGroup">
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/attack.svg"} onClick={() => this.showAxiesByRating("athLevel", 1)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/attack.svg"} onClick={() => this.showAxiesByRating("athLevel", 2)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/attack.svg"} onClick={() => this.showAxiesByRating("athLevel", 3)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/defense.svg"} onClick={() => this.showAxiesByRating("tankLevel", 1)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/defense.svg"} onClick={() => this.showAxiesByRating("tankLevel", 2)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/defense.svg"} onClick={() => this.showAxiesByRating("tankLevel", 3)} />
+							</div>
+							<div className="filterGroup">
+								<IconButton color={"#6BBF00"} icon={"./img/icons/classes/plant_24px.svg"} onClick={() => this.showAxiesByClass("plant")}/>
+								<IconButton color={"#00B8CF"} icon={"./img/icons/classes/aquatic_24px.svg"} onClick={() => this.showAxiesByClass("aquatic")}/>
+								<IconButton color={"#FFB70F"} icon={"./img/icons/classes/beast_24px.svg"} onClick={() => this.showAxiesByClass("beast")}/>
+								<IconButton color={"#A979F8"} icon={"./img/icons/classes/reptile_24px.svg"} onClick={() => this.showAxiesByClass("reptile")}/>
+								<IconButton color={"#FF5241"} icon={"./img/icons/classes/bug_24px.svg"} onClick={() => this.showAxiesByClass("bug")}/>
+								<IconButton color={"#FF8ABC"} icon={"./img/icons/classes/bird_24px.svg"} onClick={() => this.showAxiesByClass("bird")}/>
+							</div>
+							<div className="filterGroup">
+								<Button name={"Show All Axies"} onClick={this.showAllAxies} />
+							</div>
+							<div className="filterGroup">
+								<div className="addressContainer">
+								<Button name="Toggle Address" onClick={this.toggleAddress}/>
+								{ this.state.showAddressUI ? 
+								<div className="addressBar">
+									<Textfield id="teambuilder_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
+									<h3>{this.state.address}</h3>
+									<Button onClick={this.changeAddress} name={"Load Axies"} />
+								</div>
+								: ""}
+								</div>
+							</div>
+						</div>
 
 					<div className="teambuilder_view">
 						<div id="axie_teambuilder_container">
+
+
 							{!this.state.loading_complete ? (
 								<Spinner className="spinner" size={60} spinnerColor={"#a146ef"} spinnerWidth={4} visible={true}/>
 							) : ""}
@@ -602,8 +696,6 @@ class Teambuilder extends Component {
 							onTeamMemberDelete={this.onTeamMemberDelete} 
 						/>
 					</div>
-
-
 				</BasicCenterContainer>	
 			</StyledTeamBuilder>
 		);

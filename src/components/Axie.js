@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import styled from 'styled-components';
+import styled, { css } from "styled-components";
 //own
 import AxieTitle from './AxieTitle';
 import AxieParts from './AxieParts';
@@ -24,6 +24,13 @@ const StyledAxie = styled.div`
   .statContainer {display:flex; justify-content: space-between; margin-bottom:10px;}
   .moveContainer {display:flex; justify-content: space-between; margin-bottom:10px;}
   .axieTitle { display: flex; justify-content: flex-start; margin-bottom:5px;}
+  /* static img */
+  .staticImg {width:200px; height:150px;}
+
+  /* focus state */
+  ${({ size }) => size == "small" && css`
+    
+  `}
 `;
 
 /**
@@ -63,7 +70,8 @@ class Axie extends React.PureComponent {
             <div style={{display:"none"}}>
               <AxieParts className="axieParts" parts={this.state.axieData.parts} />
             </div>
-            <AxieSprite axieData={this.state.axieData} />
+            {this.props.img ? <img className="staticImg" src={this.props.img} />
+            : <AxieSprite axieData={this.state.axieData} /> }
           </div>
           <div className="badgeContainer">
           </div>

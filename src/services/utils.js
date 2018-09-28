@@ -13,3 +13,8 @@ export function hexToRGB(hex, alpha) {
 export function weiToEth(wei){
 	return wei/1000000000000000000;
 }
+
+
+export function nearest_sq(n){
+	return Math.round(Math.sqrt(n));
+}
