@@ -64,6 +64,8 @@ const StyledTeamBuilder = styled.div`
 	.filterGroup {display:flex; border-right: 1px solid #e8e8e8; /*margin-right:10px;*/ padding:10px 15px;   }
 	.filterGroup:last-child {border:none; margin:0; }
 	.filterGroup > div { margin-right:5px;}
+	.filterGroup .btx {cursor: pointer; display: flex; align-items: center; font-size: 12px; color: #a146ef; margin: 0 5px; padding: 0 10px; border-radius: 50px;}
+	.filterGroup .btx:hover {background: #efefef;}
 `;
 
 // class
@@ -555,6 +557,16 @@ class Teambuilder extends React.PureComponent {
 			hide_UI: true,
 		}), this.renderAxies);
 	}
+	showAxiesByTag = (tagName) => {
+		var newAxies = [];
+		this.state.axie_groups["all"].forEach((axie)=>{
+			if(axie.axieData.title == tagName) newAxies.push(axie);
+		});
+		this.setState((prevState)=>({
+			axies_with_spine: newAxies,
+			hide_UI: true,
+		}), this.renderAxies);
+	}
 
 
 
@@ -676,6 +688,11 @@ class Teambuilder extends React.PureComponent {
 								<IconButton color={"#A979F8"} icon={"./img/icons/classes/reptile_24px.svg"} onClick={() => this.showAxiesByClass("reptile")}/>
 								<IconButton color={"#FF5241"} icon={"./img/icons/classes/bug_24px.svg"} onClick={() => this.showAxiesByClass("bug")}/>
 								<IconButton color={"#FF8ABC"} icon={"./img/icons/classes/bird_24px.svg"} onClick={() => this.showAxiesByClass("bird")}/>
+							</div>
+							<div className="filterGroup">
+								<div className="btx" onClick={() => this.showAxiesByTag("Origin")}>Origin</div>
+								<div className="btx" onClick={() => this.showAxiesByTag("MEO Corp")}>MEO</div>
+								<div className="btx" onClick={() => this.showAxiesByTag("MEO Corp II")}>MEO II</div>
 							</div>
 							<div className="filterGroup">
 								<Textfield name="Search Part" placeholder="Search Part"/> 
