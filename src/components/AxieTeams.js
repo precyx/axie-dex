@@ -40,7 +40,7 @@ const StyledAxieTeams = styled.div`
  * @example <AxieTeams className="axieTeams" selectedAxie={this.state.selectedAxie}/>
  * @extends {Component}
  */
-class AxieTeams extends Component {
+class AxieTeams extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -89,22 +89,22 @@ class AxieTeams extends Component {
 	addNewTeamMember = (teamToUpdate) => {
 		if(!this.props.selectedAxie) return;
 		// get axie image
-		AXIE_DATA_V1.getAxieById(this.props.selectedAxie.id).then((data)=>{
-			var axieImage = data.figure.static.idle;
-			// update teams
-			var newTeams = [...this.state.teams];
-			const index = this.state.teams.findIndex(team => team.id === teamToUpdate.id);
-			newTeams[index] = teamToUpdate;
-			// update members
-			var newMembers = [...teamToUpdate.members, new TeamMember(this.props.selectedAxie, axieImage)];
-			newTeams[index].members = newMembers;
-			this.setState({
-				teams: newTeams,
-			}, () => {
-				//console.log("t", this.state.teams);
-				// trigger event
-				this.props.onAxieDeposit(this.props.selectedAxie);
-			});
+		/*AXIE_DATA_V1.getAxieById(this.props.selectedAxie.id).then((data)=>{
+		});*/
+
+		// update teams
+		var newTeams = [...this.state.teams];
+		const index = this.state.teams.findIndex(team => team.id === teamToUpdate.id);
+		newTeams[index] = teamToUpdate;
+		// update members
+		var newMembers = [...teamToUpdate.members, new TeamMember(this.props.selectedAxie)];
+		newTeams[index].members = newMembers;
+		this.setState({
+			teams: newTeams,
+		}, () => {
+			//console.log("t", this.state.teams);
+			// trigger event
+			this.props.onAxieDeposit(this.props.selectedAxie);
 		});
 	}
 

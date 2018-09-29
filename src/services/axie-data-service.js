@@ -157,5 +157,18 @@ export const AXIE_DATA_V1 = {
         return axios.get(url).then((data)=>{
             return data.data;
         });
-    }
+    },
+    getStaticImagesByAxies(axies){
+        var promises = [];
+        axies.forEach((axie)=>{
+            var p = new Promise((resolve, reject)=>{
+                this.getAxieById(axie.id).then((data) => {
+                    var staticImage = data.figure ? data.figure.static.idle : ""; 
+                    resolve(staticImage);
+                });
+            });
+            promises.push(p);
+        });
+        return Promise.all(promises);
+    },
 }

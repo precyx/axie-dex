@@ -27,15 +27,22 @@ const StyledAxie = styled.div`
   /* static img */
   .staticImg {width:200px; height:150px;}
 
-  /* focus state */
-  ${({ size }) => size == "small" && css`
-    
+  .axieTitle {position: relative;}
+
+  /* features */
+  ${({ features }) => features == "minimal" && css`
+    width:auto;
   `}
+  /* auction data */
+  ${({ auctionData }) => auctionData && css`
+    .axieTitleContainer {height:90px;}
+  `}
+  
 `;
 
 /**
  * Displays an Axie with image, parts
- * @example <Axie data={axie} />
+ * @example <Axie data={axie} image={"img.png"} features={minimal | all}/>
  * @class Axie
  * @extends {React.PureComponent}
  */
@@ -60,7 +67,7 @@ class Axie extends React.PureComponent {
 
     if(canRender){
       return(
-        <StyledAxie className="axie" id={this.state.axieID}>
+        <StyledAxie className="axie" id={this.state.axieID} auctionData={this.state.axieData.auction} features={this.props.features}>
           <div className="axieTitleContainer">
             <AxieTitle id={this.state.axieData.id} name={this.state.axieData.name} class={this.state.axieData.class} />
             <AxieBadges axieData={this.state.axieData}/>
@@ -75,14 +82,14 @@ class Axie extends React.PureComponent {
           </div>
           <div className="badgeContainer">
           </div>
-          <div className="statMoveContainer" style={{display:"block"}}>
+          {this.props.features != "minimal" ? <div className="statMoveContainer" style={{display:"block"}}>
             <div className="statContainer">
               <AxieStats className="axieStats" stats={this.state.axieData.stats} />
             </div>
             <div className="moveContainer" >
               <AxieMoves className="axieMoves" parts={this.state.axieData.parts} />
             </div>
-          </div>
+          </div> : ""}
 
           <div className="badgeContainer">
           </div>

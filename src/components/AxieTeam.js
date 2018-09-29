@@ -60,7 +60,7 @@ class AxieTeam extends React.PureComponent {
 		if(this.props.team.members.length){
 			members = this.props.team.members.map((member)=>(
 					<div key={member.axie.id} className="teammember">
-					 <Axie data={member.axie.axieData} img={member.image} />
+					 <Axie data={member.axie.axieData} img={member.axie.image} features={"minimal"}/>
 					 <div onClick={() => { this.props.removeAxieFromTeam(this.props.team, member) }} className="removeAxieButton">X</div>
 					</div>
 			));

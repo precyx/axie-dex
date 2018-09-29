@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactSVG from 'react-svg';
 import styled from 'styled-components';
 //own
@@ -31,7 +31,6 @@ const AxieMovesStyled = styled.div`
  * Displays Axie Moves with attack, defence, accuracy
  * @example <AxieMoves parts={parts} />
  * @class AxieMoves
- * @extends {Component}
  */
 class AxieMoves extends React.PureComponent {
 	constructor(props){

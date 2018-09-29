@@ -1,7 +1,10 @@
 export class Axie {
 	id = null;
+	image = null;
+	//
 	axieData = null;
 	spineData = null;
+	//
 	ratings = {};
 	otherData = {};
 

@@ -6,7 +6,6 @@ const StyledTextfield = styled.div`
 	display: flex;
 	align-items: center;
 	width:100%;
-	margin-bottom: 5px;
 	label {width:100px;}
 	input {width:250px; border: 1px solid #dcdcdc; border-radius:3px;}
 `;
