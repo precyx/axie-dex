@@ -75,7 +75,7 @@ class Axie extends React.PureComponent {
           <div className="axieTitleContainer">
             <AxieTitle id={this.state.axieData.id} name={this.state.axieData.name} class={this.state.axieData.class} />
             <AxieBadges axieData={this.state.axieData}/>
-            <div class="salesData">
+            <div className="salesData">
               {this.state.axieData.auction && <AxieSalesData auctionData={this.state.axieData.auction}/> } 
             </div>
           </div>

@@ -9,13 +9,12 @@ const StyledAxieTeams = styled.div`
 	padding:0 0;
 	width:1000px;
 	height:100%;
-	height: calc(100vh - 210px);
 	background: white;
 	position:relative; 
 	/* containers */
 	.gapContainer {padding:0 25px; display:flex; justify-content:center;}
 	/* teams */
-	.teams { height: calc(100%); overflow-y: scroll;  background:white;}
+	.teams { height: calc(100%); overflow-y: scroll;  background:white; padding:40px 0;}
 	.team { border-bottom: 1px solid #e6e6e6; border-radius: 0; padding-bottom: 10px; margin: 0;}
 	/* new team button */
 	.newTeamBtn {position:absolute; right: 30px; text-align:center; bottom:30px; user-select:none; width:140px; background:#a146ef; color: white; font-weight:bold; padding:10px 5px; border-radius:8px; cursor:pointer;}

@@ -14,7 +14,7 @@ const StyledButton = styled.button`
 class Button extends React.PureComponent {
 	render() {
 		return (
-			<StyledButton className="button" onClick={this.props.onClick}>
+			<StyledButton className={"button" + " " + this.props.className} onClick={this.props.onClick}>
 				{this.props.name}
 			</StyledButton>
 		);

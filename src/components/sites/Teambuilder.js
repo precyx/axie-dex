@@ -16,8 +16,6 @@ import {calcBadges} from "../../services/axie-part-and-stats-transform";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
 import {AXIE_DATA, AXIE_DATA_V1} from "../../services/axie-data-service.js";
 import {AXIE_PIXI} from "../../services/axie-pixi-service";
-import {Grid} from "../classes/Grid";
-import {Axie} from "../classes/Axie";
 import AxieTitle from "../AxieTitle";
 import AxieBadges from "../AxieBadges";
 import AxieScores from "../AxieScores";
@@ -26,6 +24,11 @@ import Button from "../ui/Button";
 import IconButton from "../ui/IconButton";
 import Textfield from "../ui/Textfield";
 import AxieTeams from '../AxieTeams';
+import AxiePartIcon from '../AxiePartIcon';
+// classes
+import {Grid} from "../classes/Grid";
+import {Axie} from "../classes/Axie";
+import AxiePartClass from "../classes/AxiePart"
 
 //CSS
 const StyledTeamBuilder = styled.div`
@@ -49,9 +52,9 @@ const StyledTeamBuilder = styled.div`
 	.spinnerContainer {position: absolute; left:50%; top:50%; margin-top:-30px; margin-left:-30px; display: flex; flex-flow: column; align-items: center;}
 	.spinnerContainer .text {color:grey; margin-top:15px; display:flex; align-items:center; justify-content:center; font-size:14px;}
 	/* container */
-	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 210px); overflow: hidden; }
+	#axie_teambuilder_container {position:relative; width:100%; height:calc(100vh - 210px); overflow: hidden; }
 	/* axie teams */
-	.axieTeams {border-left: 1px solid #e2e2e2; box-shadow: 0 2px 22px rgba(0, 0, 0, 0.61); position: relative; border-radius: 3px;}
+	.axieTeams {border-left: 1px solid #e2e2e2; height:50vh; box-shadow: 0 2px 22px rgba(0, 0, 0, 0.61); border-radius: 3px; position: absolute; right: 0; left: auto; width: calc(30vw); bottom: 0;}
 	/* overlay ui */
 	.overlayUI {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
@@ -65,14 +68,21 @@ const StyledTeamBuilder = styled.div`
 	/* blackscreen */
 	.blackscreen {position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.25); user-select: none; pointer-events: none;}
 	/* close btn */
-	.closeButton {position:relative; top: 40px; left:200px;}
+	.closeButton {position:relative; top: 40px; left:200px; z-index:10;}
 	/* filtering */
 	.filterBar {display:inline-flex; border: 1px solid #e8e8e8; margin-bottom:10px; border-radius:8px; background:white;}
-	.filterGroup {display:flex; border-right: 1px solid #e8e8e8; /*margin-right:10px;*/ padding:10px 15px;   }
+	.filterGroup {display:flex; position:relative;  border-right: 1px solid #e8e8e8; /*margin-right:10px;*/ padding:10px 15px;   }
 	.filterGroup:last-child {border:none; margin:0; }
 	.filterGroup > div { margin-right:5px;}
 	.filterGroup .btx {cursor: pointer; display: flex; align-items: center; font-size: 12px; color: #a146ef; margin: 0 5px; padding: 0 10px; border-radius: 50px;}
 	.filterGroup .btx:hover {background: #efefef;}
+	/* all parts */
+	.allParts {position: absolute; width:250px; top:55px; right:0; font-size:12px; background: white; z-index: 11; padding: 20px 0; box-shadow: 0 2px 11px #0000007a; border-radius: 3px; height:350px; max-height: calc(100vh - 200px); overflow-y: scroll;}
+	.allParts .part {display:flex; width:100%; justify-content:space-between; align-items: center;  padding: 3px 20px;}
+	.allParts .part:hover {background:#efefef; }
+	.allParts .part .count{margin-left:0; }
+	.allParts .part .name{width:100px; }
+	.toggleAllPartsButton {width:100px;}
 `;
 
 // class
@@ -107,12 +117,15 @@ class Teambuilder extends React.PureComponent {
 			static_axie_images: null,
 			axies_with_spine: null,
 			axie_groups: {},
+			// statistics
+			parts: {},
 			// ui
 			address: "0x2643796cb6b4e715140f09c352ea26afff1a7d93",
 			offset: 0,
 			hide_UI: false,
 			selectedAxie: null,
 			showAddressUI: false,
+			showAllParts: false,
 			// loading
 			loading_complete: false,
 			loading_status: "",
@@ -258,6 +271,32 @@ class Teambuilder extends React.PureComponent {
 		this.setState({
 			axies_with_spine: axiesWithSpine,
 			axie_groups: newAxieGroups,
+		}, this.countParts);
+	}
+
+	countParts(){
+		//var partTypes = ["back", "ears", "eyes", "horn", "mouth", "tail"];
+		var parts = {};
+		this.state.axies_with_spine.forEach((axie)=>{
+			if(!axie.axieData.parts) return;
+			axie.axieData.parts.forEach((part)=>{
+				var partID = part.id;
+				console.log(partID);
+				if(!parts[partID]) {
+					var p = new AxiePartClass(part); 
+					p.count = 1;
+					parts[partID] = p;
+				}
+				else {
+					parts[partID].count ++;
+				}
+			});
+		});
+		var partArray = Object.values(parts);
+		this.setState({
+			parts: parts,
+			partArray: partArray,
+			showAllParts: true,
 		}, this.renderAxies);
 	}
 
@@ -265,6 +304,7 @@ class Teambuilder extends React.PureComponent {
 	 * Renders multiple {axies} in a {2d grid}
 	 */
 	renderAxies = () => {
+		console.log("parts", this.state.parts);
 		this.removeAxiesFromContainer();
 		//
 		if(!this.state.axies_with_spine.length) return;
@@ -620,6 +660,11 @@ class Teambuilder extends React.PureComponent {
 			showAddressUI: !prevState.showAddressUI,
 		}));
 	}
+	toggleAllParts = () => {
+		this.setState((prevState) => ({
+			showAllParts: !prevState.showAllParts,
+		}));
+	}
 
 	closeSelectedAxie = () => {
 		this.setState({
@@ -638,6 +683,8 @@ class Teambuilder extends React.PureComponent {
 		this.reset();
 		this.initData();
 	}
+
+
 
 	
 
@@ -669,6 +716,24 @@ class Teambuilder extends React.PureComponent {
 					: ""
 				}
 			);
+		}
+
+		var allParts = "";
+		if(this.state.partArray &&
+			 this.state.partArray.length &&
+			 this.state.showAllParts){
+			 var parts = this.state.partArray.map((part)=> 
+				<div className="part" key={part.id}>
+					<AxiePartIcon type={part.partData.type} axieClass={part.partData.class}/>
+					<div className="name">{part.partData.name}</div> 
+					<div className="count">{part.count}</div>
+				</div>
+			 );
+			 allParts = (
+				<div className="allParts">
+					{parts}
+				</div>
+			 );
 		}
 
 		return (
@@ -751,6 +816,8 @@ class Teambuilder extends React.PureComponent {
 							</div>
 							<div className="filterGroup">
 								<Textfield name="Search Part" placeholder="Search Part"/> 
+								<Button className="toggleAllPartsButton" name={"All Parts"} onClick={this.toggleAllParts} />
+								{allParts}
 							</div>
 						</div>
 
