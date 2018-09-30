@@ -20,6 +20,7 @@ class Encyclopedia extends Component {
 		this.state = {
 			axies: null,
 			offset : 0,
+			page: 1,
 			additionalParams : "",
 		}
 	}
@@ -33,7 +34,7 @@ class Encyclopedia extends Component {
 	 * @memberof AxieList
 	 */
 	getAxies = () => {
-		var api = AXIE_DATA_V1.buildAxiesAPI(this.state.offset, this.state.additionalParams);
+		var api = AXIE_DATA_V1.buildAxiesAPI(this.state.page, this.state.additionalParams);
 		axios.get(api).then((data)=>{
 			console.log("Get axies:", data);
 			this.setState({
@@ -45,7 +46,17 @@ class Encyclopedia extends Component {
 	getAxieSales = () => {
 		var saleParam = "sale=1";
 		var connector;
-		if(this.state.offset) connector = "&";
+		if(this.state.page) connector = "&";
+		else connector = "?";
+		this.setState({
+			additionalParams: connector + saleParam,
+		}, this.getAxies);
+	}
+
+	getAxieSires = () => {
+		var saleParam = "siring=1";
+		var connector;
+		if(this.state.page) connector = "&";
 		else connector = "?";
 		this.setState({
 			additionalParams: connector + saleParam,
@@ -54,16 +65,14 @@ class Encyclopedia extends Component {
 
 	
 	loadPrevPage = () => {
-		this.setState(
-			(prevState) => ({offset: +prevState.offset-12}),
-			this.getAxies
-		);
+		this.setState((prevState) => ({
+			page: Math.max(1, prevState.page-1),
+		}),this.getAxies);
 	}
 	loadNextPage = () => {
-		this.setState(
-			(prevState) => ({offset: +prevState.offset+12}),
-			this.getAxies
-		);
+		this.setState((prevState) => ({
+			page: Math.max(1, prevState.page+1),
+		}), this.getAxies);
 	}
 
 	/**
@@ -82,10 +91,11 @@ class Encyclopedia extends Component {
 				<BasicCenterContainer>
 					<div className="getAxiesContainer">
 						<h2>Get Axies</h2>
-						<Textfield id="market_getaxies_offset" value={this.state.offset} name="Offset" placeholder="Offset" onChange={this.handleChange("offset")} />
+						<Textfield id="market_getaxies_page" value={this.state.page} name="Page" placeholder="Page" onChange={this.handleChange("page")} />
 						<Textfield id="market_getaxies_additionalParams" value={this.state.additionalParams} name="Params" placeholder="Params" onChange={this.handleChange("additionalParams")} />
 						<Button onClick={this.getAxies} name={"Get Axies"} />
 						<Button onClick={this.getAxieSales} name={"Get Sales"} />
+						<Button onClick={this.getAxieSires} name={"Get Sires"} />
 						<div>
 							<Button className="prev" onClick={this.loadPrevPage} name={"Prev"} />
 							<Button className="next" onClick={this.loadNextPage} name={"Next"} />

@@ -90,11 +90,11 @@ export const AXIE_DATA_V1 = {
      * @param {number} offset
      * @returns
      */
-    buildAxiesByAddressAPI(address, offset){
+    buildAxiesByAddressAPI(address, page){
         var url = "https://api.axieinfinity.com/v1/addresses/";
         if(address) url += address + "/axies";
         else throw new Error("address is required. e.g. 0x2B81fd2DBFbF45f403bc74F06d416d4218e8A953");
-        if(offset) url += "?offset=" + offset;
+        if(page) url += "?page=" + page;
         return url;
     },
     /**
@@ -136,9 +136,9 @@ export const AXIE_DATA_V1 = {
             });
         });
     },
-    buildAxiesAPI(offset, additionalParams){
+    buildAxiesAPI(page, additionalParams){
         var url = "https://api.axieinfinity.com/v1/axies/";
-        if(offset) url+= "?offset="+offset;
+        if(page) url+= "?page="+page;
         if(additionalParams) url+= additionalParams;
         return url;
     },
