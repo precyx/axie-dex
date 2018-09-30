@@ -9,6 +9,8 @@ import * as PIXI from 'pixi.js';
 import 'pixi-spine';
 import "pixi-filters";
 import { OutlineFilter } from '@pixi/filter-outline';
+// tooltip
+import ReactTooltip from 'react-tooltip'
 // own
 import {calcBadges} from "../../services/axie-part-and-stats-transform";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
@@ -37,8 +39,11 @@ const StyledTeamBuilder = styled.div`
 	.titlebar {display:flex; justify-content:center;}
 	.buttonbar {display:flex; margin-bottom:10px;}
 	.buttonbar > div {margin-right:10px;}
-	.addressContainer {position:relative;}
-	.addressBar {position: absolute; z-index: 100; background: white; padding: 20px; box-shadow: 0 4px 12px #00000066; border-radius: 8px; top: 36px;}
+	/* addressContainer */
+	.addressContainer {position:relative; z-index:120; margin-left:30px;}
+	.addressContainer h3 {margin-top:10px;}
+	.addressContainer .button {color: rgba(0, 0, 0, 0.85); border-radius: 30px; padding: 10px 15px; font-weight: bold; border: 1px solid #d4d4d4;}
+	.addressBar {position: absolute; z-index: 100; background: white; padding: 20px; box-shadow: 0 3px 15px rgba(0, 0, 0, 0.4); border-radius: 8px; top: 55px;}
 	.count { margin-left: 30px; color: grey;}
 	/* spinner */
 	.spinnerContainer {position: absolute; left:50%; top:50%; margin-top:-30px; margin-left:-30px; display: flex; flex-flow: column; align-items: center;}
@@ -46,12 +51,14 @@ const StyledTeamBuilder = styled.div`
 	/* container */
 	#axie_teambuilder_container {position:relative; width:80vw; height:calc(100vh - 210px); overflow: hidden; }
 	/* axie teams */
-	.axieTeams {border-left: 1px solid #e2e2e2;}
+	.axieTeams {border-left: 1px solid #e2e2e2; box-shadow: 0 2px 22px rgba(0, 0, 0, 0.61); position: relative; border-radius: 3px;}
 	/* overlay ui */
 	.overlayUI {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
 	.overlayUI .axieTitle .name { display:none; }
 	.overlayUI .axieTitle .id { font-size:14; font-weight:bold; color:grey; }
+	/* no axies found */
+	.no_results_hint {font-size:24px; color:grey; display:flex; width:100%; height:100%; background:white; align-items:center; justify-content:center;}
 	/* selected axie */
 	.selectedAxie {position:absolute; }
 	.selectedAxie .axie { margin: 0; box-shadow: 0 2px 22px #0000004a; border:none;}
@@ -235,7 +242,7 @@ class Teambuilder extends React.PureComponent {
 	}
 
 	createAxies(){
-		console.log(this.state.static_axie_images);
+		//console.log(this.state.static_axie_images);
 		var axiesWithSpine = [];
 		if(this.state.axies.length !== this.state.axie_spines.length) throw new Error("axies and axie spines need to be of equal element number to be mapped correctly.");
 		for(let i = 0; i < this.state.axies.length; i++){
@@ -638,7 +645,7 @@ class Teambuilder extends React.PureComponent {
 		console.log("render...");
 		var axie_overlays = "";
 		if(this.state.axies_with_spine && 
-			 this.state.axies_with_spine.length < 130 && 
+			 this.state.axies_with_spine.length < 101 && 
 			 this.state.ZOOM > 0.8 &&
 			 this.state.loading_complete && 
 			 !this.state.hide_UI){
@@ -673,6 +680,17 @@ class Teambuilder extends React.PureComponent {
 							{this.state.axies_with_spine ? this.state.axies_with_spine.length : 0} 
 							{this.state.axie_groups["all"] ? " / " + this.state.axie_groups["all"].length : ""} 
 						</h2>
+						
+						<div className="addressContainer">
+								<Button name="Toggle Address" onClick={this.toggleAddress}/>
+								{ this.state.showAddressUI ? 
+								<div className="addressBar">
+									<Textfield id="teambuilder_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
+									<h3>{this.state.address}</h3>
+									<Button onClick={this.changeAddress} name={"Load Axies"} />
+								</div>
+								: ""}
+							</div>
 					</div>
 					<div className="buttonbar">
 						<div style={{"display":"none"}} className="zoomButtons">
@@ -688,14 +706,32 @@ class Teambuilder extends React.PureComponent {
 								<Button name={"Reset"} onClick={this.showAllAxies} />
 							</div>
 							<div className="filterGroup">
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_1.svg"} onClick={() => this.showAxiesByRating("athLevel", 1)} />
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_2.svg"} onClick={() => this.showAxiesByRating("athLevel", 2)} />
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_3.svg"} onClick={() => this.showAxiesByRating("athLevel", 3)} />
+							<ReactTooltip id={"tb_attack_level_1"} type='dark' effect='solid' place="top">ATK Level 1</ReactTooltip>
+							<ReactTooltip id={"tb_attack_level_2"} type='dark' effect='solid' place="top">ATK Level 2</ReactTooltip>
+							<ReactTooltip id={"tb_attack_level_3"} type='dark' effect='solid' place="top">ATK Level 3</ReactTooltip>
+								<div data-tip data-for={"tb_attack_level_1"}> 
+									<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_1.svg"} onClick={() => this.showAxiesByRating("athLevel", 1)}/> 
+								</div>
+								<div data-tip data-for={"tb_attack_level_2"}> 
+									<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_2.svg"} onClick={() => this.showAxiesByRating("athLevel", 2)} />
+								</div>
+								<div data-tip data-for={"tb_attack_level_3"}>
+									<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_3.svg"} onClick={() => this.showAxiesByRating("athLevel", 3)} />
+								</div> 
 							</div>
 							<div className="filterGroup">
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_1.svg"} onClick={() => this.showAxiesByRating("tankLevel", 1)} />
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_2.svg"} onClick={() => this.showAxiesByRating("tankLevel", 2)} />
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_3.svg"} onClick={() => this.showAxiesByRating("tankLevel", 3)} />
+								<ReactTooltip id={"tb_tank_level_1"} type='dark' effect='solid' place="top">TNK Level 1</ReactTooltip>
+								<ReactTooltip id={"tb_tank_level_2"} type='dark' effect='solid' place="top">TNK Level 2</ReactTooltip>
+								<ReactTooltip id={"tb_tank_level_3"} type='dark' effect='solid' place="top">TNK Level 3</ReactTooltip>
+								<div data-tip data-for={"tb_tank_level_1"}>
+									<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_1.svg"} onClick={() => this.showAxiesByRating("tankLevel", 1)} />
+								</div>
+								<div data-tip data-for={"tb_tank_level_2"}>
+									<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_2.svg"} onClick={() => this.showAxiesByRating("tankLevel", 2)} />
+								</div>
+								<div data-tip data-for={"tb_tank_level_3"}>
+									<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_3.svg"} onClick={() => this.showAxiesByRating("tankLevel", 3)} />
+								</div>
 							</div>
 							<div className="filterGroup">
 								<IconButton color={"#6BBF00"} icon={"./img/icons/classes/plant_24px.svg"} onClick={() => this.showAxiesByClass("plant")}/>
@@ -716,23 +752,16 @@ class Teambuilder extends React.PureComponent {
 							<div className="filterGroup">
 								<Textfield name="Search Part" placeholder="Search Part"/> 
 							</div>
-							<div className="filterGroup">
-								<div className="addressContainer">
-								<Button name="Toggle Address" onClick={this.toggleAddress}/>
-								{ this.state.showAddressUI ? 
-								<div className="addressBar">
-									<Textfield id="teambuilder_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
-									<h3>{this.state.address}</h3>
-									<Button onClick={this.changeAddress} name={"Load Axies"} />
-								</div>
-								: ""}
-								</div>
-							</div>
 						</div>
 
 					<div className="teambuilder_view">
 						<div id="axie_teambuilder_container">
-
+							{this.state.axies_with_spine &&
+							 this.state.axies_with_spine.length == 0 ? 
+							<div className="no_results_hint">
+								No Axies found...
+							</div> 
+							: ""}
 
 							{!this.state.loading_complete ? (
 								<div className="spinnerContainer">

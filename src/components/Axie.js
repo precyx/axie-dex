@@ -29,13 +29,17 @@ const StyledAxie = styled.div`
 
   .axieTitle {position: relative;}
 
-  /* features */
-  ${({ features }) => features == "minimal" && css`
-    width:auto;
-  `}
+
   /* auction data */
   ${({ auctionData }) => auctionData && css`
     .axieTitleContainer {height:90px;}
+  `}
+
+    /* features */
+    ${({ features }) => features == "minimal" && css`
+    width:auto;
+    .salesData {display:none;} 
+    .axieTitleContainer {height:60px;}
   `}
   
 `;
@@ -71,7 +75,9 @@ class Axie extends React.PureComponent {
           <div className="axieTitleContainer">
             <AxieTitle id={this.state.axieData.id} name={this.state.axieData.name} class={this.state.axieData.class} />
             <AxieBadges axieData={this.state.axieData}/>
-            {this.state.axieData.auction && <AxieSalesData auctionData={this.state.axieData.auction}/> } 
+            <div class="salesData">
+              {this.state.axieData.auction && <AxieSalesData auctionData={this.state.axieData.auction}/> } 
+            </div>
           </div>
           <div className="axieContainer">
             <div style={{display:"none"}}>

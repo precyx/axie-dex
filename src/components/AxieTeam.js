@@ -18,11 +18,14 @@ const StyledAxieTeam = styled.div`
 	background:white;
 	:hover {}
 	/* team */
-	.team_title {font-size: 18px; color: #a146ef; font-weight: bold;}
+	.team_title {font-size: 18px; color: #696969; font-weight: normal;}
 	/* teammember */
 	.members {display:flex; margin-top:10px;}
 	.teammember { border-radius: 8px; padding-bottom:10px;  margin-right: 10px; position:relative;}
-	.teammember .axie {margin:0;}
+	/* axie */
+	.teammember .axie {margin:0; border:none; padding:0;}
+	.teammember .axie .staticImg {width: 140px; height: 110px;}
+	/* rest */
 	.teammember .title {font-size:12px; color:grey; margin-bottom:5px;}
 	.teammember .img {width:120px; height:auto; margin-right:0; margin-top:10px;}
 	.teammember .img_box {width:120px; height:90px; position:relative;}
