@@ -688,14 +688,14 @@ class Teambuilder extends React.PureComponent {
 								<Button name={"Reset"} onClick={this.showAllAxies} />
 							</div>
 							<div className="filterGroup">
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/attack.svg"} onClick={() => this.showAxiesByRating("athLevel", 1)} />
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/attack.svg"} onClick={() => this.showAxiesByRating("athLevel", 2)} />
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/attack.svg"} onClick={() => this.showAxiesByRating("athLevel", 3)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_1.svg"} onClick={() => this.showAxiesByRating("athLevel", 1)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_2.svg"} onClick={() => this.showAxiesByRating("athLevel", 2)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_3.svg"} onClick={() => this.showAxiesByRating("athLevel", 3)} />
 							</div>
 							<div className="filterGroup">
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/defense.svg"} onClick={() => this.showAxiesByRating("tankLevel", 1)} />
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/defense.svg"} onClick={() => this.showAxiesByRating("tankLevel", 2)} />
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/stats/defense.svg"} onClick={() => this.showAxiesByRating("tankLevel", 3)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_1.svg"} onClick={() => this.showAxiesByRating("tankLevel", 1)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_2.svg"} onClick={() => this.showAxiesByRating("tankLevel", 2)} />
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_3.svg"} onClick={() => this.showAxiesByRating("tankLevel", 3)} />
 							</div>
 							<div className="filterGroup">
 								<IconButton color={"#6BBF00"} icon={"./img/icons/classes/plant_24px.svg"} onClick={() => this.showAxiesByClass("plant")}/>
