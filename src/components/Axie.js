@@ -42,7 +42,7 @@ const StyledAxie = styled.div`
 
 /**
  * Displays an Axie with image, parts
- * @example <Axie data={axie} image={"img.png"} features={minimal | all}/>
+ * @example <Axie data={axie} image={"img-url"} features={"minimal" | "all"}/>
  * @class Axie
  * @extends {React.PureComponent}
  */

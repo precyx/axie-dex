@@ -567,6 +567,22 @@ class Teambuilder extends React.PureComponent {
 			hide_UI: true,
 		}), this.renderAxies);
 	}
+	showAxiesByMystics = (mysticCount) => {
+		var newAxies = [];
+		this.state.axie_groups["all"].forEach((axie)=>{
+			var parts = axie.axieData.parts;
+			if(!parts) return;
+			var numMystic = 0;
+			axie.axieData.parts.forEach((part)=>{
+				if(part.mystic) numMystic++;
+			});
+			if(numMystic >= mysticCount) newAxies.push(axie);
+		});
+		this.setState((prevState)=>({
+			axies_with_spine: newAxies,
+			hide_UI: true,
+		}), this.renderAxies);
+	}
 
 
 
@@ -693,6 +709,9 @@ class Teambuilder extends React.PureComponent {
 								<div className="btx" onClick={() => this.showAxiesByTag("Origin")}>Origin</div>
 								<div className="btx" onClick={() => this.showAxiesByTag("MEO Corp")}>MEO</div>
 								<div className="btx" onClick={() => this.showAxiesByTag("MEO Corp II")}>MEO II</div>
+							</div>
+							<div className="filterGroup">
+								<div className="btx" onClick={() => this.showAxiesByMystics(1)}>Mystic</div>
 							</div>
 							<div className="filterGroup">
 								<Textfield name="Search Part" placeholder="Search Part"/> 
