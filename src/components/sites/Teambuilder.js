@@ -24,7 +24,7 @@ import Button from "../ui/Button";
 import IconButton from "../ui/IconButton";
 import Textfield from "../ui/Textfield";
 import AxieTeams from '../AxieTeams';
-import AxiePartIcon from '../AxiePartIcon';
+import AxiePartList from '../AxiePartList';
 // classes
 import {Grid} from "../classes/Grid";
 import {Axie} from "../classes/Axie";
@@ -77,11 +77,7 @@ const StyledTeamBuilder = styled.div`
 	.filterGroup .btx {cursor: pointer; display: flex; align-items: center; font-size: 12px; color: #a146ef; margin: 0 5px; padding: 0 10px; border-radius: 50px;}
 	.filterGroup .btx:hover {background: #efefef;}
 	/* all parts */
-	.allParts {position: absolute; width:250px; top:55px; right:0; font-size:12px; background: white; z-index: 11; padding: 20px 0; box-shadow: 0 2px 11px #0000007a; border-radius: 3px; height:350px; max-height: calc(100vh - 200px); overflow-y: scroll;}
-	.allParts .part {display:flex; width:100%; justify-content:space-between; align-items: center;  padding: 3px 20px;}
-	.allParts .part:hover {background:#efefef; }
-	.allParts .part .count{margin-left:0; }
-	.allParts .part .name{width:100px; }
+	.axiePartList {	position: absolute; top:55px; right:0; }
 	.toggleAllPartsButton {width:100px;}
 `;
 
@@ -119,6 +115,7 @@ class Teambuilder extends React.PureComponent {
 			axie_groups: {},
 			// statistics
 			parts: {},
+			partArray: [],
 			// ui
 			address: "0x2643796cb6b4e715140f09c352ea26afff1a7d93",
 			offset: 0,
@@ -293,6 +290,7 @@ class Teambuilder extends React.PureComponent {
 			});
 		});
 		var partArray = Object.values(parts);
+		console.log(partArray);
 		this.setState({
 			parts: parts,
 			partArray: partArray,
@@ -718,23 +716,6 @@ class Teambuilder extends React.PureComponent {
 			);
 		}
 
-		var allParts = "";
-		if(this.state.partArray &&
-			 this.state.partArray.length &&
-			 this.state.showAllParts){
-			 var parts = this.state.partArray.map((part)=> 
-				<div className="part" key={part.id}>
-					<AxiePartIcon type={part.partData.type} axieClass={part.partData.class}/>
-					<div className="name">{part.partData.name}</div> 
-					<div className="count">{part.count}</div>
-				</div>
-			 );
-			 allParts = (
-				<div className="allParts">
-					{parts}
-				</div>
-			 );
-		}
 
 		return (
 			<StyledTeamBuilder>
@@ -817,7 +798,11 @@ class Teambuilder extends React.PureComponent {
 							<div className="filterGroup">
 								<Textfield name="Search Part" placeholder="Search Part"/> 
 								<Button className="toggleAllPartsButton" name={"All Parts"} onClick={this.toggleAllParts} />
-								{allParts}
+								{this.state.partArray &&
+			 					this.state.partArray.length &&
+								this.state.showAllParts ? 
+									<AxiePartList parts={this.state.partArray}/> 
+								: ""}
 							</div>
 						</div>
 
