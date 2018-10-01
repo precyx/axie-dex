@@ -31,7 +31,7 @@ class AxiePartList extends React.PureComponent {
 		if(this.props.parts &&
 			 this.props.parts.length){
 			 var parts = this.props.parts.map((part)=> 
-				<div className="part" key={part.partData.id}>
+				<div className="part" key={part.partData.id} onClick={() => {this.props.onClickPart(part)}}>
 					<AxiePartIcon type={part.partData.type} axieClass={part.partData.class}/>
 					<div className="name">{part.partData.name}</div> 
 					<div className="count">{part.count}</div>

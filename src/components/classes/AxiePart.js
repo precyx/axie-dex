@@ -1,4 +1,4 @@
-export default class Axie {
+export default class AxiePart {
 	count = 0;
 	partData = {};
 	//

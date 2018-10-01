@@ -79,6 +79,7 @@ const StyledTeamBuilder = styled.div`
 	/* all parts */
 	.axiePartList {	position: absolute; top:55px; right:0; }
 	.toggleAllPartsButton {width:100px;}
+	.partList .part {user-select:none; cursor:pointer;}
 `;
 
 // class
@@ -543,6 +544,12 @@ class Teambuilder extends React.PureComponent {
 			axie_groups: {"all": newAxies},
 		}, this.renderAxies());
 	}
+	/**
+	 * @event {onClickPartList}
+	 */
+	onClickPartList = (clickedPart) => {
+		this.showAxiesByPart(clickedPart.partData.id);
+	}
 
 	/* 
 	 Listeners
@@ -621,6 +628,22 @@ class Teambuilder extends React.PureComponent {
 				if(part.mystic) numMystic++;
 			});
 			if(numMystic >= mysticCount) newAxies.push(axie);
+		});
+		this.setState((prevState)=>({
+			axies_with_spine: newAxies,
+			hide_UI: true,
+		}), this.renderAxies);
+	}
+	showAxiesByPart = (partID) => {
+		var newAxies = [];
+		this.state.axie_groups["all"].forEach((axie)=>{
+			var parts = axie.axieData.parts;
+			if(!parts) return;
+			var partFound = false;
+			axie.axieData.parts.forEach((part)=>{
+				if(part.id == partID) partFound = true;
+			});
+			if(partFound) newAxies.push(axie);
 		});
 		this.setState((prevState)=>({
 			axies_with_spine: newAxies,
@@ -790,7 +813,11 @@ class Teambuilder extends React.PureComponent {
 							{this.state.partArray &&
 							this.state.partArray.length &&
 							this.state.showAllParts ? 
-								<AxiePartList parts={this.state.partArray}/> 
+								<AxiePartList
+								className="partList"
+								parts={this.state.partArray}
+								onClickPart={this.onClickPartList}
+								/> 
 							: ""}
 						</div>
 					</div>
