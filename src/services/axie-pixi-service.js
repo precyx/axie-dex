@@ -34,14 +34,16 @@ export const AXIE_PIXI = {
 	/**
 	 * Gets {spines} from {axies}
 	 * @param {Array} axies
+	 * @param {Function} onDataCallback triggers each time data is fetched. param is {axie} 
 	 * @returns {Array} with {axie spines}
 	 */
-	getSpinesOfAxies(axies){
+	getSpinesOfAxies(axies, onDataCallback){
 		var promises = [];
 		for(var i=0; i < axies.length; i++){
-			var axie = axies[i];
+			let axie = axies[i];
 			if(axie.figure) {
-				var p = AXIE_PIXI.getAxieSpine(axie).then((aSpine)=>{
+				let p = AXIE_PIXI.getAxieSpine(axie).then((aSpine)=>{
+					onDataCallback(axie);
 					return aSpine;
 				});
 				promises.push(p);

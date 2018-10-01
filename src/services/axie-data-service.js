@@ -158,13 +158,18 @@ export const AXIE_DATA_V1 = {
             return data.data;
         });
     },
-    getStaticImagesByAxies(axies){
+    /**
+     * @param {Array[Axie]} axies array of {axies} 
+     * @param {Function} onDataCallback triggers each time data is fetched. param is {axie} 
+     */
+    getStaticImagesByAxies(axies, onDataCallback){
         var promises = [];
         axies.forEach((axie)=>{
             var p = new Promise((resolve, reject)=>{
                 this.getAxieById(axie.id).then((data) => {
                     var staticImage = data.figure ? data.figure.static.idle : ""; 
                     resolve(staticImage);
+                    onDataCallback(axie);
                 });
             });
             promises.push(p);
