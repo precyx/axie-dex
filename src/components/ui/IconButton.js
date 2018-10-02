@@ -14,6 +14,8 @@ const StyledIconButton = styled.div`
 	cursor:pointer;
 	:hover {background:#eaeaea;}
 	/* svg */
+	>div {display:flex;}
+	>div >div {display:flex;}
 	svg {fill:grey; width:18px;}
 	/* focus state */
 	${({ color }) => color && css`
@@ -24,7 +26,7 @@ const StyledIconButton = styled.div`
 class IconButton extends React.PureComponent {
 	render() {
 		return (
-			<StyledIconButton color={this.props.color} className="iconButton" onClick={this.props.onClick}>
+			<StyledIconButton color={this.props.color} className={"iconButton" + " " + this.props.className} onClick={this.props.onClick}>
 				<ReactSVG src={this.props.icon}/>
 			</StyledIconButton>
 		);

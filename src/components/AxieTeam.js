@@ -3,6 +3,8 @@ import styled from "styled-components";
 // own
 import AxieBadges from "./AxieBadges";
 import Axie from "./Axie";
+/* ui */
+import IconButton from "./ui/IconButton";
 
 // CSS
 const StyledAxieTeam = styled.div`
@@ -12,11 +14,11 @@ const StyledAxieTeam = styled.div`
 	justify-content: space-between;
 	width: auto;
 	padding: 10px 15px;
+	min-height: 60px;
 	margin:10px;
 	border: 2px solid white;
 	border-radius:8px;
 	background:white;
-	:hover {}
 	/* team */
 	.team_title {font-size: 18px; color: #696969; font-weight: normal;}
 	/* teammember */
@@ -34,7 +36,8 @@ const StyledAxieTeam = styled.div`
 	.teammember .removeAxieButton {top: 15px; right: 15px; background: rgba(255, 91, 91, 0.1); color: #ea5353; font-weight: bold;}
 	.teammember:hover .removeAxieButton {display:flex;}
 	/* right */
-	.right {display:flex;}
+	.right {display:none;}
+	:hover .right {display:flex}
 	/* name */
 	.name {font-size: 12px; color: grey;}
 	/* delete button */
@@ -81,8 +84,8 @@ class AxieTeam extends React.PureComponent {
 					{members ? <div className="members">{members}</div> : ""}
 				</div>
 				<div className="right">
-					<div className="viewButton roundMiniButton" onClick={() => this.props.onViewTeam(this.props.team)}>V</div>
-					<div className="deleteButton roundMiniButton" onClick={this.props.deleteTeam}>X</div>
+					<IconButton icon={"img/icons/general/eye.svg"} className="viewButton" onClick={() => this.props.onViewTeam(this.props.team)} />
+					<IconButton icon={"img/icons/general/close.svg"} className="deleteButton" onClick={this.props.deleteTeam}/>
 				</div>
 			</StyledAxieTeam>
 		);

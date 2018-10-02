@@ -9,7 +9,7 @@ const StyledAxiePartList = styled.div`
 	width:500px; 
 	font-size:12px; 
 	background: white; 
-	z-index: 10; 
+	z-index: 30; 
 	padding: 10px 0;
 	box-shadow: 0 2px 11px #0000007a; 
 	border-radius: 3px; 

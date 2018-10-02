@@ -4,34 +4,48 @@ import styled, { css } from "styled-components";
 // own
 import AxieTeam from "./AxieTeam";
 import {AXIE_DATA_V1} from "../services/axie-data-service";
+/* ui */
+import Button from "./ui/Button";
+
 // CSS
 const StyledAxieTeams = styled.div`
 	padding:0 0;
 	width:1000px;
-	height:100%;
 	background: white;
 	position:relative; 
+	background:white; 
+	padding:10px 0;
+	padding-top:30px;
+	height:50vh; 
+	width: calc(30vw);
+
+	&.minimized {width:100px; height:100px; box-shadow:none;}
+	&.minimized .newTeamBtn {display:none;}
 	/* containers */
 	.gapContainer {padding:0 25px; display:flex; justify-content:center;}
 	/* teams */
-	.teams { height: calc(100%); overflow-y: scroll;  background:white; padding:40px 0;}
+	.teams {height:100%; overflow-y: scroll; }
 	.team { border-bottom: 1px solid #e6e6e6; border-radius: 0; padding-bottom: 10px; margin: 0;}
 	/* new team button */
 	.newTeamBtn {position:absolute; right: 30px; text-align:center; bottom:30px; user-select:none; width:140px; background:#a146ef; color: white; font-weight:bold; padding:10px 5px; border-radius:8px; cursor:pointer;}
 	.newTeamBtn:hover {background:#ca62ff;}
 	.buttonContainer {border-top: 1px solid #e4e4e4; padding-bottom:10px;}
+	/* resize button */
+	.resizeButton { position:absolute; z-index:10; top: 2px; left: 2px;}
 
-		/* focus state */
-		${({ selectedAxie }) => selectedAxie && css`
-			width: 1200px;
-			border: none;
-			background: #f1f1f1;
-			.teams {background: #f1f1f1; border:none;}
-			.teams .team {cursor: pointer; padding: 15px 15px; border:2px solid white; border-radius:8px; margin:10px;}
-			.teams .team:hover {border:2px solid #a146ef;}
-			.teams .team .right {display:none;}
-			.teams .team .teammember .removeAxieButton {display:none;}
+	/* selectedAxie */
+	${({ selectedAxie }) => selectedAxie && css`
+		width: calc(30vw);
+		border: none;
+		background: #f1f1f1;
+		.resizeButton {display:none;}
+		.teams {background: #f1f1f1; border:none;}
+		.teams .team {cursor: pointer; padding: 15px 15px; border:2px solid white; border-radius:8px; margin:10px;}
+		.teams .team:hover {border:2px solid #a146ef;}
+		.teams .team .right {display:none;}
+		.teams .team .teammember .removeAxieButton {display:none;}
   `}
+
 `;
 
 /**
@@ -46,6 +60,7 @@ class AxieTeams extends React.PureComponent {
 		this.state = {
 			teams: [],
 			counter: 0,
+			minimized: false,
 		}
 	}
 
@@ -102,12 +117,10 @@ class AxieTeams extends React.PureComponent {
 		this.setState({
 			teams: newTeams,
 		}, () => {
-			//console.log("t", this.state.teams);
 			// trigger event
 			this.props.onAxieDeposit(this.props.selectedAxie);
 		});
 	}
-
 	removeAxieFromTeam = (teamToUpdate, teamMemberToDelete) => {
 		// delete member
 		var changedTeam = Object.assign({}, teamToUpdate);
@@ -122,11 +135,17 @@ class AxieTeams extends React.PureComponent {
 		}, () => {
 			this.props.onTeamMemberDelete(teamMemberToDelete, newTeams);
 		});
-		/*console.log("°2",changedTeam);
-		console.log("t", teamToUpdate);
-		console.log("m", teamMemberToDelete);*/
 	}
 
+	toggleSize = () => {
+		//console.log(this.state.minimized);
+		this.setState((prevState)=>({
+			minimized: !prevState.minimized,
+		}));
+	}
+
+
+	/* render */
 	render() {
 		var teams = "";
 		if(this.state.teams.length){
@@ -145,7 +164,8 @@ class AxieTeams extends React.PureComponent {
 		}
 
 		return (
-			<StyledAxieTeams className="axieTeams" selectedAxie={this.props.selectedAxie}>
+			<StyledAxieTeams className={"axieTeams" + (this.state.minimized ? " minimized" : "")} selectedAxie={this.props.selectedAxie} minimized={this.state.minimized} >
+				<Button className="resizeButton" name={"Resize"} onClick={this.toggleSize}/>
 				<div className="teams">
 					{teams}
 				</div>

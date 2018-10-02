@@ -55,7 +55,7 @@ const StyledTeamBuilder = styled.div`
 	/* container */
 	#axie_teambuilder_container {position:relative; width:100%; height:calc(100vh - 210px); overflow: hidden; }
 	/* axie teams */
-	.axieTeams {border-left: 1px solid #e2e2e2; height:50vh; box-shadow: 0 2px 22px rgba(0, 0, 0, 0.61); border-radius: 3px; position: absolute; right: 0; left: auto; width: calc(30vw); bottom: 0;}
+	.axieTeams { box-shadow: 0 2px 22px rgba(0, 0, 0, 0.61); border-radius: 3px; position: absolute; right: 0; left: auto; bottom: 0;}
 	/* overlay ui */
 	.overlayUI, .overlayUI2 {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
