@@ -33,11 +33,15 @@ const StyledAxieTeam = styled.div`
 	.teammember .removeAxieButton {display:none; position: absolute; user-select:none; width:25px; height:25px; cursor:pointer; font-size: 12px; align-items: center; justify-content: center; border-radius: 50%; }
 	.teammember .removeAxieButton {top: 15px; right: 15px; background: rgba(255, 91, 91, 0.1); color: #ea5353; font-weight: bold;}
 	.teammember:hover .removeAxieButton {display:flex;}
+	/* right */
+	.right {display:flex;}
 	/* name */
 	.name {font-size: 12px; color: grey;}
 	/* delete button */
-	.deleteButton {margin-left: 10px; user-select:none; color:grey; width:25px; height:25px; display:flex; cursor:pointer; font-size: 12px; align-items: center; justify-content: center; border-radius: 50%;  }
-	.deleteButton:hover {color:#383838;}
+	.deleteButton, .viewButton {margin-left: 10px; }
+	/* button */
+	.roundMiniButton { user-select:none; color:grey; width:25px; height:25px; background: rgba(0, 0, 0, 0.1); display:flex; cursor:pointer; font-size: 12px; align-items: center; justify-content: center; border-radius: 50%; }
+	.roundMiniButton:hover { color:#222222; }
 `;
 
 class AxieTeam extends React.PureComponent {
@@ -77,7 +81,8 @@ class AxieTeam extends React.PureComponent {
 					{members ? <div className="members">{members}</div> : ""}
 				</div>
 				<div className="right">
-					<div className="deleteButton" onClick={this.props.deleteTeam}>X</div>
+					<div className="viewButton roundMiniButton" onClick={() => this.props.onViewTeam(this.props.team)}>V</div>
+					<div className="deleteButton roundMiniButton" onClick={this.props.deleteTeam}>X</div>
 				</div>
 			</StyledAxieTeam>
 		);

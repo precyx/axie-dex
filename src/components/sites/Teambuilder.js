@@ -322,7 +322,6 @@ class Teambuilder extends React.PureComponent {
 		}
 		this.setState({
 			loading_complete:true,
-			loading_status: "3",
 			hide_UI: false,
 		}, this.resizeCanvasToContainer);
 	}
@@ -464,7 +463,7 @@ class Teambuilder extends React.PureComponent {
 		});
 		this.setState({
 			axie_groups: {"all": newAxies},
-		}, this.renderAxies());
+		}, this.renderAxies);
 	}
 	/**
 	 * @event {onTeamMemberDelete}
@@ -476,7 +475,7 @@ class Teambuilder extends React.PureComponent {
 		});
 		this.setState({
 			axie_groups: {"all": newAxies},
-		}, this.renderAxies());
+		}, this.renderAxies);
 	}
 	/**
 	 * @event {onClickPartList}
@@ -484,6 +483,22 @@ class Teambuilder extends React.PureComponent {
 	onClickPartList = (clickedPart) => {
 		this.showAxiesByPart(clickedPart.partData.id);
 	}
+	/**
+	 * @event {onViewTeam}
+	 */
+	onViewTeam = (teamToView) => {
+		// create new axies
+		var newAxies = [];
+		teamToView.members.forEach((teamMember)=>{
+			newAxies.push(teamMember.axie);
+		});
+		this.setState({
+			axies_with_spine: newAxies,
+			hide_UI: true,
+		}, this.renderAxies);
+	}
+
+
 
 	/* 
 	 Listeners
@@ -895,7 +910,8 @@ class Teambuilder extends React.PureComponent {
 							selectedAxie={this.state.selectedAxie} 
 							onAxieDeposit={this.onDepositAxieInTeamBuilder}
 							onTeamDelete={this.onTeamDelete}
-							onTeamMemberDelete={this.onTeamMemberDelete} 
+							onTeamMemberDelete={this.onTeamMemberDelete}
+							onViewTeam={this.onViewTeam} 
 						/>
 					</div>
 				</BasicCenterContainer>	

@@ -29,7 +29,7 @@ const StyledAxieTeams = styled.div`
 			.teams {background: #f1f1f1; border:none;}
 			.teams .team {cursor: pointer; padding: 15px 15px; border:2px solid white; border-radius:8px; margin:10px;}
 			.teams .team:hover {border:2px solid #a146ef;}
-			.teams .team .deleteButton {display:none;}
+			.teams .team .right {display:none;}
 			.teams .team .teammember .removeAxieButton {display:none;}
   `}
 `;
@@ -138,6 +138,7 @@ class AxieTeams extends React.PureComponent {
 					team={team}
 					onClick={() => this.addNewTeamMember(team)} 
 					deleteTeam={() => this.deleteTeam(team)}
+					onViewTeam={this.props.onViewTeam}
 					removeAxieFromTeam={this.removeAxieFromTeam}
 					/>
 			))
