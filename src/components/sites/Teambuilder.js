@@ -19,6 +19,7 @@ import {AXIE_PIXI} from "../../services/axie-pixi-service";
 import AxieTitle from "../AxieTitle";
 import AxieBadges from "../AxieBadges";
 import AxieScores from "../AxieScores";
+import AxieParts from "../AxieParts";
 import AxieComponent from "../Axie";
 import Button from "../ui/Button";
 import IconButton from "../ui/IconButton";
@@ -56,7 +57,7 @@ const StyledTeamBuilder = styled.div`
 	/* axie teams */
 	.axieTeams {border-left: 1px solid #e2e2e2; height:50vh; box-shadow: 0 2px 22px rgba(0, 0, 0, 0.61); border-radius: 3px; position: absolute; right: 0; left: auto; width: calc(30vw); bottom: 0;}
 	/* overlay ui */
-	.overlayUI {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
+	.overlayUI, .overlayUI2 {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
 	.overlayUI .axieTitle .name { display:none; }
 	.overlayUI .axieTitle .id { font-size:14; font-weight:bold; color:grey; }
@@ -296,7 +297,6 @@ class Teambuilder extends React.PureComponent {
 		this.setState({
 			parts: parts,
 			partArray: partArray,
-			showAllParts: true,
 		}, this.renderAxies);
 	}
 
@@ -389,73 +389,7 @@ class Teambuilder extends React.PureComponent {
 	}
 
 
-	/* 
-		Helpers 
-	*/
 
-	/**
-	 * Calculates the {x, y} positions of a specific {axie_spine} inside the canvas, you can also choose which {position} you want to retrieve like:
-	 * Used to render UI on top of {canvas}
-	 * @param {AxieSpine} axie_spine 
-	 * @param {String} position choose a position (top_left, top, bottom_right, left) etc... default is (top_left)
-	 * @returns {Object} 
-	 */
-	getPositionOfAxie(axie_spine, position){
-		var CM = this.state.CRISP_MULTIPLIER;
-		var ZOOM = this.state.ZOOM;
-		var TOP_LEFT = {
-			"x": (axie_spine.x + this.axieContainer.x) -this.state.axieW / this.state.AXIE_SIZE_RATIO * ZOOM,
-			"y": (axie_spine.y + this.axieContainer.y) -this.state.axieW / this.state.AXIE_SIZE_RATIO * ZOOM,
-		}
-		var offset = {x:0, y:0};
-		//
-		switch(position){
-			case "top_left" : 
-				offset.x = 0;
-				offset.y = 0;
-			break;
-			case "top" : 
-				offset.x = this.state.axieW/2 * CM;
-				offset.y = 0;
-			break;
-			case "top_right" : 
-				offset.x = this.state.axieW * CM;
-				offset.y = 0;
-			break;
-			case "right" :
-				offset.x = this.state.axieW * CM;
-				offset.y = this.state.axieH/2 * CM;
-			break;
-			case "bottom_right" :
-				offset.x = this.state.axieW * CM;
-				offset.y = this.state.axieH * CM;
-			break;
-			case "bottom" :
-				offset.x = this.state.axieW/2 * CM;
-				offset.y = this.state.axieH * CM;
-			break;
-			case "bottom_left" :
-				offset.x = 0;
-				offset.y = this.state.axieH * CM;
-			break;
-			case "left" :
-				offset.x = 0;
-				offset.y = this.state.axieH/2 * CM;
-			break;
-			case "center" :
-				offset.x = this.state.axieW/2 * CM;
-				offset.y = this.state.axieH/2 * CM;
-			break;
-			default:
-				offset.x = 0;
-				offset.y = 0;
-		}
-		//
-		return {
-			x: (TOP_LEFT.x + offset.x) / this.state.CRISP_MULTIPLIER,
-			y: (TOP_LEFT.y + offset.y) / this.state.CRISP_MULTIPLIER
-		}
-	}
 
 
 	/* 
@@ -701,6 +635,73 @@ class Teambuilder extends React.PureComponent {
 
 
 
+		/* 
+		Helpers 
+	*/
+
+	/**
+	 * Calculates the {x, y} positions of a specific {axie_spine} inside the canvas, you can also choose which {position} you want to retrieve like:
+	 * Used to render UI on top of {canvas}
+	 * @param {AxieSpine} axie_spine 
+	 * @param {String} position choose a position (top_left, top, bottom_right, left) etc... default is (top_left)
+	 * @returns {Object} 
+	 */
+	getPositionOfAxie(axie_spine, position){
+		var CM = this.state.CRISP_MULTIPLIER;
+		var ZOOM = this.state.ZOOM;
+		var TOP_LEFT = {
+			"x": (axie_spine.x + this.axieContainer.x) -this.state.axieW / this.state.AXIE_SIZE_RATIO * ZOOM,
+			"y": (axie_spine.y + this.axieContainer.y) -this.state.axieW / this.state.AXIE_SIZE_RATIO * ZOOM,
+		}
+		var offset = {x:0, y:0};
+		//
+		switch(position){
+			case "top_left" : 
+				offset.x = 0;
+				offset.y = 0;
+			break;
+			case "top" : 
+				offset.x = this.state.axieW/2 * ZOOM;
+				offset.y = 0;
+			break;
+			case "top_right" : 
+				offset.x = this.state.axieW * ZOOM;
+				offset.y = 0;
+			break;
+			case "right" :
+				offset.x = this.state.axieW * ZOOM;
+				offset.y = this.state.axieH/2 * ZOOM;
+			break;
+			case "bottom_right" :
+				offset.x = this.state.axieW * ZOOM;
+				offset.y = this.state.axieH * ZOOM;
+			break;
+			case "bottom" :
+				offset.x = this.state.axieW/2 * ZOOM;
+				offset.y = this.state.axieH * ZOOM;
+			break;
+			case "bottom_left" :
+				offset.x = 0;
+				offset.y = this.state.axieH * ZOOM;
+			break;
+			case "left" :
+				offset.x = 0;
+				offset.y = this.state.axieH/2 * ZOOM;
+			break;
+			case "center" :
+				offset.x = this.state.axieW/2 * ZOOM;
+				offset.y = this.state.axieH/2 * ZOOM;
+			break;
+			default:
+				offset.x = 0;
+				offset.y = 0;
+		}
+		//
+		return {
+			x: (TOP_LEFT.x + offset.x) / this.state.CRISP_MULTIPLIER,
+			y: (TOP_LEFT.y + offset.y) / this.state.CRISP_MULTIPLIER
+		}
+	}
 	
 
 	render() {
@@ -734,6 +735,29 @@ class Teambuilder extends React.PureComponent {
 				}
 			);
 		}
+
+		var axie_overlays2 = "";
+		/*if(this.state.axies_with_spine && 
+			this.state.axies_with_spine.length < 20 && 
+			this.state.ZOOM > 0.8 &&
+			this.state.loading_complete && 
+			!this.state.hide_UI) {
+				axie_overlays2 = this.state.axies_with_spine.map((axie) => { 
+					return (axie.spineData) ? 
+					<div 
+					className="overlayUI2" 
+					key={axie.axieData.id} 
+					style={{ 
+						left:this.getPositionOfAxie(axie.spineData, "bottom_right").x  + "px", 
+						top: this.getPositionOfAxie(axie.spineData, "bottom_right").y  + "px"
+					}}
+					>
+						<AxieParts parts={axie.axieData.parts} />
+					</div>
+					: ""
+				}
+			);
+		}*/
 
 		return (
 			<StyledTeamBuilder>
@@ -842,6 +866,10 @@ class Teambuilder extends React.PureComponent {
 
 							<div className="overlays">
 								{axie_overlays}
+							</div>
+
+							<div className="overlays2">
+								{axie_overlays2}
 							</div>
 
 							{this.state.selectedAxie ?

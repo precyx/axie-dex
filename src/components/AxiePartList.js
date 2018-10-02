@@ -24,6 +24,7 @@ const StyledAxiePartList = styled.div`
 	.part .myPartIcon, .head .partType{width:50px; }
 	.part .count, .head .count {width:80px; margin-left:0; color:#666;}
 	.part .name, .head .name{width:120px; }
+	.part .name.mystic {color:#5c9bec;}
 	.part .stats, .head .flex {width:160px; display:flex;}
 	.part .innerStats, .head .innerStats {display:flex;}
 	.part .stat, .head .stat {width:45px;}
@@ -113,7 +114,7 @@ class AxiePartList extends React.PureComponent {
 					<div className="myPartIcon">
 						<AxiePartIcon type={part.partData.type} axieClass={part.partData.class}/>
 					</div>
-					<div className="name">{part.partData.name}</div> 
+					<div className={"name" + (part.partData.mystic ? " mystic" : "")} >{part.partData.name}</div> 
 					<div className="count">{part.count}</div>
 					
 					{/* stats */}
@@ -141,8 +142,14 @@ class AxiePartList extends React.PureComponent {
 		return (
 			<StyledAxiePartList className={"axiePartList" + " " + this.props.className}>
 				<div className="head">
-					<div className="field partType" onClick={() => {this.sortByPropAlphabetically("type"); }}>Type</div>
-					<div className="field name" onClick={() => {this.sortByPropAlphabetically("name"); }}>Name</div>
+					<div className="field partType">
+						<div onClick={() => {this.sortByPropAlphabetically("class"); }}>Class</div>
+						<div onClick={() => {this.sortByPropAlphabetically("type"); }}>Type</div>
+					</div>
+					<div className="field name">
+						<div onClick={() => {this.sortByPropAlphabetically("name"); }}>Name</div>
+						<div onClick={() => {this.sortByPropAlphabetically("mystic"); }}>Mystic</div>
+					</div>
 					<div className="field count" onClick={() => {this.sortByCount(); }}>Count</div>
 					<div className="fieldGroup innerStats">
 						<div className="field stat atk" onClick={() => {this.sortByStat("attack"); }}>Atk</div>
