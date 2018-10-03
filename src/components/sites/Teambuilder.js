@@ -26,6 +26,7 @@ import IconButton from "../ui/IconButton";
 import Textfield from "../ui/Textfield";
 import AxieTeams from '../AxieTeams';
 import AxiePartList from '../AxiePartList';
+import AxiePartClasses from '../AxiePartClasses';
 // classes
 import {Grid} from "../classes/Grid";
 import {Axie} from "../classes/Axie";
@@ -57,7 +58,7 @@ const StyledTeamBuilder = styled.div`
 	/* axie teams */
 	.axieTeams { box-shadow: 0 2px 22px rgba(0, 0, 0, 0.61); border-radius: 3px; position: absolute; right: 0; left: auto; bottom: 0;}
 	/* overlay ui */
-	.overlayUI, .overlayUI2 {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:center;}
+	.overlayUI, .overlayUI2 {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:normal; flex-flow:column;}
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
 	.overlayUI .axieTitle .name { display:none; }
 	.overlayUI .axieTitle .id { font-size:14; font-weight:bold; color:grey; }
@@ -739,11 +740,7 @@ class Teambuilder extends React.PureComponent {
 						top: this.getPositionOfAxie(axie.spineData, "top_left").y - 50*this.state.ZOOM + "px"
 					}}
 					>
-						<AxieTitle  
-						className="inner" 
-						id={axie.axieData.id} 
-						name={axie.axieData.name} 
-						class={axie.axieData.class} />
+						<AxiePartClasses parts={axie.axieData.parts} />
 						<AxieBadges axieData={axie.axieData} size="normal"/>
 					</div>
 					: ""

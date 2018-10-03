@@ -5,7 +5,7 @@ import styled, { css } from "styled-components";
 import AxieTeam from "./AxieTeam";
 import {AXIE_DATA_V1} from "../services/axie-data-service";
 /* ui */
-import Button from "./ui/Button";
+import IconButton from "./ui/IconButton";
 
 // CSS
 const StyledAxieTeams = styled.div`
@@ -27,8 +27,7 @@ const StyledAxieTeams = styled.div`
 	.teams {height:100%; overflow-y: scroll; }
 	.team { border-bottom: 1px solid #e6e6e6; border-radius: 0; padding-bottom: 10px; margin: 0;}
 	/* new team button */
-	.newTeamBtn {position:absolute; right: 30px; text-align:center; bottom:30px; user-select:none; width:140px; background:#a146ef; color: white; font-weight:bold; padding:10px 5px; border-radius:8px; cursor:pointer;}
-	.newTeamBtn:hover {background:#ca62ff;}
+	.newTeamBtn {position:absolute; right: 40px; bottom:40px;}
 	.buttonContainer {border-top: 1px solid #e4e4e4; padding-bottom:10px;}
 	/* resize button */
 	.resizeButton { position:absolute; z-index:10; top: 2px; left: 2px;}
@@ -165,11 +164,11 @@ class AxieTeams extends React.PureComponent {
 
 		return (
 			<StyledAxieTeams className={"axieTeams" + (this.state.minimized ? " minimized" : "")} selectedAxie={this.props.selectedAxie} minimized={this.state.minimized} >
-				<Button className="resizeButton" name={"Resize"} onClick={this.toggleSize}/>
+				<IconButton className="resizeButton" onClick={this.toggleSize} icon={"./img/icons/general/fullscreen.svg"} />
 				<div className="teams">
 					{teams}
 				</div>
-				<div className="newTeamBtn" onClick={this.createNewTeam}>New Team</div>
+				<IconButton color="#a146ef" theme="dark" size="big" className="newTeamBtn" onClick={this.createNewTeam} icon={"./img/icons/general/add.svg"} />
 			</StyledAxieTeams>
 		);
 	}

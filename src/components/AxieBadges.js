@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled, { css } from "styled-components";
 import ReactSVG from 'react-svg';
-import ReactTooltip from 'react-tooltip'
+import ReactTooltip from 'react-tooltip';
 //own
 import {getBattleParts, getTotalStats, rateStats} from '../services/axie-part-and-stats-transform';
 //

@@ -32,8 +32,7 @@ const StyledAxieTeam = styled.div`
 	.teammember .img {width:120px; height:auto; margin-right:0; margin-top:10px;}
 	.teammember .img_box {width:120px; height:90px; position:relative;}
 	.teammember .axie_badges {position: absolute; top:0; left:0;}
-	.teammember .removeAxieButton {display:none; position: absolute; user-select:none; width:25px; height:25px; cursor:pointer; font-size: 12px; align-items: center; justify-content: center; border-radius: 50%; }
-	.teammember .removeAxieButton {top: 15px; right: 15px; background: rgba(255, 91, 91, 0.1); color: #ea5353; font-weight: bold;}
+	.teammember .removeAxieButton {display:none; position: absolute; top: 15px; right: 15px;}
 	.teammember:hover .removeAxieButton {display:flex;}
 	/* right */
 	.right {display:none;}
@@ -71,7 +70,7 @@ class AxieTeam extends React.PureComponent {
 			members = this.props.team.members.map((member)=>(
 					<div key={member.axie.id} className="teammember">
 					 <Axie data={member.axie.axieData} img={member.axie.image} features={"minimal"}/>
-					 <div onClick={() => { this.props.removeAxieFromTeam(this.props.team, member) }} className="removeAxieButton">X</div>
+					 <IconButton className="removeAxieButton" onClick={() => { this.props.removeAxieFromTeam(this.props.team, member) }} icon={"./img/icons/general/close.svg"} />
 					</div>
 			));
 		}
