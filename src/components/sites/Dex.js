@@ -2,18 +2,20 @@ import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 // custom
-import Axie from "../Axie";
+import Axie from "../Axie/Axie/Axie";
 import {AXIE_DATA, AXIE_DATA_V1} from "../../services/axie-data-service";
 import Textfield from "../ui/Textfield";
 import Button from "../ui/Button";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
 import AxieList from "../AxieList";
+import StatusBox from "../StatusBox";
 
 //CSS
 const StyledDex = styled.div`
 
 	.button_list {}
 	.button_list > button { margin-right:5px;}
+	.center {display:flex; justify-content:center;}
 `;
 
 const Error = styled.div`
@@ -56,11 +58,19 @@ class Dex extends React.PureComponent {
 	 * @memberof AxieList
 	 */
 	getAxiesByIds = () => {
+		this.setState({
+			status: {type:"loading", code:"loading_axies", msg: "loading axies 0 /" + this.state.axieIdList.length},
+		});
+		var axiesLoaded = 0;
 		var promises = [];
 		this.state.axieIdList.forEach(id => {
 			var api = AXIE_DATA.buildAxieByIdAPI(id);
 			var p = new Promise((resolve,reject)=>{
 				axios.get(api).then((data)=>{
+					axiesLoaded++;
+					this.setState({
+						status: {type:"loading", code:"loading_axies", msg: "loading axies "+ axiesLoaded +" / "+ this.state.axieIdList.length},
+					})
 					resolve(data.data);
 				});
 			});
@@ -69,7 +79,8 @@ class Dex extends React.PureComponent {
 		Promise.all(promises).then((axies)=>{
 			console.log("ax",axies);
 			this.setState({
-				axies: axies
+				axies: axies,
+				status: {type:"completed", code:"all_loaded", msg: "loading complete!"},
 			})
 		});
 	}
@@ -109,43 +120,37 @@ class Dex extends React.PureComponent {
 	
 	
 	render() {
-		if(this.state.axies){
 			return(
 				<StyledDex>
-					<BasicCenterContainer>
-						<div className="getAxieByIdContainer">
-							<h2>Get Axie By Id</h2>
-							<Textfield id="axielist_getaxie_id" value={this.state.axie_id} name="Axie ID" placeholder="Axie ID" onChange={this.handleChange("axie_id")} />
-							<div className="button_list">
-								<Button onClick={this.getAxieById} name={"Get Axie"} />
+					{this.state.axies ? 
+					<div>
+						<BasicCenterContainer>
+							<div className="getAxieByIdContainer">
+								<h2>Get Axie By Id</h2>
+								<Textfield id="axielist_getaxie_id" value={this.state.axie_id} name="Axie ID" placeholder="Axie ID" onChange={this.handleChange("axie_id")} />
+								<div className="button_list">
+									<Button onClick={this.getAxieById} name={"Get Axie"} />
+								</div>
+								<div className="button_list">
+									<Button onClick={this.getAxiesByList.bind(this, this.state.topAttackers)} name={"Get Attackers"} />
+									<Button onClick={this.getAxiesByList.bind(this, this.state.topTanks)} name={"Get Tanks"} />
+								</div>
 							</div>
-							<div className="button_list">
-								<Button onClick={this.getAxiesByList.bind(this, this.state.topAttackers)} name={"Get Attackers"} />
-								<Button onClick={this.getAxiesByList.bind(this, this.state.topTanks)} name={"Get Tanks"} />
-							</div>
+						</BasicCenterContainer>
+						<AxieList axies={this.state.axies}/>
+					</div>
+					: ""}
+					
+					{this.state.status.code != "all_loaded" ? 
+						<div className="center">
+						<StatusBox status={this.state.status}/> 
 						</div>
-					</BasicCenterContainer>
-					<AxieList axies={this.state.axies}/>
+					: ""}
+
 				</StyledDex>
 			);
-		}
-		else{
-			if(this.state.error){
-				return (
-					<Error>
-						{this.state.error.name}
-					</Error>
-				)
-			}
-			else {
-				return (
-					<BasicCenterContainer>
-						<h1>Loading</h1>
-					</BasicCenterContainer>
-				);
-			}
 			//var img1 = require('../static/img/4321.png');
-		}
+		
 	}
 }
 

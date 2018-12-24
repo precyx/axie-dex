@@ -7,10 +7,12 @@ import Button from '../ui/Button';
 import {AXIE_DATA_V1} from "../../services/axie-data-service.js";
 import BasicCenterContainer from "../containers/BasicCenterContainer"; 
 import AxieList from '../AxieList';
+import StatusBox from "../StatusBox";
 
 //CSS
 const StyledEncyclopedia = styled.div`
 	.getAxieByAddressContainer {width:90%; margin:0 auto; padding:30px; }
+	.center {display:flex; justify-content:center;}
 `;
 
 // Class
@@ -34,11 +36,15 @@ class Encyclopedia extends Component {
 	 * @memberof AxieList
 	 */
 	getAxies = () => {
+		this.setState({
+			status: {type:"loading", code:"loading_axies", msg: "loading axies..."},
+		});
 		var api = AXIE_DATA_V1.buildAxiesAPI(this.state.page, this.state.additionalParams);
 		axios.get(api).then((data)=>{
 			console.log("Get axies:", data);
 			this.setState({
-				axies : data.data.axies
+				axies : data.data.axies,
+				status: {type:"completed", code:"all_loaded", msg: "loading complete!"},
 			});
 		});
 	}
@@ -101,6 +107,11 @@ class Encyclopedia extends Component {
 							<Button className="next" onClick={this.loadNextPage} name={"Next"} />
 						</div>
 					</div>
+					{this.state.status.code != "all_loaded" ? 
+					<div className="center">
+						<StatusBox status={this.state.status} />
+					</div>
+					: "" }
 				</BasicCenterContainer>
 				<AxieList axies={this.state.axies}/>
 			</StyledEncyclopedia>

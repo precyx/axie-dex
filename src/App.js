@@ -4,6 +4,8 @@ import './App.css';
 import {axieTraits} from "./data/axie-traits";
 import {getMinMaxStatsOfPartsByType} from "./services/axie-part-and-stats-transform";
 import styled from "styled-components";
+// own components
+import AxieDexLogo from "./components/AxieDexLogo";
 // router
 import { BrowserRouter as Router, Route, NavLink, Redirect, Switch } from 'react-router-dom';
 // routes
@@ -11,11 +13,13 @@ import Dex from './components/sites/Dex';
 import Encyclopedia from './components/sites/Encyclopedia';
 import Profile from './components/sites/Profile';
 import Teambuilder from './components/sites/Teambuilder';
+import Bodyshapes from './components/sites/Bodyshapes';
 
 
 const StyledApp = styled.div`
+  .logo {display: flex; align-items: center; margin-right:30px;}
   .header {width:100%; height:50px; background: #f7f7f7; }
-  .header .center {width:90%; padding:0 35px; height:100%; margin:0 auto; display:flex; }
+  .header .center {padding:0 35px; height:100%; display:flex; }
   .header a { display: flex; align-items: center; margin-right:10px; color: #5d5d5d; font-size:14px; padding:0 15px; }
   .header a.selected { border-bottom:2px solid #a146ef; color:#a146ef; font-weight:bold; }
 `;
@@ -32,10 +36,12 @@ class App extends Component {
         <StyledApp>
           <div className="header">
             <div className="center">
+              <AxieDexLogo className="logo" logo={"./img/logo/ad_logo.svg"}> </AxieDexLogo>
               <NavLink activeClassName="selected" to="/teambuilder">Teambuilder</NavLink>
               <NavLink activeClassName="selected" to="/dex">Dex</NavLink>
               <NavLink activeClassName="selected" to="/market">Encyclopedia</NavLink>
               <NavLink activeClassName="selected" to="/profile">Profile</NavLink>
+              <NavLink activeClassName="selected" to="/body-shapes">Bodyshapes</NavLink>
             </div>
           </div>
           <Switch>
@@ -43,6 +49,7 @@ class App extends Component {
             <Route exact path="/dex" component={Dex}/>
             <Route exact path="/market" component={Encyclopedia}/>
             <Route exact path="/profile" component={Profile}/>
+            <Route exact path="/body-shapes" component={Bodyshapes}/>
             <Redirect from='/' to='/teambuilder'/>
           </Switch>
         </StyledApp>

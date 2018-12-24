@@ -176,4 +176,15 @@ export const AXIE_DATA_V1 = {
         });
         return Promise.all(promises);
     },
+    /**
+     * @return gets all ID's for the different body shapes e.g. sumo, wetDog, bigYak
+     */
+    getBodyShapes(){
+        let url = "https://api.axieinfinity.com/v1/body-shape";
+        return axios.get(url).then((data)=>{
+            return data.data;
+        }).catch(function(error){
+            throw new Error("Axie API v1 down");
+        });
+    }
 }

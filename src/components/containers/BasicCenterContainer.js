@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const StyledBasicCenterContainer = styled.div`
 	width:90%;
-	margin:0 auto; 
+	margin:0 auto;
 `;
 
 class BasicCenterContainer extends React.PureComponent {

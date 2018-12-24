@@ -182,6 +182,10 @@ export function calcBadges(axieData){
 	var battleParts = getBattleParts(axieData.parts);
 	var totals = getTotalStats(battleParts);
 	var scores = rateStats(axieData, axieStats, battleParts, minMaxPartStatsByType);
+	// totals
+	var hpDefTotal = axieData.stats.hp + totals["def"];
+	var athTotal = totals["ath"];
+	console.log(hpDefTotal, athTotal); 
 	//
 	//rate tankiness (def+hp)
 	var tankLevel = 0;
@@ -199,8 +203,8 @@ export function calcBadges(axieData){
 	if(attackScore >= 9.5) athLevel = 4;
 	//
 	return{
-		tankLevel: tankLevel,
-		athLevel: athLevel,
+		attack: {level: athLevel, score: athTotal},
+		tankiness: {level: tankLevel, score:hpDefTotal},
 	};
 	//console.log("automated", tkLv);
 }

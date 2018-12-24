@@ -10,6 +10,7 @@
     "pixi-filters": "^2.6.1",
     "pixi-spine": "^1.5.16",
     "pixi.js": "^4.8.1",
+    "re-resizable": "^4.9.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-router": "^4.3.1",

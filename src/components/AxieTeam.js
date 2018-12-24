@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import styled from "styled-components";
 // own
 import AxieBadges from "./AxieBadges";
-import Axie from "./Axie";
+import AxieParts from "./AxieParts";
+import Axie from "./Axie/Axie/Axie";
 /* ui */
 import IconButton from "./ui/IconButton";
 
@@ -20,7 +21,7 @@ const StyledAxieTeam = styled.div`
 	border-radius:8px;
 	background:white;
 	/* team */
-	.team_title {font-size: 18px; color: #696969; font-weight: normal;}
+	.team_title {font-size: 18px; color: #696969; font-weight: normal; user-select:none;}
 	/* teammember */
 	.members {display:flex; margin-top:10px;}
 	.teammember { border-radius: 8px; padding-bottom:10px;  margin-right: 10px; position:relative;}
@@ -70,6 +71,7 @@ class AxieTeam extends React.PureComponent {
 			members = this.props.team.members.map((member)=>(
 					<div key={member.axie.id} className="teammember">
 					 <Axie data={member.axie.axieData} img={member.axie.image} features={"minimal"}/>
+					 <AxieParts parts={member.axie.axieData.parts} />
 					 <IconButton className="removeAxieButton" onClick={() => { this.props.removeAxieFromTeam(this.props.team, member) }} icon={"./img/icons/general/close.svg"} />
 					</div>
 			));

@@ -35,6 +35,10 @@ const StyledIconButton = styled.div`
 		height: 50px;
 		svg { width: 30px; height:30px; }
 	`}
+	/* active */
+	${({ active }) => active && css`
+	background:#eaeaea;
+	`}
 `;
 
 class IconButton extends React.PureComponent {
@@ -43,7 +47,8 @@ class IconButton extends React.PureComponent {
 			<StyledIconButton 
 				color={this.props.color} 
 				theme={this.props.theme} 
-				size={this.props.size} 
+				size={this.props.size}
+				active={this.props.active}
 				className={"iconButton" + " " + this.props.className + " theme_" + this.props.theme} 
 				onClick={this.props.onClick}
 			>

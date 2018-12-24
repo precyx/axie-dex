@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import styled, { css } from "styled-components";
 //own
-import AxieTitle from './AxieTitle';
-import AxieParts from './AxieParts';
-import AxieStats from './AxieStats';
-import AxieSprite from './AxieSprite';
-import AxieMoves from './AxieMoves';
-import AxieBadges from './AxieBadges';
-import AxieSalesData from './AxieSalesData';
-import AxieScores from './AxieScores';
+import AxieTitle from '../../AxieTitle';
+import AxieParts from '../../AxieParts';
+import AxieStats from '../../AxieStats';
+import AxieSprite from '../../AxieSprite';
+import AxieMoves from '../../AxieMoves';
+import AxieBadges from '../../AxieBadges';
+import AxieSalesData from '../../AxieSalesData';
+import AxieScores from '../../AxieScores';
 
 //CSS
 const StyledAxie = styled.div`
@@ -46,18 +46,20 @@ const StyledAxie = styled.div`
 
 /**
  * Displays an Axie with image, parts
- * @example <Axie data={axie} image={"img-url"} features={"minimal" | "all"}/>
+ * @example <Axie data={axie} image={"img-url"} features={"minimal" | "all"} rendering={"image", "canvas", "default"}/>
  * @class Axie
  * @extends {React.PureComponent}
  */
 class Axie extends React.PureComponent {
   constructor(props){
-      super(props);
-      //
-      this.state = {
-        axieData:   this.props.data,
-        axieID:     "axie_"+this.props.data.id,
-      };
+    super(props);
+    //
+    this.state = {
+      axieData:   this.props.data,
+      axieID:     "axie_"+this.props.data.id,
+      img:        this.props.image ? this.props.image : this.props.rendering == "image" ? this.props.data.figure.static.idle : null,
+    };
+    console.log("img", this.state.img);
   }
 
   render(){
@@ -83,7 +85,7 @@ class Axie extends React.PureComponent {
             <div style={{display:"none"}}>
               <AxieParts className="axieParts" parts={this.state.axieData.parts} />
             </div>
-            {this.props.img ? <img className="staticImg" src={this.props.img} />
+            {this.state.img ? <img className="staticImg" src={this.state.img} />
             : <AxieSprite axieData={this.state.axieData} /> }
           </div>
           <div className="badgeContainer">

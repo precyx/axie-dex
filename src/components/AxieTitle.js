@@ -25,7 +25,7 @@ class AxieTitle extends React.PureComponent {
 	render() {
 		return (
 			<StyleAxieTitle className="axieTitle" axieClass={this.props.class}>
-        <div className="name">{this.props.name} </div>
+        <a target="_blank" href={"https://axieinfinity.com/axie/" + this.props.id} className="name">{this.props.name} </a>
 				<ReactSVG className="icon" svgStyle={{fill: axieClassColors[this.props.class]}} src={"./img/icons/classes/" + this.props.class + "_24px.svg"} />
 				<div className="id">#{this.props.id}</div>
         <div style={{display:"none"}} className="class">{this.props.class}</div>

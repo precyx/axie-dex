@@ -1,30 +1,35 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from "styled-components";
+import Resizable from "re-resizable";
 // own
 import AxieTeam from "./AxieTeam";
 import {AXIE_DATA_V1} from "../services/axie-data-service";
 /* ui */
 import IconButton from "./ui/IconButton";
 
+// Resizable Style 
+const resizeStyle = {
+	padding:"0 0",
+	background: "white",
+	padding:"10px 0",
+	paddingTop:"30px",
+	height:"50vh", 
+	border: "1px solid #cccccc",
+	borderRadius: "3px", 
+	position: "absolute", 
+	zIndex:"300", 
+	right: "20px",
+	bottom: "20px",
+}
+
 // CSS
 const StyledAxieTeams = styled.div`
-	padding:0 0;
-	width:1000px;
-	background: white;
-	position:relative; 
-	background:white; 
-	padding:10px 0;
-	padding-top:30px;
-	height:50vh; 
-	width: calc(30vw);
-
-	&.minimized {width:100px; height:100px; box-shadow:none;}
-	&.minimized .newTeamBtn {display:none;}
+	height:100%;
 	/* containers */
 	.gapContainer {padding:0 25px; display:flex; justify-content:center;}
 	/* teams */
-	.teams {height:100%; overflow-y: scroll; }
+	.teams {height:100%; overflow-y: scroll;  max-height: 95%;}
 	.team { border-bottom: 1px solid #e6e6e6; border-radius: 0; padding-bottom: 10px; margin: 0;}
 	/* new team button */
 	.newTeamBtn {position:absolute; right: 40px; bottom:40px;}
@@ -34,7 +39,6 @@ const StyledAxieTeams = styled.div`
 
 	/* selectedAxie */
 	${({ selectedAxie }) => selectedAxie && css`
-		width: calc(30vw);
 		border: none;
 		background: #f1f1f1;
 		.resizeButton {display:none;}
@@ -44,6 +48,20 @@ const StyledAxieTeams = styled.div`
 		.teams .team .right {display:none;}
 		.teams .team .teammember .removeAxieButton {display:none;}
   `}
+
+	${({ size }) => size === "minimized" && css`
+		/*width:100px; 
+		height:100px; 
+		box-shadow:none;
+		.newTeamBtn {display:none;}*/
+	`}
+	${({ size }) => size === "normal" && css`
+	`}
+	${({ size }) => size === "maximized" && css`
+		/*width:40vw; 
+		height:80vh; */
+		
+	`}
 
 `;
 
@@ -59,7 +77,8 @@ class AxieTeams extends React.PureComponent {
 		this.state = {
 			teams: [],
 			counter: 0,
-			minimized: false,
+			currentSize: 1,
+			sizes: ["minimized", "normal", "maximized"],
 		}
 	}
 
@@ -138,8 +157,9 @@ class AxieTeams extends React.PureComponent {
 
 	toggleSize = () => {
 		//console.log(this.state.minimized);
+		var nextSizeIndex = this.state.currentSize + 1  > this.state.sizes.length-1 ? 0 : this.state.currentSize + 1;
 		this.setState((prevState)=>({
-			minimized: !prevState.minimized,
+			currentSize: nextSizeIndex,
 		}));
 	}
 
@@ -163,13 +183,25 @@ class AxieTeams extends React.PureComponent {
 		}
 
 		return (
-			<StyledAxieTeams className={"axieTeams" + (this.state.minimized ? " minimized" : "")} selectedAxie={this.props.selectedAxie} minimized={this.state.minimized} >
-				<IconButton className="resizeButton" onClick={this.toggleSize} icon={"./img/icons/general/fullscreen.svg"} />
+
+			<StyledAxieTeams className={"axieTeams"}  selectedAxie={this.props.selectedAxie} size={this.state.sizes[this.state.currentSize]} >
+				<Resizable
+				className={"axieTeamsResizable"}
+				style={resizeStyle}
+				defaultSize={{
+					width:'auto',
+					height:'auto',
+				}}
+				>
 				<div className="teams">
 					{teams}
 				</div>
 				<IconButton color="#a146ef" theme="dark" size="big" className="newTeamBtn" onClick={this.createNewTeam} icon={"./img/icons/general/add.svg"} />
+
+				</Resizable>
 			</StyledAxieTeams>
+
+			
 		);
 	}
 }
