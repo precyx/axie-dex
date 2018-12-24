@@ -7,28 +7,46 @@ import axieClassColors from '../data/axie-class-colors';
 //CSS
 const StyleAxieTitle = styled.div`
 	display:flex;
-	align-items:center;
-	text-align:right;
+	align-items:left;
+	flex-flow:column;
 
 	.name { font-size: 12px; margin-right:5px; color: #949494;}
-	.id {color: white; border-radius:3px; font-style: italic; font-size: 12px; color: ${props => axieClassColors[props.axieClass]}; }
+	.id {color: #8d65ff; border-radius:3px; font-style: italic; font-size: 12px; color: ${props => axieClassColors[props.axieClass]}; }
 	.icon {width:16px; height:16px; margin-right:5px;}
+	.stageText {color: #6f6f6f; font-size: 18px;}
+	.line1, .line2 {display:flex; align-items: center;}
+	.line2 {margin-top:5px;}
 	svg {width:16px;}
 `;
 
 /**
  * Renders {name, id, class icon} of an {axie}
  * @class AxieTitle
- * @example <AxieTitle name={name} class={axieClass} id={id}/>
+ * @example <AxieTitle name={name} class={axieClass} id={id} stage={stage}/>
  */
 class AxieTitle extends React.PureComponent {
+	stageTexts = {
+		1: "Egg",
+		2: "Larva",
+		3: "Petite",
+		4: "Adult",
+	}
 	render() {
 		return (
 			<StyleAxieTitle className="axieTitle" axieClass={this.props.class}>
-        <a target="_blank" href={"https://axieinfinity.com/axie/" + this.props.id} className="name">{this.props.name} </a>
-				<ReactSVG className="icon" svgStyle={{fill: axieClassColors[this.props.class]}} src={"./img/icons/classes/" + this.props.class + "_24px.svg"} />
-				<div className="id">#{this.props.id}</div>
-        <div style={{display:"none"}} className="class">{this.props.class}</div>
+				<div className="line1">
+					<a target="_blank" href={"https://axieinfinity.com/axie/" + this.props.id} className="name">{this.props.name} </a>
+					{this.props.class ? 
+						<ReactSVG className="icon" svgStyle={{fill: axieClassColors[this.props.class]}} src={"./img/icons/classes/" + this.props.class + "_24px.svg"} />
+					: ""}
+					<div className="id">#{this.props.id}</div>
+					<div style={{display:"none"}} className="class">{this.props.class}</div>
+				</div>
+				{this.props.stage <= 2 ?
+				<div className="line2">
+					<div className="stageText">{this.stageTexts[this.props.stage]}</div>
+				</div>
+				: ""}
 			</StyleAxieTitle>
 		);
 	}

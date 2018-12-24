@@ -23,7 +23,8 @@ const StyledAxieSprite = styled.div`
  */
 class AxieSprite extends React.PureComponent {
 	constructor(props) {
-		super(props);
+    super(props);
+    //console.log("ddd", this.props.axieData);
 		this.state = {
 			scale_factor:  0.2, 
 			axieData:   this.props.axieData,

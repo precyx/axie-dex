@@ -76,31 +76,29 @@ class Profile extends Component {
 			console.log("x", axieDataPerBodyshape);
 			this.setState({
 				bodyShapesAxies: axieDataPerBodyshape,
-				status: {type:"completed", code:"loading_axie_data", msg: "axie data loaded."},
+				status: {type:"completed", code:"all_loaded", msg: "axie data loaded."},
 			});
 		});
 	}
 
 	render() {
 		var axies = "";
-		
 		if(this.state.bodyShapesAxies){
-			console.log(this.state.bodyShapesAxies);
 			axies = Object.keys(this.state.bodyShapesAxies).map((key) => 
 				<div>
 					<h2>{key} ({this.state.bodyShapesAxies[key].length})</h2>
 					{this.state.bodyShapesAxies[key].map( (axie) =>
-						<Axie data={axie} features={"minimal"} rendering={"image"}/>
+						<Axie data={axie} features={"minimal"} rendering={"image"} />
 					)}
 				</div>
-				
 			)
-			console.log(axies);
 		}
 		return (
 			<StyledBodyshapes>
 				<BasicCenterContainer>
-					<StatusBox status={this.state.status} />
+					{this.state.status.code != "all_loaded" ? 
+						<StatusBox status={this.state.status} />
+					: ""}
 					<div className="axies">
 						{axies}
 					</div>
