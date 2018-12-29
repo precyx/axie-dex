@@ -28,6 +28,7 @@ const StyledParts = styled.div`
 class AxieParts extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		console.log("pp", this.props.parts)
 		this.state = {
 		}
 	}
@@ -44,11 +45,11 @@ class AxieParts extends React.PureComponent {
 		}
 		// solve object
 		else if(this.props.parts !== null && typeof this.props.parts === 'object'){
-			var partTypes = ["back", "ears", "eyes", "horn", "mouth", "tail"];
-			parts = partTypes.map((partType) => (
-				<div key={partType} className="part">
-					<AxiePartIcon className="axiePartIcon" type={this.props.parts[partType]} axieClass={this.props.parts[partType].class} theme="dark"/>
-					<PartName part={this.props.parts[partType]} />
+			//var partTypes = ["back", "ears", "eyes", "horn", "mouth", "tail"];
+			parts = Object.keys(this.props.parts).map((partKey) => (
+				<div key={partKey} className="part">
+					<AxiePartIcon className="axiePartIcon" type={this.props.parts[partKey].type} axieClass={this.props.parts[partKey].class} theme="dark"/>
+					<PartName part={this.props.parts[partKey]} />
 				</div>
 			));
 		}

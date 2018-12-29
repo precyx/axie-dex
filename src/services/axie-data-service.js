@@ -13,11 +13,13 @@ export const AXIE_DATA = {
      * @param {number} offset
      * @returns
      */
-    buildAxiesByAddressAPI(address, offset){
+    buildAxiesByAddressAPI(address, offset, additionalParams){
         var url = "https://axieinfinity.com/api/addresses/";
         if(address) url += address + "/axies";
         else throw new Error("address is required. e.g. 0x2B81fd2DBFbF45f403bc74F06d416d4218e8A953");
-        if(offset) url += "?offset=" + offset;
+        url += "?a";
+        if(offset) url += "&offset=" + offset;
+        if(additionalParams) url += additionalParams;
         return url;
     },
     /**
@@ -90,11 +92,13 @@ export const AXIE_DATA_V1 = {
      * @param {number} offset
      * @returns
      */
-    buildAxiesByAddressAPI(address, page){
+    buildAxiesByAddressAPI(address, page, additionalParams){
         var url = "https://api.axieinfinity.com/v1/addresses/";
         if(address) url += address + "/axies";
         else throw new Error("address is required. e.g. 0x2B81fd2DBFbF45f403bc74F06d416d4218e8A953");
-        if(page) url += "?page=" + page;
+        address += "?a";
+        if(page) url += "&page=" + page;
+        if(additionalParams) url += additionalParams;
         return url;
     },
     /**
@@ -138,7 +142,8 @@ export const AXIE_DATA_V1 = {
     },
     buildAxiesAPI(page, additionalParams){
         var url = "https://api.axieinfinity.com/v1/axies/";
-        if(page) url+= "?page="+page;
+        url += "?a";
+        if(page) url+= "&page="+page;
         if(additionalParams) url+= additionalParams;
         return url;
     },

@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 // own
-import AxieList from '../AxieList';
+import AxieListControl from '../AxieListControl';
 import Textfield from '../ui/Textfield';
 import Button from '../ui/Button';
 import {AXIE_DATA} from "../../services/axie-data-service.js";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
 import StatusBox from "../StatusBox";
+import RadioGroup from '../ui/RadioGroup/RadioGroup';
 
 //CSS
 const StyledProfile = styled.div`
@@ -35,6 +36,7 @@ class Profile extends Component {
 			address: this.address_pool[Math.floor(Math.random() * this.address_pool.length)],
 			offset: 0,
 			limit: 12,
+			additionalParams: "",
 			axies: null,
 		}
 	}
@@ -50,7 +52,8 @@ class Profile extends Component {
 		this.setState({
 			status: {type:"loading", code:"loading_axies", msg: "loading axies..."},
 		});
-		var api = AXIE_DATA.buildAxiesByAddressAPI(this.state.address, this.state.offset);
+		var api = AXIE_DATA.buildAxiesByAddressAPI(this.state.address, this.state.offset, this.state.additionalParams);
+		console.log("Api", api);
 		axios.get(api).then(data=>{
 			console.log("d", data.data.axies);
 			this.setState({
@@ -81,6 +84,7 @@ class Profile extends Component {
 		);
 	}
 
+
 	/**
 	 * Generic handle change function that updates specific property of state
 	 * @memberof AxieList
@@ -91,6 +95,12 @@ class Profile extends Component {
     });
   };
 
+	onStageChange = (stage) => {
+		this.setState({
+			additionalParams: "&stage="+stage,
+		});
+	}
+
 	render() {
 		return (
 			<StyledProfile>
@@ -99,23 +109,30 @@ class Profile extends Component {
 					<div className="getAxieByAddressContainer">
 					<h2>Get Axies By Address</h2>
 					<div className="controlBar">
-					<Textfield id="profile_getAxiesByAddress_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
-					<Textfield id="profile_getAxiesByAddress_offset" value={this.state.offset} name="Offset" placeholder="Offset" onChange={this.handleChange("offset")} />
-					<Textfield id="profile_getAxiesByAddress_limit" value={this.state.limit} name="Limit" placeholder="Limit" onChange={this.handleChange("limit")} />
+						<Textfield id="profile_getAxiesByAddress_address" value={this.state.address} name="Address" placeholder="Address" onChange={this.handleChange("address")} />
+						<Textfield id="profile_getAxiesByAddress_offset" value={this.state.offset} name="Offset" placeholder="Offset" onChange={this.handleChange("offset")} />
+						<Textfield id="profile_getAxiesByAddress_limit" value={this.state.limit} name="Limit" placeholder="Limit" onChange={this.handleChange("limit")} />
+
 						<Button onClick={this.getAxiesByAddress} name={"Load Axies"} />
 						<div>
 							<Button className="prev" onClick={this.loadPrevPage} name={"Prev"} />
 							<Button className="next" onClick={this.loadNextPage} name={"Next"} />
 						</div>
+						<RadioGroup class={"radiogroup"} options={[
+							{label: "Adult", value: "4"},
+							{label: "Petite", value: "3"},
+							{label: "Larva", value: "2"},
+						]} active_option={"4"} onChange={this.onStageChange}>
+						</RadioGroup>
 					</div>
-					{this.state.status.code != "all_loaded" ? 
+					{this.state.status.code !== "all_loaded" ? 
 					<div className="center">
 						<StatusBox status={this.state.status} />
 					</div>
 					: "" }
 				</div>
 				</BasicCenterContainer>
-				<AxieList axies={this.state.axies}/>
+				<AxieListControl axies={this.state.axies} />
 			</StyledProfile>
 		);
 	}

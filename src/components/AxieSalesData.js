@@ -5,8 +5,8 @@ import {weiToEth} from '../services/utils';
 
 //CSS
 const StyledAxieSalesData = styled.div`
-    font-size: 18px;
-    color: #6f6f6f;
+		font-size: 18px;
+    color: #8e8e8e;
 `;
 
 class AxieSalesData extends React.PureComponent {

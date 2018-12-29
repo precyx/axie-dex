@@ -34,7 +34,7 @@ const StyledAxieBadges = styled.div`
 
 /**
  * Renders Axie Badges for different battle types like: Tank, Off-Tank, Sniper, Attacker 
- * @example <AxieBadges axieData={axieData} />
+ * @example <AxieBadges axieData={axieData} size={"tiny" | "small" | "normal"}/>
  * @class AxieBadges
  * @extends {Component}
  */

@@ -7,7 +7,7 @@ import {AXIE_DATA, AXIE_DATA_V1} from "../../services/axie-data-service";
 import Textfield from "../ui/Textfield";
 import Button from "../ui/Button";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
-import AxieList from "../AxieList";
+import AxieListControl from "../AxieListControl";
 import StatusBox from "../StatusBox";
 
 //CSS
@@ -59,12 +59,12 @@ class Dex extends React.PureComponent {
 	 */
 	getAxiesByIds = () => {
 		this.setState({
-			status: {type:"loading", code:"loading_axies", msg: "loading axies 0 /" + this.state.axieIdList.length},
+			status: {type:"loading", code:"loading_axies", msg: "loading axies 0 / " + this.state.axieIdList.length},
 		});
 		var axiesLoaded = 0;
 		var promises = [];
 		this.state.axieIdList.forEach(id => {
-			var api = AXIE_DATA.buildAxieByIdAPI(id);
+			var api = AXIE_DATA_V1.buildAxieByIdAPI(id);
 			var p = new Promise((resolve,reject)=>{
 				axios.get(api).then((data)=>{
 					axiesLoaded++;
@@ -90,7 +90,7 @@ class Dex extends React.PureComponent {
 	 * @memberof AxieList
 	 */
 	getAxieById = () => {
-		var api = AXIE_DATA.buildAxieByIdAPI(this.state.axie_id);
+		var api = AXIE_DATA_V1.buildAxieByIdAPI(this.state.axie_id);
 		axios.get(api).then((data) => {
 			var newAxie = data.data;
 			console.log("X", data);
@@ -122,6 +122,12 @@ class Dex extends React.PureComponent {
 	render() {
 			return(
 				<StyledDex>
+					{this.state.status.code != "all_loaded" ? 
+						<div className="center">
+						<StatusBox status={this.state.status}/> 
+						</div>
+					: ""}
+					
 					{this.state.axies ? 
 					<div>
 						<BasicCenterContainer>
@@ -137,15 +143,11 @@ class Dex extends React.PureComponent {
 								</div>
 							</div>
 						</BasicCenterContainer>
-						<AxieList axies={this.state.axies}/>
+						<AxieListControl axies={this.state.axies} />
 					</div>
 					: ""}
 					
-					{this.state.status.code != "all_loaded" ? 
-						<div className="center">
-						<StatusBox status={this.state.status}/> 
-						</div>
-					: ""}
+
 
 				</StyledDex>
 			);

@@ -6,8 +6,9 @@ import Textfield from '../ui/Textfield';
 import Button from '../ui/Button';
 import {AXIE_DATA_V1} from "../../services/axie-data-service.js";
 import BasicCenterContainer from "../containers/BasicCenterContainer"; 
-import AxieList from '../AxieList';
+import AxieListControl from '../AxieListControl';
 import StatusBox from "../StatusBox";
+import RadioGroup from '../ui/RadioGroup/RadioGroup';
 
 //CSS
 const StyledEncyclopedia = styled.div`
@@ -23,6 +24,8 @@ class Encyclopedia extends Component {
 			axies: null,
 			offset : 0,
 			page: 1,
+			saleSiringParam : "",
+			stageParam: "",
 			additionalParams : "",
 		}
 	}
@@ -38,34 +41,29 @@ class Encyclopedia extends Component {
 	getAxies = () => {
 		this.setState({
 			status: {type:"loading", code:"loading_axies", msg: "loading axies..."},
-		});
-		var api = AXIE_DATA_V1.buildAxiesAPI(this.state.page, this.state.additionalParams);
-		axios.get(api).then((data)=>{
-			console.log("Get axies:", data);
-			this.setState({
-				axies : data.data.axies,
-				status: {type:"completed", code:"all_loaded", msg: "loading complete!"},
+			additionalParams : this.state.saleSiringParam + this.state.stageParam,
+		}, () => {
+			var api = AXIE_DATA_V1.buildAxiesAPI(this.state.page, this.state.additionalParams);
+			console.log("api", api);
+			axios.get(api).then((data)=>{
+				console.log("Get axies:", data);
+				this.setState({
+					axies : data.data.axies,
+					status: {type:"completed", code:"all_loaded", msg: "loading complete!"},
+				});
 			});
 		});
 	}
 
 	getAxieSales = () => {
-		var saleParam = "sale=1";
-		var connector;
-		if(this.state.page) connector = "&";
-		else connector = "?";
 		this.setState({
-			additionalParams: connector + saleParam,
+			saleSiringParam: "&sale=1",
 		}, this.getAxies);
 	}
 
 	getAxieSires = () => {
-		var saleParam = "siring=1";
-		var connector;
-		if(this.state.page) connector = "&";
-		else connector = "?";
 		this.setState({
-			additionalParams: connector + saleParam,
+			saleSiringParam: "&siring=1",
 		}, this.getAxies);
 	}
 
@@ -90,6 +88,12 @@ class Encyclopedia extends Component {
       [name]: event.target.value,
     });
   };
+	
+	onStageChange = (stage) => {
+		this.setState(()=>({
+			stageParam: "&stage="+stage,
+		}));
+	}
 
 	render() {
 		return (
@@ -106,14 +110,20 @@ class Encyclopedia extends Component {
 							<Button className="prev" onClick={this.loadPrevPage} name={"Prev"} />
 							<Button className="next" onClick={this.loadNextPage} name={"Next"} />
 						</div>
+						<RadioGroup class={"radiogroup"} options={[
+							{label: "Adult", value: "4"},
+							{label: "Petite", value: "3"},
+							{label: "Larva", value: "2"},
+						]} active_option={"4"} onChange={this.onStageChange}>
+						</RadioGroup>
 					</div>
-					{this.state.status.code != "all_loaded" ? 
+					{this.state.status.code !== "all_loaded" ? 
 					<div className="center">
 						<StatusBox status={this.state.status} />
 					</div>
 					: "" }
 				</BasicCenterContainer>
-				<AxieList axies={this.state.axies}/>
+				<AxieListControl axies={this.state.axies} />
 			</StyledEncyclopedia>
 		);
 	}

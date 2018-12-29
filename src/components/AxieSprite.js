@@ -13,6 +13,7 @@ const StyledAxieSprite = styled.div`
   button {background: #efefef; border: 1px solid #bdbdbd; border-radius: 3px; margin-left: 5px;}
   input {border-radius:3px;}
   .scale {margin-bottom:10px;}
+
 `;
 
 /**
@@ -26,7 +27,13 @@ class AxieSprite extends React.PureComponent {
     super(props);
     //console.log("ddd", this.props.axieData);
 		this.state = {
-			scale_factor:  0.2, 
+      crisp_factor: 2,
+      axie_width: 140,
+      CANVAS_W: 220,
+      CANVAS_H: 170,
+      AXIE_INITIAL_W: NaN,
+      AXIE_INITIAL_H: NaN,
+      AXIE_INITIAL_RATIO: NaN,
 			axieData:   this.props.axieData,
 			axieImg:    this.props.axieData.figure.images ? this.props.axieData.figure.images[this.props.axieData.id + ".png"] : this.props.axieData.figure.axie.image.replace(/^http:\/\//i, 'https://'), //old API //images[this.props.axieData.id + ".png"],
 			axieAtlas:  this.props.axieData.figure.atlas ? this.props.axieData.figure.atlas : this.props.axieData.figure.axie.atlas.replace(/^http:\/\//i, 'https://'),
@@ -45,10 +52,10 @@ class AxieSprite extends React.PureComponent {
 		return (
 			<StyledAxieSprite>
 				<div className="scale" style={{display:"none"}}>
-					<input type="number" value={this.state.scale_factor} onChange={this.changeScale()} min="0.1" max="1" step="0.05" name="Scale"/>
+					<input type="number" value={this.state.axie_width} onChange={this.changeWidth()} min="50" max="300" step="10" name="Width"/>
 					<button onClick={() => this.setScale()}>Change Scale</button>
 				</div>
-				<canvas style={{width: this.state.canvasW, height: this.state.canvasH }} id={this.state.canvasID}>No Canvas support.</canvas>
+				<canvas style={{width: this.state.CANVAS_W, height: this.state.CANVAS_H }} id={this.state.canvasID}>No Canvas support.</canvas>
 			</StyledAxieSprite>
 		);
 	}
@@ -66,8 +73,8 @@ class AxieSprite extends React.PureComponent {
   setupPixi(){
     var pixiApp = new PIXI.Application({
       view:document.getElementById(this.state.canvasID),
-      width:480,
-      height:340,
+      width:this.state.CANVAS_W,
+      height:this.state.CANVAS_H,
       transparent:true,
       //forceCanvas:true,
     });
@@ -104,7 +111,15 @@ class AxieSprite extends React.PureComponent {
           if(this.state.pixiApp.stage){
             //this.state.pixiApp.start();
             this.state.pixiApp.stage.addChild(this.axie);
-            this.setScale();
+              console.log(this.axie);
+            this.setState({
+              AXIE_INITIAL_W: this.axie.width,
+              AXIE_INITIAL_H: this.axie.height,
+              AXIE_INITIAL_RATIO: this.axie.width / this.axie.height
+            }, () => {
+              this.setScale();
+            });
+            
           }
 
         }
@@ -117,29 +132,39 @@ class AxieSprite extends React.PureComponent {
   }
 
 
-  changeScale = scale_factor => event => {
+  changeWidth = width => event => {
     this.setState({
-      scale_factor: event.target.value,
+      axie_width: event.target.value,
     });
   };
 
   setScale(s){
-    var SCALE_FACTOR = this.state.scale_factor;
-    //console.log("factor", SCALE_FACTOR);
-    //var PADDING_FACTOR = 1;
+    var scaleFactor = this.state.axie_width / this.state.AXIE_INITIAL_W;
+    var crispFactor = this.state.crisp_factor;
+    // canvas
+    var cw = this.state.CANVAS_W;
+    var ch = this.state.CANVAS_H;
+    var cwc = cw * crispFactor;
+    var chc = ch * crispFactor;
+    // axie
+    var aw = this.state.AXIE_INITIAL_W;
+    var ah = this.state.AXIE_INITIAL_H;
+    var AR = this.state.AXIE_INITIAL_RATIO;
+    var awi = aw * scaleFactor * crispFactor;
+    var ahi = ah * scaleFactor * crispFactor;
+    // positions
+    var anchorX = awi*0.58;
+    var anchorY = ahi*0.87;
+    var centerX = anchorX + cwc/2 - awi/2;
+    var centerY = anchorY + chc/2 - ahi/2;
     //
-    this.axie.scale.set(SCALE_FACTOR);
-    this.setState({
-      canvasW: 480 *0.5,//this.axie.width * PADDING_FACTOR, 
-      canvasH: 340 *0.5//this.axie.height * PADDING_FACTOR
-    })
+    this.axie.scale.set(scaleFactor * crispFactor);
+    //
     this.state.pixiApp.renderer.resize(
-      this.state.canvasW,
-      this.state.canvasH
+      cwc, chc,
     );
     this.axie.position.set(
-      this.state.pixiApp.view.width/2 + this.axie.width/10, 
-      this.state.pixiApp.view.height/2 + this.axie.height/1.8
+      centerX, centerY
     );
   }
 

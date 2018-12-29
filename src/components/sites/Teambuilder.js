@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from "styled-components";
 //spinner
 import Spinner from 'react-spinner-material';
 //axios
-import axios from 'axios';
+//import axios from 'axios';
 //pixi
 import * as PIXI from 'pixi.js';
 import 'pixi-spine';
@@ -16,17 +16,17 @@ import {calcBadges} from "../../services/axie-part-and-stats-transform";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
 import {AXIE_DATA, AXIE_DATA_V1} from "../../services/axie-data-service.js";
 import {AXIE_PIXI} from "../../services/axie-pixi-service";
-import AxieTitle from "../AxieTitle";
+//import AxieTitle from "../AxieTitle";
 import AxieBadges from "../AxieBadges";
-import AxieScores from "../AxieScores";
-import AxieParts from "../AxieParts";
+//import AxieScores from "../AxieScores";
+//import AxieParts from "../AxieParts";
 import AxieComponent from "../Axie/Axie/Axie";
 import Button from "../ui/Button";
 import IconButton from "../ui/IconButton";
 import Textfield from "../ui/Textfield";
 import AxieTeams from '../AxieTeams';
 import AxiePartList from '../AxiePartList';
-import AxiePartClasses from '../AxiePartClasses';
+//import AxiePartClasses from '../AxiePartClasses';
 // classes
 import {Grid} from "../classes/Grid";
 import {Axie} from "../classes/Axie";
@@ -368,7 +368,7 @@ class Teambuilder extends React.PureComponent {
 		var startX = 120//120; //120
 		var startY = 180//180; //180
 		var SCALE = this.state.axieW / CRISP / this.state.AXIE_BASE_W * ZOOM;
-		var ROW_SHIFT = (y % 2 != 0) ? gapX : 0;
+		var ROW_SHIFT = (y % 2 !== 0) ? gapX : 0;
 		// set scale
 		axie.spineData.scale.set(SCALE * CRISP);
 		// set position
@@ -583,7 +583,7 @@ class Teambuilder extends React.PureComponent {
 	showAxiesByClass = (classType) => {
 		var newAxies = [];
 		this.state.axie_groups["all"].forEach((axie)=>{
-			if(axie.axieData.class == classType) newAxies.push(axie);
+			if(axie.axieData.class === classType) newAxies.push(axie);
 		});
 		this.setState((prevState)=>({
 			axies_with_spine: newAxies,
@@ -593,7 +593,7 @@ class Teambuilder extends React.PureComponent {
 	showAxiesByTag = (tagName) => {
 		var newAxies = [];
 		this.state.axie_groups["all"].forEach((axie)=>{
-			if(axie.axieData.title == tagName) newAxies.push(axie);
+			if(axie.axieData.title === tagName) newAxies.push(axie);
 		});
 		this.setState((prevState)=>({
 			axies_with_spine: newAxies,
@@ -623,7 +623,7 @@ class Teambuilder extends React.PureComponent {
 			if(!parts) return;
 			var partFound = false;
 			axie.axieData.parts.forEach((part)=>{
-				if(part.id == partID) partFound = true;
+				if(part.id === partID) partFound = true;
 			});
 			if(partFound) newAxies.push(axie);
 		});
@@ -910,7 +910,7 @@ class Teambuilder extends React.PureComponent {
 					<div className="teambuilder_view">
 						<div id="axie_teambuilder_container">
 							{this.state.axies_with_spine &&
-							 this.state.axies_with_spine.length == 0 ? 
+							 this.state.axies_with_spine.length === 0 ? 
 							<div className="no_results_hint">
 								No Axies found...
 							</div> 
