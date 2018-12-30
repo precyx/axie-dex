@@ -24,6 +24,7 @@ class AxieListControl extends React.PureComponent {
 		super(props);
 		this.state = {
 			features: "minimal",
+			size: "normal",
 			active: true,
 		}
 	}
@@ -42,6 +43,14 @@ class AxieListControl extends React.PureComponent {
 		})
 	}
 
+	onSizeChange = (newSize) => {
+		this.setState({
+			size: newSize,
+		}, ()=>{
+			console.log(this.state.size);
+		})
+	}
+
 	render() {
 		return (
 				<BasicCenterContainer>
@@ -55,10 +64,17 @@ class AxieListControl extends React.PureComponent {
 							{label: "Minimal", value: "minimal"},
 						]} active_option={"minimal"} onChange={this.onOptionChange}>
 						</RadioGroup>
-					</div>
+
+						<div className="title">Size</div>
+							<RadioGroup class={"radiogroup"} options={[
+								{label: "Normal", value: "normal"},
+								{label: "Large", value: "large"},
+							]} active_option={"normal"} onChange={this.onSizeChange}>
+							</RadioGroup>
+						</div>
 
 
-						<AxieList axies={this.props.axies} features={this.state.features}/>
+						<AxieList axies={this.props.axies} features={this.state.features} size={this.state.size}/>
 					</StyledAxieListControl>
 				</BasicCenterContainer>
 		);

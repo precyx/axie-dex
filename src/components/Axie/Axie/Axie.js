@@ -13,9 +13,10 @@ import AxieSalesData from '../../AxieSalesData';
 
 //CSS
 const StyledAxie = styled.div`
-  border: 1px solid #e2e2e2;
+  /* border: 1px solid #e2e2e2; */
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.06);
   padding: 15px;
-  min-width: 250px;
+  width: 220px;
   margin: 7px;
   border-radius: 20px;
   background:white;
@@ -32,11 +33,13 @@ const StyledAxie = styled.div`
 
   .axieContainer {}
   /* main container */
-  .mainContainer {margin-top:20px;}
+  .mainContainer {margin-top:0;}
   /* static img */
-  .staticImg {width:220px; height:170px; margin:0 auto;}
-  canvas {display:block; margin:0 auto;}
+  .staticImg {width:220px; height:auto; margin-left:-15px;}
+  canvas {display:block; margin-left:-15px;}
   .axieTitle {position: relative;}
+  /* sales data */
+  .salesData {text-align:center;}
 
   /* card controller */
   .cardController {display:none; width:40px; height:40px; border-radius:50%; background:#c3c3c3; cursor:pointer; position:absolute; right:10px; top: 35px; z-index:200;}
@@ -53,15 +56,30 @@ const StyledAxie = styled.div`
   /* features */
   ${({ features }) => features == "minimal" && css`
     /*width:auto;*/
-    height:290px;
     /*.axieTitleContainer {height:60px;}*/
+  `}
+
+  ${({ features }) => features == "stats" && css`
+    width:300px;
+    .staticImg {margin:0 auto;}
+    canvas {margin:0 auto;}
+  `}
+
+  /* size */
+  ${({ size }) => size == "large" && css`
+    width: 280px;
+    .staticImg {width:280px;}
+    canvas {width:280px; height:auto;}
+  `}
+  ${({ size, features }) => size == "large" && features == "stats" && css`
+    width:350px;
   `}
   
 `;
 
 /**
  * Displays an Axie with image, parts
- * @example <Axie data={axie} image={"img-url"} features={"minimal" | "parts" | "stats" | "all"} rendering={"image", "canvas", "default"}/>
+ * @example <Axie data={axie} image={"img-url"} features={"minimal" | "parts" | "stats" | "all"} rendering={"image", "canvas", "default"} size={"normal" | "large"}/>
  * @class Axie
  * @extends {React.PureComponent}
  */
@@ -99,6 +117,11 @@ class Axie extends React.PureComponent {
       rendering:        this.props.rendering,
       showControlBoard: false,
     };
+    //
+    this.sizes = {
+      "normal" : 220,
+      "large" : 280
+    }
     //console.log("img", this.state.img);
   }
 
@@ -106,9 +129,12 @@ class Axie extends React.PureComponent {
     console.log("axie features", this.props.features);
     const axieData = this.state.axieData;
     const axieHasParts = this.state.axieHasParts;
+    const features = this.props.features;
+    const size = this.props.size;
+    const axieWidth = this.sizes[size] || this.sizes["normal"];
     //
     return(
-      <StyledAxie className="axie" id={this.state.axieID} auctionData={axieData.auction} features={this.props.features}>
+      <StyledAxie className="axie" id={this.state.axieID} auctionData={axieData.auction} features={features} size={size}>
         <div className="cardController" onClick={this.onClickCardController}>
         </div>
         {this.state.showControlBoard ? 
@@ -129,13 +155,8 @@ class Axie extends React.PureComponent {
 
         <div className="axieTitleContainer">
           <AxieTitle id={axieData.id} name={axieData.name} class={axieData.class} stage={axieData.stage} owner={axieData.owner}/>
-          {axieHasParts ?
+          {axieHasParts && features == "stats" ?
             <AxieBadges axieData={axieData} size={"normal"}/>
-          : ""}
-          {1 ?
-            <div className="salesData">
-              {axieData.auction && <AxieSalesData auctionData={axieData.auction}/> } 
-            </div>
           : ""}
         </div>
         {axieHasParts ? // render based on parts
@@ -144,13 +165,13 @@ class Axie extends React.PureComponent {
 
               {(this.state.rendering == "image" && this.state.img) // render based on img
                 ? <img className="staticImg" src={this.state.img} />
-                : <AxieSprite axieData={axieData} /> 
+                : <AxieSprite axieData={axieData} width={axieWidth}/> 
               }
-              {this.props.features == "parts" ?
+              {features == "parts" ?
                 <AxieParts className="axieParts" parts={axieData.parts} />
               : ""}
             </div>
-            {this.props.features == "stats" ? 
+            {features == "stats" ? 
               <div className="statMoveContainer" style={{display:"block"}}>
                 <div className="statContainer">
                   <AxieStats className="axieStats" stats={axieData.stats} />
@@ -160,6 +181,12 @@ class Axie extends React.PureComponent {
                 </div>
               </div> 
             : ""}
+          </div>
+        : ""}
+
+        {features == "minimal" ?
+          <div className="salesData">
+            {axieData.auction && <AxieSalesData auctionData={axieData.auction}/> } 
           </div>
         : ""}
 

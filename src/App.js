@@ -14,11 +14,12 @@ import Encyclopedia from './components/sites/Encyclopedia';
 import Profile from './components/sites/Profile';
 import Teambuilder from './components/sites/Teambuilder';
 import Bodyshapes from './components/sites/Bodyshapes';
+import XmasSkins from './components/sites/XmasSkins';
 
 
 const StyledApp = styled.div`
   .logo {display: flex; align-items: center; margin-right:30px;}
-  .header {width:100%; height:50px; background: #f7f7f7; }
+  .header {width:100%; height:50px; background: #f7f7f7; margin-bottom:20px;}
   .header .center {padding:0 35px; height:100%; display:flex; }
   .header a { display: flex; align-items: center; margin-right:10px; color: #5d5d5d; font-size:14px; padding:0 15px; }
   .header a.selected { border-bottom:2px solid #a146ef; color:#a146ef; font-weight:bold; }
@@ -42,6 +43,7 @@ class App extends Component {
               <NavLink activeClassName="selected" to="/market">Encyclopedia</NavLink>
               <NavLink activeClassName="selected" to="/profile">Profile</NavLink>
               <NavLink activeClassName="selected" to="/body-shapes">Bodyshapes</NavLink>
+              <NavLink activeClassName="selected" to="/xmas-skins">Xmas Skins</NavLink>
             </div>
           </div>
           <Switch>
@@ -50,6 +52,7 @@ class App extends Component {
             <Route exact path="/market" component={Encyclopedia}/>
             <Route exact path="/profile" component={Profile}/>
             <Route exact path="/body-shapes" component={Bodyshapes}/>
+            <Route exact path="/xmas-skins" component={XmasSkins}/>
             <Redirect from='/' to='/teambuilder'/>
           </Switch>
         </StyledApp>

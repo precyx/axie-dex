@@ -25,7 +25,7 @@ class AxieList extends React.PureComponent {
 		console.log("features", this.props.features);
 		if(this.props.axies){
 			var axies = this.props.axies.map((axie) => 
-				<Axie key={axie.id} data={axie} rendering={"image"} features={this.props.features || null}/>
+				<Axie key={axie.id} data={axie} rendering={"image"} features={this.props.features || null} size={this.props.size || "normal"}/>
 			);
 		}
 		return (

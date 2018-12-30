@@ -28,9 +28,9 @@ class AxieSprite extends React.PureComponent {
     //console.log("ddd", this.props.axieData);
 		this.state = {
       crisp_factor: 2,
-      axie_width: 140,
-      CANVAS_W: 220,
-      CANVAS_H: 170,
+      axie_width: this.props.width/1.5,
+      CANVAS_W: this.props.width,
+      CANVAS_H: this.props.width/1.3,
       AXIE_INITIAL_W: NaN,
       AXIE_INITIAL_H: NaN,
       AXIE_INITIAL_RATIO: NaN,
