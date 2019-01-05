@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 // custom
-import Axie from "../Axie/Axie/Axie";
-import {AXIE_DATA, AXIE_DATA_V1} from "../../services/axie-data-service";
+//import Axie from "../Axie/Axie/Axie";
+import {AXIE_DATA_V1} from "../../services/axie-data-service";
 import Textfield from "../ui/Textfield";
 import Button from "../ui/Button";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
@@ -18,7 +18,7 @@ const StyledDex = styled.div`
 	.center {display:flex; justify-content:center;}
 `;
 
-const Error = styled.div`
+/*const Error = styled.div`
 	font-size:14px; 
 	font-style:italic;
 	padding:15px 20px;
@@ -26,7 +26,7 @@ const Error = styled.div`
 	background: #fffaf9;
 	border: 1px solid #ecb4b4;
 	color: #e07070;
-`;
+`;*/
 
 
 
@@ -122,7 +122,7 @@ class Dex extends React.PureComponent {
 	render() {
 			return(
 				<StyledDex>
-					{this.state.status.code != "all_loaded" ? 
+					{this.state.status.code !== "all_loaded" ? 
 						<div className="center">
 						<StatusBox status={this.state.status}/> 
 						</div>

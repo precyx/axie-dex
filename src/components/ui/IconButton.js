@@ -24,13 +24,13 @@ const StyledIconButton = styled.div`
 		&.theme_dark svg { fill:white; }
 	`}
 	/* size => medium */
-	${({ size }) => size == "medium" && css`
+	${({ size }) => size === "medium" && css`
 		width: 45px;
 		height: 45px;
 		svg { width: 24px; height:24px; }
 	`}
 	/* size => big */
-		${({ size }) => size == "big" && css`
+		${({ size }) => size === "big" && css`
 		width: 50px;
 		height: 50px;
 		svg { width: 30px; height:30px; }
@@ -49,7 +49,7 @@ class IconButton extends React.PureComponent {
 				theme={this.props.theme} 
 				size={this.props.size}
 				active={this.props.active}
-				className={"iconButton" + " " + this.props.className + " theme_" + this.props.theme} 
+				className={"iconButton " + this.props.className + " theme_" + this.props.theme} 
 				onClick={this.props.onClick}
 			>
 				<ReactSVG src={this.props.icon}/>

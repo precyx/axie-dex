@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from "styled-components";
+//import styled, { css } from "styled-components";
 // CSS
 import {StyledRadioButton} from "./StyledRadioButton";
 
@@ -8,9 +8,6 @@ import {StyledRadioButton} from "./StyledRadioButton";
  * @example <RadioButton text={text} active={true | false} html={} onChange={function(){}}/>
  */
 class RadioButton extends React.PureComponent {
-	constructor(props){
-		super(props);
-	}
 	toggleActive = () => {
 		this.setState((prevState)=>({
 			active: !prevState.active,

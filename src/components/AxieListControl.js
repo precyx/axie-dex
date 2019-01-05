@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 // own
 import AxieList from './AxieList';
 import BasicCenterContainer from './containers/BasicCenterContainer';
-import RadioButton from './ui/RadioButton/RadioButton';
+//import RadioButton from './ui/RadioButton/RadioButton';
 import RadioGroup from './ui/RadioGroup/RadioGroup';
 
 //CSS

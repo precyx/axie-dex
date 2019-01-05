@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 // own
 import {weiToEth} from '../services/utils';
@@ -10,12 +10,7 @@ const StyledAxieSalesData = styled.div`
 `;
 
 class AxieSalesData extends React.PureComponent {
-	constructor(props){
-		super(props);
-		//console.log("k", this.props.auctionData);
-	}
 	render() {
-
 		if(this.props.auctionData){
 			return (
 				<StyledAxieSalesData>

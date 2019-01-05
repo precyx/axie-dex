@@ -15,6 +15,8 @@ import Profile from './components/sites/Profile';
 import Teambuilder from './components/sites/Teambuilder';
 import Bodyshapes from './components/sites/Bodyshapes';
 import XmasSkins from './components/sites/XmasSkins';
+import PartTierlist from './components/sites/PartTierlist';
+import MassSync from './components/sites/MassSync';
 
 
 const StyledApp = styled.div`
@@ -44,6 +46,8 @@ class App extends Component {
               <NavLink activeClassName="selected" to="/profile">Profile</NavLink>
               <NavLink activeClassName="selected" to="/body-shapes">Bodyshapes</NavLink>
               <NavLink activeClassName="selected" to="/xmas-skins">Xmas Skins</NavLink>
+              <NavLink activeClassName="selected" to="/part-tierlist">Part Tierlist</NavLink>
+              {/*<NavLink activeClassName="selected" to="/mass-sync">Mass Sync</NavLink> */}
             </div>
           </div>
           <Switch>
@@ -53,6 +57,8 @@ class App extends Component {
             <Route exact path="/profile" component={Profile}/>
             <Route exact path="/body-shapes" component={Bodyshapes}/>
             <Route exact path="/xmas-skins" component={XmasSkins}/>
+            <Route exact path="/part-tierlist" component={PartTierlist}/>
+            <Route exact path="/mass-sync" component={MassSync}/>
             <Redirect from='/' to='/teambuilder'/>
           </Switch>
         </StyledApp>

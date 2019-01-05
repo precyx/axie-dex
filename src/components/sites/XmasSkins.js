@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 // own
 import BasicCenterContainer from "../containers/BasicCenterContainer";
 import AxieGallery from "../AxieGallery/AxieGallery";
 
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 //CSS
 export const StyledXmasSkins = styled.div`

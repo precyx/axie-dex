@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from "styled-components";
 // own
-import AxieBadges from "./AxieBadges";
+//import AxieBadges from "./AxieBadges";
 import AxieParts from "./AxieParts";
 import Axie from "./Axie/Axie/Axie";
 /* ui */

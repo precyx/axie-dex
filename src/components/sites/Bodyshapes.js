@@ -48,7 +48,7 @@ class Profile extends Component {
 		//count elems
 		var loadedElems = 0;
 		var numElems = 0;
-		Object.keys(this.state.bodyShapes).map((key)=>{
+		Object.keys(this.state.bodyShapes).forEach((key)=>{
 			numElems+= this.state.bodyShapes[key].length;
 		});
 		//set status
@@ -96,7 +96,7 @@ class Profile extends Component {
 		return (
 			<StyledBodyshapes>
 				<BasicCenterContainer>
-					{this.state.status.code != "all_loaded" ? 
+					{this.state.status.code !== "all_loaded" ? 
 						<StatusBox status={this.state.status} />
 					: ""}
 					<div className="axies">

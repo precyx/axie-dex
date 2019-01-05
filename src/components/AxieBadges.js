@@ -20,12 +20,12 @@ const StyledAxieBadges = styled.div`
 	.badge .desc { font-weight: bold; font-size:11px; width: 18px; height: 18px; background: rgba(0, 0, 0, 0.6); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; margin-top: -16px; margin-left: 24px;}
 
 		/* size */
-		${({ size }) => size == "small" && css`
+		${({ size }) => size === "small" && css`
 			.badge .bg {width:30px; height:30px;}
 			.badge svg {width:20px;}
 			.badge .desc {width:16px; height:16px; margin-top: -14px; margin-left: 19px;}
   	`}
-		${({ size }) => size == "tiny" && css`
+		${({ size }) => size === "tiny" && css`
 			.badge .bg {width:25px; height:25px;}
 			.badge svg {width:17px;}
 			.badge .desc {width:14px; height:14px; margin-top: -12px; margin-left: 17px;}

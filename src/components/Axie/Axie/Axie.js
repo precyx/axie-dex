@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import styled, { css } from "styled-components";
 //own
 import AxieTitle from '../../AxieTitle';
@@ -17,6 +17,7 @@ const StyledAxie = styled.div`
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.06);
   padding: 15px;
   width: 220px;
+  min-height:220px;
   margin: 7px;
   border-radius: 20px;
   background:white;
@@ -54,24 +55,24 @@ const StyledAxie = styled.div`
   `}
 
   /* features */
-  ${({ features }) => features == "minimal" && css`
+  ${({ features }) => features === "minimal" && css`
     /*width:auto;*/
     /*.axieTitleContainer {height:60px;}*/
   `}
 
-  ${({ features }) => features == "stats" && css`
+  ${({ features }) => features === "stats" && css`
     width:300px;
     .staticImg {margin:0 auto;}
     canvas {margin:0 auto;}
   `}
 
   /* size */
-  ${({ size }) => size == "large" && css`
+  ${({ size }) => size === "large" && css`
     width: 280px;
     .staticImg {width:280px;}
     canvas {width:280px; height:auto;}
   `}
-  ${({ size, features }) => size == "large" && features == "stats" && css`
+  ${({ size, features }) => size === "large" && features === "stats" && css`
     width:350px;
   `}
   
@@ -155,7 +156,7 @@ class Axie extends React.PureComponent {
 
         <div className="axieTitleContainer">
           <AxieTitle id={axieData.id} name={axieData.name} class={axieData.class} stage={axieData.stage} owner={axieData.owner}/>
-          {axieHasParts && features == "stats" ?
+          {axieHasParts && features === "stats" ?
             <AxieBadges axieData={axieData} size={"normal"}/>
           : ""}
         </div>
@@ -163,15 +164,15 @@ class Axie extends React.PureComponent {
           <div className="mainContainer">
             <div className="axieContainer">
 
-              {(this.state.rendering == "image" && this.state.img) // render based on img
-                ? <img className="staticImg" src={this.state.img} />
+              {(this.state.rendering === "image" && this.state.img) // render based on img
+                ? <img className="staticImg" src={this.state.img} alt="axie" />
                 : <AxieSprite axieData={axieData} width={axieWidth}/> 
               }
-              {features == "parts" ?
+              {features === "parts" ?
                 <AxieParts className="axieParts" parts={axieData.parts} />
               : ""}
             </div>
-            {features == "stats" ? 
+            {features === "stats" ? 
               <div className="statMoveContainer" style={{display:"block"}}>
                 <div className="statContainer">
                   <AxieStats className="axieStats" stats={axieData.stats} />
@@ -184,7 +185,7 @@ class Axie extends React.PureComponent {
           </div>
         : ""}
 
-        {features == "minimal" ?
+        {features === "minimal" ?
           <div className="salesData">
             {axieData.auction && <AxieSalesData auctionData={axieData.auction}/> } 
           </div>

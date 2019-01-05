@@ -1,3 +1,4 @@
+/*jshint loopfunc:true */
 //axios
 import axios from 'axios';
 
@@ -38,7 +39,7 @@ export const AXIE_DATA = {
      */
     getAllAxiesByAddress(address){
         return AXIE_DATA.getAxiesByAddress(address).then((data)=>{
-            var totalAxies = data.totalAxies;
+            //var totalAxies = data.totalAxies;
             var totalPages = data.totalPages;
             var axiesPerPage = 12;
             var axies_cache = [];
@@ -81,7 +82,16 @@ export const AXIE_DATA = {
         if(offset) url+= "?offset="+offset;
         if(additionalParams) url+= additionalParams;
         return url;
-    }
+    },
+    /**
+     * @returns {Array} with body parts
+     */
+    getBodyParts(){
+        let url = "https://axieinfinity.com/api/body-parts";
+        return axios.get(url).then((bodyparts)=>{
+            return bodyparts.data;
+        });
+    },
 }// end axie-data
 
 
@@ -106,10 +116,26 @@ export const AXIE_DATA_V1 = {
      * @param {*} offset
      * @returns {Object} contains {axies}, {totalAxies}, {totalPages}
      */
-    getAxiesByAddress(address, offset){
-        return axios.get(AXIE_DATA.buildAxiesByAddressAPI(address, offset)).then((axies)=>{
+    getAxiesByAddress(address, offset, additionalParams){
+        return axios.get(AXIE_DATA.buildAxiesByAddressAPI(address, offset, additionalParams)).then((axies)=>{
             return axies.data;
         });
+    },
+    /**
+     * @param {Array} ids list of [axie] ID's
+     * @return {Array} axies 
+     */
+    getAxiesByIds(ids){
+        var promises = [];
+        ids.forEach(id=>{
+            var p = new Promise((resolve,reject)=>{
+                AXIE_DATA_V1.getAxieById(id).then((axieData)=>{
+                    resolve(axieData);
+                })
+            })
+            promises.push(p);
+        })
+        return Promise.all(promises);
     },
     /**
      * @param {*} address
@@ -117,7 +143,7 @@ export const AXIE_DATA_V1 = {
      */
     getAllAxiesByAddress(address){
         return AXIE_DATA.getAxiesByAddress(address).then((data)=>{
-            var totalAxies = data.totalAxies;
+            //var totalAxies = data.totalAxies;
             var totalPages = data.totalPages;
             var axiesPerPage = 12;
             var axies_cache = [];

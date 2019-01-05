@@ -59,10 +59,11 @@ const StyledTeamBuilder = styled.div`
 	#axie_teambuilder_container {position:relative; width:100%; height:calc(100vh - 210px); overflow: hidden; }
 	/* axie teams */
 	/* overlay ui */
-	.overlayUI, .overlayUI2 {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:normal; flex-flow:column;}
+	.overlayUI, .overlayUI2 {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:normal; }
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
 	.overlayUI .axieTitle .name { display:none; }
 	.overlayUI .axieTitle .id { font-size:14; font-weight:bold; color:grey; }
+	.overlayUI .id { font-size: 18px; font-weight: bold; color: #464646; margin-top: 5px; }
 	/* no axies found */
 	.no_results_hint {font-size:24px; color:grey; display:flex; width:100%; height:100%; background:white; align-items:center; justify-content:center;}
 	/* selected axie */
@@ -395,7 +396,7 @@ class Teambuilder extends React.PureComponent {
 		axie.spineData.alpha = 1;
 		// set filters
 		var outlineFilter = new OutlineFilter(8, 0x7cc9ff);
-		var outlineFilter2 = new OutlineFilter(8, 0xbbdd33);
+		//var outlineFilter2 = new OutlineFilter(8, 0xbbdd33);
 		// handle events
 		axie.spineData.on('pointerover', (e)=>{
 			e.target.filters = [outlineFilter];
@@ -695,7 +696,7 @@ class Teambuilder extends React.PureComponent {
 	 * @returns {Object} 
 	 */
 	getPositionOfAxie(axie_spine, position){
-		var CM = this.state.CRISP_MULTIPLIER;
+		//var CM = this.state.CRISP_MULTIPLIER;
 		var ZOOM = this.state.ZOOM;
 		var TOP_LEFT = {
 			"x": (axie_spine.x + this.axieContainer.x) -this.state.axieW / this.state.AXIE_SIZE_RATIO * ZOOM,
@@ -781,7 +782,9 @@ class Teambuilder extends React.PureComponent {
 					}
 				*/}
 						
-						<AxieBadges axieData={axie.axieData} size="normal"/>
+							<AxieBadges axieData={axie.axieData} size="normal"/>
+							<a className="id" target="_blank" href={"https://axieinfinity.com/axie/" + axie.axieData.id}>#{axie.axieData.id}</a>
+
 					</div>
 					: ""
 				}

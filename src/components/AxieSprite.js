@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 //pixi
 import * as PIXI from 'pixi.js';
@@ -149,7 +149,7 @@ class AxieSprite extends React.PureComponent {
     // axie
     var aw = this.state.AXIE_INITIAL_W;
     var ah = this.state.AXIE_INITIAL_H;
-    var AR = this.state.AXIE_INITIAL_RATIO;
+    //var AR = this.state.AXIE_INITIAL_RATIO;
     var awi = aw * scaleFactor * crispFactor;
     var ahi = ah * scaleFactor * crispFactor;
     // positions

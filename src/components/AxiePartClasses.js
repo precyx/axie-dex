@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
-import ReactTooltip from 'react-tooltip';
+//import ReactTooltip from 'react-tooltip';
 //custom
 import axieClassColors from '../data/axie-class-colors';
-import AxieEffect from "./AxieEffect";
+//import AxieEffect from "./AxieEffect";
 
 //CSS
 const StyledAxiePartClasses = styled.div`

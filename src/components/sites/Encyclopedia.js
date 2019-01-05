@@ -25,7 +25,7 @@ class Encyclopedia extends Component {
 			offset : 0,
 			page: 1,
 			saleSiringParam : "",
-			stageParam: "",
+			stageParam: "&stage=4",
 			additionalParams : "",
 		}
 	}
@@ -41,7 +41,7 @@ class Encyclopedia extends Component {
 	getAxies = () => {
 		this.setState({
 			status: {type:"loading", code:"loading_axies", msg: "loading axies..."},
-			additionalParams : this.state.saleSiringParam + this.state.stageParam,
+			additionalParams : this.state.saleSiringParam + this.state.stageParam + "&sorting=highest_id",
 		}, () => {
 			var api = AXIE_DATA_V1.buildAxiesAPI(this.state.page, this.state.additionalParams);
 			console.log("api", api);

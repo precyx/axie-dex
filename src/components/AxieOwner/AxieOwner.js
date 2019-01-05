@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+//import styled from 'styled-components';
 // own
 import {StyledAxieOwner} from './StyledAxieOwner';
 import axieClassColors from '../../data/axie-class-colors';

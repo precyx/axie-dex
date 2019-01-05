@@ -61,6 +61,7 @@ class AxiePartList extends React.PureComponent {
 		newParts.sort((a, b)=>{
 			if(newSortings["count"] === 1) 			 return a["count"] - b["count"];
 			else if(newSortings["count"] === -1) return b["count"] - a["count"];
+			else return a["count"] - b["count"];
 		});
 		this.setState({
 			parts: newParts,

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 // own
 import Axie from './Axie/Axie/Axie';
@@ -18,9 +18,6 @@ const StyledAxieList = styled.div`
  * @extends {React.PureComponent}
  */
 class AxieList extends React.PureComponent {
-	constructor(props){
-		super(props);
-	}
 	render() {
 		console.log("features", this.props.features);
 		if(this.props.axies){

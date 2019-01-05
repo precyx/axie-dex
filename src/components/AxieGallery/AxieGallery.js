@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 //
 import Axie from "../Axie/Axie/Axie";
-import {AXIE_DATA, AXIE_DATA_V1} from "../../services/axie-data-service";
+import {AXIE_DATA_V1} from "../../services/axie-data-service";
 import axios from 'axios';
 // css
 import {StyledAxieGallery} from "./StyledAxieGallery";

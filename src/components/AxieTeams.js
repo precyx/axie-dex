@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+//import PropTypes from 'prop-types';
 import styled, { css } from "styled-components";
 import Resizable from "re-resizable";
 // own
 import AxieTeam from "./AxieTeam";
-import {AXIE_DATA_V1} from "../services/axie-data-service";
+//import {AXIE_DATA_V1} from "../services/axie-data-service";
 /* ui */
 import IconButton from "./ui/IconButton";
 
@@ -110,7 +110,7 @@ class AxieTeams extends React.PureComponent {
 		}));
 	}
 	deleteTeam = (teamToDelete) => {
-		var teams = [...this.state.teams];
+		//var teams = [...this.state.teams];
 		this.setState({
 			teams: this.state.teams.filter(function(team) { 
 				return team !== teamToDelete 
@@ -222,8 +222,6 @@ class Team {
 	id = null;
 	name = "";
 	members = [];
-	constructor(){
-	}
 	addMember(member){
 		this.members.push(member);
 	}
