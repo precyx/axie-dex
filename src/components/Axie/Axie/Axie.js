@@ -8,6 +8,7 @@ import AxieSprite from '../../AxieSprite';
 import AxieMoves from '../../AxieMoves';
 import AxieBadges from '../../AxieBadges';
 import AxieSalesData from '../../AxieSalesData';
+import BreedingData from '../../Axie/BreedingData';
 //import AxieScores from '../../AxieScores';
 
 
@@ -75,12 +76,48 @@ const StyledAxie = styled.div`
   ${({ size, features }) => size === "large" && features === "stats" && css`
     width:350px;
   `}
+  ${({ size }) => size === "small" && css`
+    width:150px;
+    padding:10px;
+    min-height:175px;
+    .axieTitleContainer {height:20px;}
+    .cardController {display:none!important;}
+    .axieTitle .name, .axieTitle .id  {font-size:10px;}
+    .breedingData {font-size:10px;}
+    .staticImg, .canvas {width:148px; height:auto; margin-left:-10px;}
+  `}
+  ${({ size }) => size === "tiny" && css`
+    width:80px;
+    padding:5px;
+    min-height:auto;
+    height:80px;
+    border-radius:5px;
+    margin:2px;
+    .axieTitleContainer {height:auto;}
+    .cardController {display:none!important;}
+    .axieTitle .name {font-size:10px; margin:0;}
+    .axieTitle .icon, .axieTitle .id  {display:none;}
+    .breedingData {display:none;}
+    .axieOwner  {display:none!important;}
+    .staticImg, .canvas {width:78px; height:auto; margin-left:-5px;}
+  `}
+  ${({ background }) => background === "none" && css`
+    box-shadow:none
+    border:none;
+    background:none;
+  `}
   
 `;
 
 /**
  * Displays an Axie with image, parts
- * @example <Axie data={axie} image={"img-url"} features={"minimal" | "parts" | "stats" | "all"} rendering={"image", "canvas", "default"} size={"normal" | "large"}/>
+ * @example <Axie 
+ *                data={axie} 
+ *                image={"img-url"} 
+ *                features={"minimal" | "parts" | "stats" | "all"} 
+ *                rendering={"image", "canvas", "default"} 
+ *                size={"normal" | "large" | "small" | "tiny"} 
+ *                background={"normal" | "outline" | "none"} />
  * @class Axie
  * @extends {React.PureComponent}
  */
@@ -132,10 +169,11 @@ class Axie extends React.PureComponent {
     const axieHasParts = this.state.axieHasParts;
     const features = this.props.features;
     const size = this.props.size;
+    const background = this.props.background;
     const axieWidth = this.sizes[size] || this.sizes["normal"];
     //
     return(
-      <StyledAxie className="axie" id={this.state.axieID} auctionData={axieData.auction} features={features} size={size}>
+      <StyledAxie className="axie" id={this.state.axieID} auctionData={axieData.auction} features={features} size={size} background={background}>
         <div className="cardController" onClick={this.onClickCardController}>
         </div>
         {this.state.showControlBoard ? 
@@ -183,6 +221,10 @@ class Axie extends React.PureComponent {
               </div> 
             : ""}
           </div>
+        : ""}
+
+        {features === "breeding" ?
+          <BreedingData axieData={axieData}/>
         : ""}
 
         {features === "minimal" ?

@@ -20,4 +20,11 @@ export const StyledTier = styled.div`
 	${({ tier }) => tier === "b" && css`
 		.tierName {background:#fff6ba; color:#e4cc3f;}
 	`}
+
+	
+	@media only screen and (max-width: 600px) {
+
+		.tierName { width: 210px; height: 90px; font-size:38px; padding-left: 26px; }
+		.partGroups { margin-left: 59px; padding:20px;}
+	}
 `;

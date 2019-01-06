@@ -8,4 +8,5 @@ export const StyledTierList = styled.div`
 
 	font-family: "Roboto";
 
+
 `;

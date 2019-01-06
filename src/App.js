@@ -47,7 +47,7 @@ class App extends Component {
               <NavLink activeClassName="selected" to="/body-shapes">Bodyshapes</NavLink>
               <NavLink activeClassName="selected" to="/xmas-skins">Xmas Skins</NavLink>
               <NavLink activeClassName="selected" to="/part-tierlist">Part Tierlist</NavLink>
-              {/*<NavLink activeClassName="selected" to="/mass-sync">Mass Sync</NavLink> */}
+              {/*<NavLink activeClassName="selected" to="/mass-sync">Mass Sync</NavLink>*/}
             </div>
           </div>
           <Switch>

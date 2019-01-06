@@ -14,6 +14,7 @@ import RadioGroup from '../ui/RadioGroup/RadioGroup';
 const StyledEncyclopedia = styled.div`
 	.getAxieByAddressContainer {width:90%; margin:0 auto; padding:30px; }
 	.center {display:flex; justify-content:center;}
+	.button {margin:5px;}
 `;
 
 // Class
@@ -107,8 +108,8 @@ class Encyclopedia extends Component {
 						<Button onClick={this.getAxieSales} name={"Get Sales"} />
 						<Button onClick={this.getAxieSires} name={"Get Sires"} />
 						<div>
-							<Button className="prev" onClick={this.loadPrevPage} name={"Prev"} />
-							<Button className="next" onClick={this.loadNextPage} name={"Next"} />
+							<Button type="color" color="#a146ef" className="prev" onClick={this.loadPrevPage} name={"Prev"} />
+							<Button type="color" color="#a146ef" className="next" onClick={this.loadNextPage} name={"Next"} />
 						</div>
 						<RadioGroup class={"radiogroup"} options={[
 							{label: "Adult", value: "4"},

@@ -1,6 +1,7 @@
 /*jshint loopfunc:true */
 //axios
 import axios from 'axios';
+import { ExpSyncContract } from '../data/contracts/ExpSyncContract';
 
 /*
     A list of API URL generators for the Axie Infinity Website
@@ -218,4 +219,35 @@ export const AXIE_DATA_V1 = {
             throw new Error("Axie API v1 down");
         });
     }
+}
+
+
+export const AXIE_DATA_TRANSFORM = {
+
+    mergeXPDataIntoV1API(axies_v1, axies_v0){
+        axies_v1.forEach(axie_v1 => {
+            axies_v0.forEach(axie_v0 => {
+                if(axie_v1.id == axie_v0.id) {
+                    axie_v1["exp"]            = axie_v0.exp
+                    axie_v1["expForBreeding"] = axie_v0.expForBreeding
+                }
+            })
+        });
+    },
+
+    getAndMergePendingBlockchainXPIntoV1API(axies_v1, ExpSyncContract){
+        var promises = [];
+        axies_v1.forEach(axie=>{
+            var p = new Promise((resolve,reject)=>{
+                ExpSyncContract.methods.getCheckpoint(axie.id.toString()).call((err, res)=>{
+                    console.log("XP", res);
+                    axie["pendingExp2"] = res._exp;
+                    resolve();
+                });
+            })
+            promises.push(p);
+        })
+        return Promise.all(promises);
+    }
+    
 }

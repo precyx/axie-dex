@@ -8,7 +8,7 @@ import styled from 'styled-components';
 //CSS
 export const StyledPartTierList = styled.div`
 	.partList {display:flex; flex-flow:wrap;}
-	.axiePart {margin-top:10px; margin-left:10px;}
+	.axiePart {margin-bottom:10px; margin-right:10px;}
 	h1 {font-size:38px; text-align:center; margin-top:40px;}
 `;
 

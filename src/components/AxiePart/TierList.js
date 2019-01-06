@@ -6,6 +6,7 @@ import {AXIE_DATA} from "../../services/axie-data-service";
 import StatusBox from "../StatusBox";
 import AxiePart from "../AxiePart/AxiePart";
 import Tier from "./Tier";
+import {bodyparts} from "../../data/axie-body-parts";
 
 /**
  * Renders {name, id, class icon} of an {axie}
@@ -45,11 +46,11 @@ class TierList extends React.PureComponent{
 	};
 
 	componentDidMount(){
-		AXIE_DATA.getBodyParts().then((parts)=>{
+		//AXIE_DATA.getBodyParts().then((parts)=>{
 			this.setState({
-				parts: parts,
+				parts: bodyparts,
 			}, () => { this.mapPartsToTierList() });
-		});
+		//});
 	}
 
 	/**

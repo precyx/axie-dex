@@ -13,6 +13,7 @@ import RadioGroup from '../ui/RadioGroup/RadioGroup';
 //CSS
 const StyledProfile = styled.div`
 	.center {display:flex; justify-content:center;}
+	.button {margin:3px;}
 `;
 
 // Class
@@ -115,8 +116,8 @@ class Profile extends Component {
 
 						<Button onClick={this.getAxiesByAddress} name={"Load Axies"} />
 						<div>
-							<Button className="prev" onClick={this.loadPrevPage} name={"Prev"} />
-							<Button className="next" onClick={this.loadNextPage} name={"Next"} />
+							<Button className="prev" type="color" color="#a146ef" onClick={this.loadPrevPage} name={"Prev"} />
+							<Button className="next" type="color" color="#a146ef" onClick={this.loadNextPage} name={"Next"} />
 						</div>
 						<RadioGroup class={"radiogroup"} options={[
 							{label: "Adult", value: "4"},
