@@ -17,7 +17,7 @@ const StyledTextfield = styled.div`
 class Textfield extends React.PureComponent {
 	render() {
 		return (
-			<StyledTextfield>
+			<StyledTextfield className="textfield">
 				<label htmlFor={this.props.id}>{this.props.name}</label>
 				<input id={this.props.id} type="text" value={this.props.value} onChange={this.props.onChange} placeholder={this.props.placeholder} />
 			</StyledTextfield>

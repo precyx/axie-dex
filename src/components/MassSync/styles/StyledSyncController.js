@@ -6,7 +6,7 @@ export const StyledSyncController = styled.div`
 	/* state x */
 	${({ x }) => x && css``}
 
-	.axies {display:flex; width:100%; padding:10px; height:120px; overflow-y: scroll; background:white; flex-flow:wrap;  align-content: start; 
+	.axies {display:flex; width:100%; padding:10px; height:150px; overflow-y: scroll; background:white; flex-flow:wrap;  align-content: start; 
 		border:1px solid #dedede;
     border-radius: 8px;
     padding-bottom: 40px;

@@ -23,14 +23,15 @@ class BreedingData extends React.PureComponent {
 					hasEnoughXpAlreadyToBreed={hasEnoughXpAlreadyToBreed}
 					hasPendingXp={hasPendingXp}>
 				<div className={"breedingData"}>
-					<div className="line1">
+					<div className="xpProgress">
 						<span className="xp curXp">{(axieData.exp||0) + "xp"}</span>
 						/ 
 						<span className="xp reqXp">{axieData.expForBreeding + "xp"}</span>
 					</div>
-					<div className="line2">
-						<span className="xp penXp"> {pendingXp} EXP</span>
+					<div className="xpPending">
+						<span className="xp penXp"> Pending: <span className="pre val">{pendingXp} EXP</span></span>
 					</div>
+					
 				</div>
 			</StyledBreedingData>
 		);

@@ -9,14 +9,32 @@ const StyledButton = styled.button`
 	background: #f3f3f3;
 	color: #404040;
 	:hover {background: #E8E8E8;}
+	padding: 8px 15px;
+  font-size: 14px;
 
-	${({ type }) => type === "color" && css`
+	${({ type }) => (type === "filled" || type === "color") && css`
 		{background: ${props => props.color}; }
 		color:white;
 		border:none;
 		opacity: 0.95;
 		:hover {background: ${props => props.color}; }
 		:hover {opacity:0.8;}
+	`}
+
+	${({ type }) => type === "outline" && css`
+		{color: ${props => props.color}; }
+		{border: 1px solid ${props => props.color}; }
+		background: rgba(255,255,255,0.15);
+		:hover {opacity:0.8;}
+	`}
+
+	${({ size }) => size === "normal" && css`
+		padding: 8px 15px;
+    font-size: 14px;
+	`}
+	${({ size }) => size === "small" && css`
+		padding: 7px 10px;
+		font-size: 13px;
 	`}
 `;
 
@@ -25,8 +43,10 @@ class Button extends React.PureComponent {
 		const className = "button " + this.props.className;
 		const type = this.props.type;
 		const color = this.props.color;
+		const size = this.props.size;
+		//
 		return (
-			<StyledButton className={className} onClick={this.props.onClick} type={type} color={color}>
+			<StyledButton className={className} onClick={this.props.onClick} type={type} color={color} size={size}>
 				{this.props.name}
 			</StyledButton>
 		);

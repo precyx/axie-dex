@@ -53,7 +53,7 @@ export const AXIE_DATA = {
                         //console.log("OK", axies_cache);
                         resolve();
                     }).catch((err)=>{
-                        //console.log("ERR", err);
+                        reject(err);
                     })
                 });
                 promises.push(p);
@@ -126,11 +126,13 @@ export const AXIE_DATA_V1 = {
      * @param {Array} ids list of [axie] ID's
      * @return {Array} axies 
      */
-    getAxiesByIds(ids){
+    getAxiesByIds(ids, callback){
         var promises = [];
+        var loaded = 0;
         ids.forEach(id=>{
             var p = new Promise((resolve,reject)=>{
                 AXIE_DATA_V1.getAxieById(id).then((axieData)=>{
+                    if(callback) callback({loaded: ++loaded, total: ids.length});
                     resolve(axieData);
                 })
             })
@@ -142,8 +144,8 @@ export const AXIE_DATA_V1 = {
      * @param {*} address
      * @returns {Array} Array containing {Axie} Objects 
      */
-    getAllAxiesByAddress(address){
-        return AXIE_DATA.getAxiesByAddress(address).then((data)=>{
+    getAllAxiesByAddress(address, additionalParams, callback){
+        return AXIE_DATA.getAxiesByAddress(address, 0, additionalParams).then((data)=>{
             //var totalAxies = data.totalAxies;
             var totalPages = data.totalPages;
             var axiesPerPage = 12;
@@ -152,12 +154,11 @@ export const AXIE_DATA_V1 = {
             var promises = [];
             for(let i = 0; i < totalPages; i++){
                 var p = new Promise((resolve, reject)=>{
-                    AXIE_DATA.getAxiesByAddress(address, i * axiesPerPage).then(data=>{
+                    AXIE_DATA.getAxiesByAddress(address, i * axiesPerPage, additionalParams).then(data=>{
                         axies_cache = [...data.axies, ...axies_cache];
+                        if(callback) callback({loaded: axies_cache.length, total: totalPages * axiesPerPage});
                         //console.log("OK", axies_cache);
                         resolve();
-                    }).catch((err)=>{
-                        //console.log("ERR", err);
                     })
                 });
                 promises.push(p);
@@ -188,7 +189,9 @@ export const AXIE_DATA_V1 = {
         var url = this.buildAxieByIdAPI(id);
         return axios.get(url).then((data)=>{
             return data.data;
-        });
+        }).catch((err)=>{
+            console.log("error: ", err);
+		});
     },
     /**
      * @param {Array[Axie]} axies array of {axies} 
@@ -218,7 +221,13 @@ export const AXIE_DATA_V1 = {
         }).catch(function(error){
             throw new Error("Axie API v1 down");
         });
-    }
+    },
+    getGasPrice(){
+        const url = "https://api.axieinfinity.com/v1/gas-price";
+        return axios.get(url).then(data=>{
+            return data.data;
+        })
+    },
 }
 
 
@@ -241,7 +250,7 @@ export const AXIE_DATA_TRANSFORM = {
             var p = new Promise((resolve,reject)=>{
                 ExpSyncContract.methods.getCheckpoint(axie.id.toString()).call((err, res)=>{
                     console.log("XP", res);
-                    axie["pendingExp2"] = res._exp;
+                    axie["pendingExp2"] = res._exp || 0;
                     resolve();
                 });
             })
