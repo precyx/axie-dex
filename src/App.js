@@ -60,6 +60,7 @@ class App extends Component {
             <Route exact path="/body-shapes" component={Bodyshapes}/>
             <Route exact path="/xmas-skins" component={XmasSkins}/>
             <Route exact path="/part-tierlist" component={PartTierlist}/>
+            <Route exact path="/mass-sync" component={MassSync}/>
             <Route exact path="/comps" component={Comps}/>
             <Redirect from='/' to='/teambuilder'/>
           </Switch>
