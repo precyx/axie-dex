@@ -4,6 +4,8 @@ import styled from "styled-components";
 import Spinner from 'react-spinner-material';
 //axios
 //import axios from 'axios';
+//web3
+import web3 from 'web3';
 //pixi
 import * as PIXI from 'pixi.js';
 import 'pixi-spine';
@@ -59,11 +61,13 @@ const StyledTeamBuilder = styled.div`
 	#axie_teambuilder_container {position:relative; width:100%; height:calc(100vh - 210px); overflow: hidden; }
 	/* axie teams */
 	/* overlay ui */
-	.overlayUI, .overlayUI2 {position:absolute; left:10px; top:10px; /*pointer-events: none;*/ display:flex; align-items:normal; }
+	.overlayUI, .overlayUI2 {position:absolute; left:10px; top:-20px;    margin-top: -25px; /*pointer-events: none;*/ display:flex; align-items:normal; }
 	.overlayUI .axieTitle { display:none; background: white; padding: 2px 8px; border-radius: 10px;}
 	.overlayUI .axieTitle .name { display:none; }
 	.overlayUI .axieTitle .id { font-size:14; font-weight:bold; color:grey; }
-	.overlayUI .id { font-size: 18px; font-weight: bold; color: #464646; margin-top: 5px; }
+	.overlayUI .id { font-size: 12px; font-weight: normal; color: #464646; margin-top: 5px; background: #565656; color: white!important; padding: 4px 10px; border-radius: 30px; display:inline-flex;}
+	.overlayUI .outer { display:flex; flex-flow:column; align-items: end; }
+	.overlayUI .saleData {font-size: 15px; font-weight: bold; color: #464646; margin-top: 5px;}
 	/* no axies found */
 	.no_results_hint {font-size:24px; color:grey; display:flex; width:100%; height:100%; background:white; align-items:center; justify-content:center;}
 	/* selected axie */
@@ -556,7 +560,11 @@ class Teambuilder extends React.PureComponent {
 	}
 
 
-	
+	areAxiesLoaded = () => {
+		var axies = this.state.axie_groups['all'];
+		if (typeof axies === 'undefined') return false;
+		else return true;
+	}
 	/**
 	 * Filtering 
 	 */
@@ -567,6 +575,24 @@ class Teambuilder extends React.PureComponent {
 			hide_UI: true,
 		}), this.renderAxies);
 	}
+	showAxiesByPricing = () =>{
+		var newAxies = [];
+		this.state.axie_groups["all"].forEach((axie) =>{
+			if(axie.axieData.auction !== null){
+				if(axie.axieData.auction.type === 'sale'){
+					newAxies.push(axie);
+					newAxies.sort((a, b) =>{
+						return b.axieData.id - b.axieData.id;
+					});
+				}
+			}
+		});
+		this.setState((prevState)=>({
+			axies_with_spine: newAxies,
+			hide_UI: true,
+		}), this.renderAxies);
+	}
+
 	showAxiesByRating = (ratingType, ratingLevel) => {
 		var newAxies = [];
 		this.state.axie_groups["all"].forEach((axie)=>{
@@ -648,15 +674,15 @@ class Teambuilder extends React.PureComponent {
 			ZOOM: prevState.ZOOM + prevState.ZOOM_CHANGE,
 		}), this.renderAxies);
 	}
-	zoomOut = () => {
-		var correctedX = this.axieContainer.x - (this.axieContainer.x - this.axieContainer.x * (1 - this.state.ZOOM_CHANGE) );
-		var correctedY = this.axieContainer.y - (this.axieContainer.y - this.axieContainer.y * (1 - this.state.ZOOM_CHANGE) );
-		this.axieContainer.position.set(correctedX, correctedY);
-		this.setState((prevState) => ({
-			hide_UI: true,
-			ZOOM: prevState.ZOOM - prevState.ZOOM_CHANGE,
-		}), this.renderAxies);
-	}
+    zoomOut = () => {
+        var correctedX = this.axieContainer.x - (this.axieContainer.x - this.axieContainer.x * (1 - this.state.ZOOM_CHANGE) );
+        var correctedY = this.axieContainer.y - (this.axieContainer.y - this.axieContainer.y * (1 - this.state.ZOOM_CHANGE) );
+        this.axieContainer.position.set(correctedX, correctedY);
+        this.setState((prevState) => ({
+            hide_UI: true,
+            ZOOM: Math.max( prevState.ZOOM - prevState.ZOOM_CHANGE, 0 ),
+        }), this.renderAxies);
+    }
 	toggleAddress = () => {
 		this.setState((prevState) => ({
 			showAddressUI: !prevState.showAddressUI,
@@ -764,6 +790,20 @@ class Teambuilder extends React.PureComponent {
 			 this.state.loading_complete && 
 			 !this.state.hide_UI){
 			axie_overlays = this.state.axies_with_spine.map((axie) => { 
+				var nowPrice;
+				var endPrice;
+				if(axie.axieData.auction !== null){
+					var nowPrice = web3.utils.fromWei(axie.axieData.auction.buyNowPrice, 'ether');
+					var endPrice = web3.utils.fromWei(axie.axieData.auction.endingPrice, 'ether');
+					var msg;
+					if(nowPrice === endPrice) msg = Math.round(nowPrice * 100) / 100 + 'eth';
+					else msg = Math.round(nowPrice * 100) / 100 + 'eth => ' + endPrice + 'eth';
+				}
+				else {
+					endPrice = '';
+					nowPrice = '';
+				}
+	
 					return (axie.spineData) ? 
 					<div 
 					className="overlayUI" 
@@ -783,7 +823,10 @@ class Teambuilder extends React.PureComponent {
 				*/}
 						
 							<AxieBadges axieData={axie.axieData} size="normal"/>
+							<div className = "outer">
 							<a className="id" target="_blank" href={"https://axieinfinity.com/axie/" + axie.axieData.id}>#{axie.axieData.id}</a>
+							<a className="saleData" target="_blank" href={"https://axieinfinity.com/axie/" + axie.axieData.id}>{msg}</a>
+							</div>
 
 					</div>
 					: ""
@@ -851,6 +894,7 @@ class Teambuilder extends React.PureComponent {
 						<ReactTooltip id={"tb_attack_level_1"} type='dark' effect='solid' place="top">ATK Level 1</ReactTooltip>
 						<ReactTooltip id={"tb_attack_level_2"} type='dark' effect='solid' place="top">ATK Level 2</ReactTooltip>
 						<ReactTooltip id={"tb_attack_level_3"} type='dark' effect='solid' place="top">ATK Level 3</ReactTooltip>
+						<ReactTooltip id={"sale_filter"} type='dark' effect='solid' place="top">Sale filter</ReactTooltip>
 
 
 							<div data-tip data-for={"tb_attack_level_1"}> 
@@ -862,6 +906,9 @@ class Teambuilder extends React.PureComponent {
 							</div>
 							<div data-tip data-for={"tb_attack_level_3"}>
 								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_3.svg"} onClick={() => this.showAxiesByRating("attack", 3)} />
+							</div>
+							<div data-tip data-for={"sale_filter"}>
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_3.svg"} onClick={() => this.showAxiesByPricing()} />
 							</div>
 						</div>
 						<div className="filterGroup">
