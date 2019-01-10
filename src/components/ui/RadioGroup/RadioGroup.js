@@ -19,7 +19,7 @@ class RadioGroup extends React.PureComponent {
 		this.setState({
 			active_option: option,
 		});
-		this.props.onChange(option);
+		if(this.props.onChange) this.props.onChange(option);
 	}
 	render() {
 		const radios = this.props.options.map((option) => 

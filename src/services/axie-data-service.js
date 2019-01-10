@@ -150,6 +150,7 @@ export const AXIE_DATA_V1 = {
             var totalPages = data.totalPages;
             var axiesPerPage = 12;
             var axies_cache = [];
+            if(callback) callback({loaded: 0, total: totalPages * axiesPerPage});
             //
             var promises = [];
             for(let i = 0; i < totalPages; i++){
@@ -250,7 +251,7 @@ export const AXIE_DATA_TRANSFORM = {
             var p = new Promise((resolve,reject)=>{
                 ExpSyncContract.methods.getCheckpoint(axie.id.toString()).call((err, res)=>{
                     console.log("XP", res);
-                    axie["pendingExp2"] = res._exp || 0;
+                    axie["pendingExp2"] = (res && res._exp) ? res._exp : 0;
                     resolve();
                 });
             })

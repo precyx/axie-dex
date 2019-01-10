@@ -1,12 +1,12 @@
 import React from 'react';
 //own
-import AxieTitle from '../../AxieTitle';
+import AxieTitle from '../AxieTitle';
 import AxieParts from '../../AxieParts';
 import AxieStats from '../../AxieStats';
 import AxieSprite from '../../AxieSprite';
 import AxieMoves from '../../AxieMoves';
 import AxieBadges from '../../AxieBadges';
-import AxieSalesData from '../../AxieSalesData';
+import SalesData from '../SalesData';
 import BreedingData from '../../Axie/BreedingData';
 //import AxieScores from '../../AxieScores';
 
@@ -132,7 +132,7 @@ class Axie extends React.PureComponent {
 
         {features === "minimal" ?
           <div className="salesData">
-            {axieData.auction && <AxieSalesData auctionData={axieData.auction}/> } 
+            {axieData.auction && <SalesData auctionData={axieData.auction}/> } 
           </div>
         : ""}
 

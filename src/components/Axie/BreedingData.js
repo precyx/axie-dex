@@ -1,13 +1,9 @@
 import React from 'react';
 import {StyledBreedingData} from './styles/StyledBreedingData';
 
-class BreedingData extends React.PureComponent {
-	constructor(props) {
-		super(props);
-	}
+function BreedingData(props) {
 
-	render() {
-		const axieData 					 				= this.props.axieData;
+		const axieData 					 				= props.axieData;
 		const hasAllXPFields 		 				= (axieData.exp && axieData.pendingExp && axieData.expForBreeding);
 		const pendingXp 				 				= (axieData.pendingExp||0) - (axieData.pendingExp2||0);
 		const xp 								 				= axieData.exp;
@@ -27,6 +23,7 @@ class BreedingData extends React.PureComponent {
 						<span className="xp curXp">{(axieData.exp||0) + "xp"}</span>
 						/ 
 						<span className="xp reqXp">{axieData.expForBreeding + "xp"}</span>
+						<span className="breedCount">({axieData.breedCount})</span>
 					</div>
 					<div className="xpPending">
 						<span className="xp penXp"> Pending: <span className="pre val">{pendingXp} EXP</span></span>
@@ -35,7 +32,7 @@ class BreedingData extends React.PureComponent {
 				</div>
 			</StyledBreedingData>
 		);
-	}
+	
 }
 
 export default BreedingData;

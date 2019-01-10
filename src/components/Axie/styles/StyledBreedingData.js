@@ -15,6 +15,7 @@ export const StyledBreedingData = styled.div`
 	.pre {white-space: pre;}
   .xp {margin:0 5px;}
   .penXp {font-weight:normal; }
+	.breedCount {color: #a64ff0;}
 
 	/* hasPendingXp */
 	${({ hasPendingXp }) => hasPendingXp && css`

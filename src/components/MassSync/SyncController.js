@@ -1,7 +1,9 @@
 import React from 'react';
-import {StyledSyncController} from './styles/StyledSyncController';
 import Axie from "../Axie/Axie/Axie";
 import Button from "../ui/Button";
+//
+import {StyledSyncController} from './styles/StyledSyncController';
+import ReactSVG from "react-svg";
 
 class SyncController extends React.PureComponent {
 	constructor(props) {
@@ -14,9 +16,13 @@ class SyncController extends React.PureComponent {
 		// handlers
 		const onClickClearAll = this.props.onClickClearAll;
 		const onClickSync = this.props.onClickSync;
-		// {/* <div key={axieKey} className="axie">{axiesObj[axieKey].id}</div> */}
+		const onClickRemoveOne = this.props.onClickRemoveOne;
+		// axies
 		const axies = Object.keys(axiesObj).map(axieKey => 
-			<Axie key={axieKey} data={axiesObj[axieKey]} rendering="image" features="breeding" size="tiny" background="none"/>
+			<div key={axieKey} className="syncElem">
+				<Axie data={axiesObj[axieKey]} rendering="image" features="breeding" size="tiny" background="none"/>
+				<ReactSVG onClick={() => { onClickRemoveOne(axiesObj[axieKey])} } className="removeIcon" src={"./img/icons/general/close.svg"} />
+			</div>
 		);
 		//
 		return (

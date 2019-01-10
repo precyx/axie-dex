@@ -19,6 +19,9 @@ import {WEB3_V1} from "../../services/web3-service";
 import {AXIE_WEB3} from "../../services/axie-contract-service";
 //
 import {StyledMassSync} from "./styles/StyledMassSync";
+//
+import { Grid, AutoSizer, WindowScroller } from 'react-virtualized';
+import 'react-virtualized/styles.css'; // only needs to be imported once
 
 class MassSync extends React.PureComponent{
 	constructor(props){
@@ -33,7 +36,10 @@ class MassSync extends React.PureComponent{
 			status: {code:"", msg:""},
 			view: "",
 			selectedAxies: {},
+			axies: null,
 		}
+
+		this._columnYMap = [];
 	}
 
 	componentDidMount(){
@@ -58,6 +64,32 @@ class MassSync extends React.PureComponent{
 	}
 
 
+
+
+	/**
+	 * Sets axies & axieGrid
+	 * @param {*} axies 
+	 */
+	setAxieState(axies, callback){
+		const columns = 6;
+		const rows = Math.floor(axies.length / columns);
+		let axieGrid = [];
+		let axiesClone = axies.slice(0);
+		for(let i=0; i < rows; i++){
+			axieGrid.push(axiesClone.splice(0, columns));
+		}
+		console.log("Axies", axies);
+		console.log("Axie Grid", axieGrid);
+
+		this.setState({axieGrid: null},() => {
+			this.setState({
+				axies: axies,
+				axieGrid: axieGrid,
+			}, () => { if(callback) callback(); });
+		})
+	}
+
+
 	/**
 	 * Loads axies from {address} and merges data from V0, V1 and Blockchain API
 	 * @param {Boolean} initialLoad 
@@ -75,8 +107,8 @@ class MassSync extends React.PureComponent{
 				// add exp field
 				AXIE_DATA_TRANSFORM.mergeXPDataIntoV1API(axies2, axieData.axies);
 				AXIE_DATA_TRANSFORM.getAndMergePendingBlockchainXPIntoV1API(axies2, this.expSyncContract).then(()=>{
+					this.setAxieState(axies2);
 					this.setState({
-						axies: axies2,
 						status: {code:"loading-complete", msg:""}
 					})
 					console.log("axieData2", axies2);
@@ -99,7 +131,7 @@ class MassSync extends React.PureComponent{
 	 * @param {Boolean} initialLoad 
 	 */
 	loadAllBreedableAxies(){
-		this.setState({status: {code: "loading", msg: "loading axies"}});
+		this.setState({status: {code: "loading", msg: "loading all axies"}});
 		// load all axies by address
 		AXIE_DATA_V1.getAllAxiesByAddress(this.state.address, "&stage=4", (progress => {
 			this.setState({
@@ -121,8 +153,8 @@ class MassSync extends React.PureComponent{
 				// add exp field
 				AXIE_DATA_TRANSFORM.mergeXPDataIntoV1API(axies2, axies);
 				AXIE_DATA_TRANSFORM.getAndMergePendingBlockchainXPIntoV1API(axies2, this.expSyncContract).then(()=>{
+					this.setAxieState(axies2);
 					this.setState({
-						axies: axies2,
 						status: {code:"loading-complete", msg:""}
 					}, () => {
 						this.selectBreedableAxies();
@@ -135,7 +167,7 @@ class MassSync extends React.PureComponent{
 	selectBreedableAxies(){
 		let selectedAxies = {};
 		this.state.axies.forEach(axie => {
-			console.log(axie.exp)
+			//console.log(axie.exp)
 			let hasEnoughXpPendingToBreed = (axie.pendingExp - axie.pendingExp2 + axie.exp) > axie.expForBreeding;
 			let hasEnoughXpAlreadyToBreed = axie.exp > axie.expForBreeding;
 			//
@@ -168,14 +200,14 @@ class MassSync extends React.PureComponent{
 	}
 
 	handleCheckAxie = (check, axieData) => {
-		console.log("handle check", check, axieData);
+		//console.log("handle check", check, axieData);
 		let newSelectedAxies = Object.assign({}, this.state.selectedAxies);
 		if(check) 			newSelectedAxies[axieData.id] = axieData
 		else if(!check)	delete newSelectedAxies[axieData.id];
 		this.setState({
 			selectedAxies: newSelectedAxies,
 		}, () => {
-			console.log(this.state.selectedAxies);
+			//console.log(this.state.selectedAxies);
 		})
 	}
 
@@ -209,7 +241,7 @@ class MassSync extends React.PureComponent{
 		window.web3.eth.getAccounts((err, accounts)=>{
 			let sender = accounts[0];
 			AXIE_WEB3.send(this.expSyncContract, "checkpointForMulti", params, sender).then((data)=>{
-				console.log("SUPPP", data)
+				//console.log("SUPPP", data)
 				this.setState({
 					syncTxHash: data,
 					showSuccessBox: true,
@@ -221,6 +253,7 @@ class MassSync extends React.PureComponent{
 	}
 
 
+	 /* Handlers */
 	handleClickLoadPages = () => {
 		this.setState({
 			view: "axie-pages",
@@ -250,6 +283,31 @@ class MassSync extends React.PureComponent{
 		})
 	}
 
+	handleClickRemoveOneSelectedAxie = (axieToRemove) => {
+		let newSelectedAxies = Object.assign({}, this.state.selectedAxies);
+		delete newSelectedAxies[axieToRemove.id];
+		this.setState({
+			selectedAxies: newSelectedAxies,
+		})
+	}
+
+
+	/**
+	 * Virtuas Scroll cell render
+	 */
+	cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
+		const axie = this.state.axieGrid[rowIndex][columnIndex];
+		let realPendingExp = (axie.pendingExp2||0) - (axie.pendingExp||0);
+		return (
+			<div key={key} style={style}>
+				<AxieCheck data={axie} onCheck={this.handleCheckAxie} disable={realPendingExp != 0} >
+					<Axie data={axie} rendering="image" img={axie} features={"breeding"}/>
+				</AxieCheck>
+			</div>
+		)
+	}
+
+	
 
 	render(){
 		const currentPage = this.state.currentPage;
@@ -273,15 +331,33 @@ class MassSync extends React.PureComponent{
 				</AxieCheck>
 			 )
 			}
-
 		) : null;
+
+		const axies2 = this.state.axieGrid ? this.state.axieGrid.map((axieRow, i) => {
+			return (
+				<div key={i} className="row"> 
+					{axieRow.map(axie => {
+						let realPendingExp = (axie.pendingExp2||0) - (axie.pendingExp||0);
+						return (
+							<AxieCheck key={axie.id} data={axie} onCheck={this.handleCheckAxie} disable={realPendingExp != 0} >
+								<Axie data={axie} rendering="image" img={axie} features={"breeding"}/>
+							</AxieCheck>
+						)
+					})}
+				</div>
+			)
+		}) : null;
+
 		const spinner = (
 			<div className="spinnerContainer"> 
 				<Spinner className="spinner" size={30} spinnerColor={"#a146ef"} spinnerWidth={3} visible={true}/>
 				<p className="text">{status.msg}</p>
 			</div>
 		);
+
 		return (
+			<WindowScroller>
+				{({ height, isScrolling, onChildScroll, scrollTop }) => (
 			<BasicCenterContainer>
 				<StyledMassSync>
 
@@ -323,16 +399,18 @@ class MassSync extends React.PureComponent{
 									<Button name="Next" type="outline" color="#a146ef" onClick={this.handleClickNextPage}/>
 								</div>
 							</div>}
-							{ view == "start-screen" && 
+							{ this.state.axies && 
 								<div className="infoBar">
-									<h2 className="v2">Showing {currentAxies} of {totalAxies}</h2>
+									<h2 className="v2">Showing {this.state.axies.length} {this.totalAxies ? " of " + this.total : ""} Axies</h2>
 								</div>	
 							}
 						</div>
 						{hasSelectedAxies &&
 							<SyncContoller axies={selectedAxies} 
 								onClickClearAll={this.handleClickClearAll}
-								onClickSync={this.handleClickSyncSelectedAxies}> 
+								onClickSync={this.handleClickSyncSelectedAxies}
+								onClickRemoveOne={this.handleClickRemoveOneSelectedAxie}
+								> 
 							</SyncContoller>
 						}
 					</div>
@@ -342,17 +420,42 @@ class MassSync extends React.PureComponent{
 							<div className="startScreen">
 								<Textfield name="address" value={address} onChange={this.handleChangeAddress}/>
 								<div className="bar">
-									<Button onClick={this.handleClickLoadBreedableAxies} className="loadBreedingAxiesButton" name="Load All Fitting Axies" type="filled" color="#a146ef" /> 
-									<Button onClick={this.handleClickLoadPages} className="loadAxiePages" name="Load Pages" type="filled" color="#a146ef" />
+									<Button onClick={this.handleClickLoadBreedableAxies} className="loadBreedingAxiesButton" name="Load All Axies" type="filled" color="#a146ef" /> 
+									<Button onClick={this.handleClickLoadPages} className="loadAxiePages" name="Load Pages" type="outline" color="#a146ef" />
 								</div>
 							</div>
 						}
 						{status.code == "loading" && spinner}
-						{axies}
+				
+						{this.state.axieGrid &&
+
+							<AutoSizer>
+								{({ width }) => (
+									<Grid
+										cellRenderer={this.cellRenderer}
+										columnCount={this.state.axieGrid[0].length}
+										columnWidth={234}
+										rowHeight={296}
+										rowCount={this.state.axieGrid.length}
+										overscanRowCount={1}
+										autoHeight
+										height={height}
+										isScrolling={isScrolling}
+										onScroll={onChildScroll}
+										scrollTop={scrollTop}
+										width={width}
+									/>
+								)}
+							</AutoSizer>
+						}
+
+
 					</div>
 
 				</StyledMassSync>
 			</BasicCenterContainer>
+			)}
+			</WindowScroller>
 		)
 	}
 
