@@ -41,9 +41,7 @@ export const WEB3_V1 = {
 	getContract: function(abi, address){
 		return new window.web3.eth.Contract(abi, address);
 	},
-
 }
-
 
 export const WEB3_V0xx = {
 	connectWeb3 : connectWeb3,

@@ -13,6 +13,7 @@ export const StyledPartTierList = styled.div`
 
 	.box {margin-bottom:40px;}
 	.box.buttons .button {margin-right:10px;}
+
 `;
 
 class Comps extends React.PureComponent{
@@ -21,6 +22,12 @@ class Comps extends React.PureComponent{
 		return (
 			<BasicCenterContainer>
 				<StyledPartTierList>
+
+
+					<h1>Where is the Bear?</h1>
+					<h2>And the Honey</h2>
+
+					
 					<h1>Components</h1>
 
 					<div className="box buttons">
@@ -47,6 +54,8 @@ class Comps extends React.PureComponent{
 							{value: "grape", label:"Grape"},
 							]} />
 					</div>
+					
+
 				</StyledPartTierList>
 			</BasicCenterContainer>
 		)

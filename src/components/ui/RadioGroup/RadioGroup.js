@@ -3,10 +3,11 @@ import React from 'react';
 // CSS
 import {StyledRadioGroup} from "./StyledRadioGroup";
 import RadioButton from "../RadioButton/RadioButton";
+import PropTypes from "prop-types";
 
 /**
  * Renders an RadioGroup with RadioButtons
- * @example <RadioGroup options{Array} active_option{String}/>
+ * @example <RadioGroup options{Array} active_option{String} />
  */
 class RadioGroup extends React.PureComponent {
 	constructor(props){
@@ -33,11 +34,17 @@ class RadioGroup extends React.PureComponent {
 			</RadioButton>
 		);
 		return (
-			<StyledRadioGroup className={this.props.class}>
+			<StyledRadioGroup className={"radiogroup " + this.props.class}>
 				{radios}
 			</StyledRadioGroup>
 		);
 	}
+}
+
+RadioGroup.propTypes = {
+	active_option: PropTypes.string.isRequired,
+	options: PropTypes.array.isRequired,
+	onChange: PropTypes.func,
 }
 
 export default RadioGroup;

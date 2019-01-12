@@ -7,7 +7,7 @@ const StyledTextfield = styled.div`
 	align-items: center;
 	width:100%;
 	label {width:100px;}
-	input {width:250px; border: 1px solid #dcdcdc; border-radius:3px;}
+	input {width:250px; border: 1px solid #dcdcdc; border-radius:3px; padding: 12px 10px; outline: none;}
 `;
 
 /**
