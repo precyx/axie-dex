@@ -43,7 +43,16 @@ class Method extends React.PureComponent{
 
 
 	//
-	colorTheme = createMuiTheme(DexColorTheme);
+	//colorTheme = createMuiTheme(DexColorTheme);
+	colorTheme = createMuiTheme({
+		palette: {
+			primary: { main: '#2988dc' },
+			secondary: { main: '#40bcec' },
+		},
+		typography: {
+			useNextVariants: true,
+		},
+	});
 	render(){
 		const data = this.props.data;
 		const inputs = data.inputs || [];
@@ -79,8 +88,8 @@ class Method extends React.PureComponent{
 					value={results}
 					className="output_field"
 					multiline
-					margin="normal"
 					variant="outlined"
+					margin="normal"
 					InputProps={{
 						readOnly: true,
 					}}
@@ -91,7 +100,7 @@ class Method extends React.PureComponent{
 
 		return (
 			<MuiThemeProvider theme={this.colorTheme}>
-				<StyledMethod>
+				<StyledMethod className="method">
 					<div className="titleBar">
 						<h2>{data.name}({inputs.length})</h2>
 						{data.constant ? <div className="constant tag">constant</div> : ""}
@@ -109,7 +118,7 @@ class Method extends React.PureComponent{
 							</div>
 						</div>
 						<div className="callBar">
-							<Button name={data.name} onClick={this.handleClickSendButton} color="#a146ef" type="filled" size="big" />
+							<Button name={data.name} onClick={this.handleClickSendButton} color="#3bb0f3" type="filled" size="big" />
 						</div>
 					</form>
 				</StyledMethod>

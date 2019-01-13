@@ -6,10 +6,10 @@ export const StyledMethod = styled.div`
 	background:white;
 	/*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18); */
 	/* box-shadow:none; */
-	border: 1px solid #dedede;
+	/*border: 1px solid #dedede;
+	border-radius: 8px;*/
 	padding: 30px;
 	margin-bottom: 30px;
-	border-radius: 8px;
 
 	h2 {margin:0;}
 
@@ -26,9 +26,9 @@ export const StyledMethod = styled.div`
 	.output_field {width:350px;}
 
 	/* callBar */
-	.callBar {display:flex; justify-content:flex-end;}
+	.callBar {display:flex; justify-content:flex-end; margin-top:10px;}
 	
-	.button { padding: 11px 18px; text-transform:uppercase;}
+	.button { text-transform: none; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); border-radius: 6px; }
 
 	/* x state */
 	${({ x }) => x && css``}

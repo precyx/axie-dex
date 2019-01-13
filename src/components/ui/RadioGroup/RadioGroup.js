@@ -33,8 +33,11 @@ class RadioGroup extends React.PureComponent {
 			{option.label}
 			</RadioButton>
 		);
+		const classNames = this.props.class;
+		const color = this.props.class;
+		const type = this.props.type;
 		return (
-			<StyledRadioGroup className={"radiogroup " + this.props.class}>
+			<StyledRadioGroup className={"radiogroup " + classNames} type={type} color={color}>
 				{radios}
 			</StyledRadioGroup>
 		);
@@ -45,6 +48,8 @@ RadioGroup.propTypes = {
 	active_option: PropTypes.string.isRequired,
 	options: PropTypes.array.isRequired,
 	onChange: PropTypes.func,
+	type: PropTypes.oneOf(['modern', 'default', 'simple']),
+	color: PropTypes.string,
 }
 
 export default RadioGroup;

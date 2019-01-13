@@ -20,7 +20,6 @@ class MethodFilter extends React.PureComponent{
 	}
 
 	handleChange = value => {
-		console.log("value", value);
 		this.props.onChangeFilter(value);
 	}
 
@@ -31,7 +30,7 @@ class MethodFilter extends React.PureComponent{
 		return (
 			<MuiThemeProvider theme={this.colorTheme}>
 				<StyledMethodFilter>
-					<RadioGroup onChange={this.handleChange} active_option="all" options={[
+					<RadioGroup onChange={this.handleChange} type="modern" color="blue" active_option="all" options={[
 						{label: "All", value: "all"},
 						{label: "Constant", value: "constant"},
 						{label: "Event", value: "event"},

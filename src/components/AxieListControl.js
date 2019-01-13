@@ -58,7 +58,7 @@ class AxieListControl extends React.PureComponent {
 
 					<div className="centerControl">
 						<div className="title">Features</div>
-						<RadioGroup class={"radiogroup"} options={[
+						<RadioGroup type="modern" class={"radiogroup"} options={[
 							{label: "Stats", value: "stats"},
 							{label: "Parts", value: "parts"},
 							{label: "Minimal", value: "minimal"},
@@ -66,7 +66,7 @@ class AxieListControl extends React.PureComponent {
 						</RadioGroup>
 
 						<div className="title">Size</div>
-							<RadioGroup class={"radiogroup"} options={[
+							<RadioGroup type="modern" class={"radiogroup"} options={[
 								{label: "Normal", value: "normal"},
 								{label: "Large", value: "large"},
 							]} active_option={"normal"} onChange={this.onSizeChange}>

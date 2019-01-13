@@ -111,7 +111,7 @@ class Encyclopedia extends Component {
 							<Button type="color" color="#a146ef" className="prev" onClick={this.loadPrevPage} name={"Prev"} />
 							<Button type="color" color="#a146ef" className="next" onClick={this.loadNextPage} name={"Next"} />
 						</div>
-						<RadioGroup class={"radiogroup"} options={[
+						<RadioGroup class={"radiogroup"} type="simple" options={[
 							{label: "Adult", value: "4"},
 							{label: "Petite", value: "3"},
 							{label: "Larva", value: "2"},

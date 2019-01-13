@@ -52,7 +52,27 @@ class Comps extends React.PureComponent{
 							{value: "banana", label:"Banana"},
 							{value: "apple", label:"Apple"},
 							{value: "grape", label:"Grape"},
-							]} />
+							]}/>
+					</div>
+
+
+					<div className="box">
+						<h2>Modern</h2>
+						<RadioGroup active_option={"stone"} type="modern" color="pink" options={[
+							{value: "tree", label:"Tree"},
+							{value: "leaf", label:"Leaf"},
+							{value: "stone", label:"Stone"},
+							]}/>
+					</div>
+
+
+					<div className="box">
+						<h2>Simple</h2>
+						<RadioGroup active_option={"giraffe"} type="simple" color="brown" options={[
+							{value: "cat", label:"Cat"},
+							{value: "giraffe", label:"Giraffe"},
+							{value: "badger", label:"Badger"},
+							]}/>
 					</div>
 					
 

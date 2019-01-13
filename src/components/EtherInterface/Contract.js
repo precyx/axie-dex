@@ -20,12 +20,9 @@ class Contract extends React.PureComponent{
 		}
 	}
 	componentDidMount() {
-		//WEB3_V1.connectWeb3();
-		//
 		const addr = this.props.address;
 		const abi = this.props.abi;
 		this.contract = WEB3_V1.getContract(abi, addr);
-		console.log(this.contract);
 	}
 
 	/* Event Handler */
@@ -33,7 +30,6 @@ class Contract extends React.PureComponent{
 		this.setFilter("tag", filter);
 	}
 	handleSendMethod = (method, values, callback) => {
-		console.log("v", method, values);
 		const vals = Object.values(values);
 		this.contract.methods[method](...vals).call().then(data => {
 			callback(data);
