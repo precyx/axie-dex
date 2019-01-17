@@ -14,14 +14,14 @@ class SalesData extends React.PureComponent {
 			const buyNowPrice = weiToEth(this.props.auctionData.buyNowPrice).toFixed(2);
 			return (
 				<StyledSalesData>
-					<div>{buyNowPrice} ETH</div>
+					<div className="text">{buyNowPrice} ETH</div>
 				</StyledSalesData>
 			);
 		}
 		else {
 			return (
 				<StyledSalesData>
-					<div>No Auction Data</div>
+					<div className="text">No Auction Data</div>
 				</StyledSalesData>
 			);
 		}

@@ -8,8 +8,12 @@ import RadioGroup from './ui/RadioGroup/RadioGroup';
 
 //CSS
 const StyledAxieListControl = styled.div`
-	.centerControl {display:flex; justify-content:center; align-items:center;}
+
+	margin-bottom:40px;
+
+	.centerControl {display:flex; justify-content:center; align-items:center; margin-bottom:10px;}
 	.centerControl .title {font-size:14px; font-weight:bold; color:#8e8e8e; margin-right:15px;}
+	.centerControl .group { margin-right:20px; display:flex; justify-content:center; align-items:center; }
 	.radioButton {margin-right:5px; font-size:14px;}
 `;
 
@@ -57,20 +61,26 @@ class AxieListControl extends React.PureComponent {
 					<StyledAxieListControl>
 
 					<div className="centerControl">
-						<div className="title">Features</div>
-						<RadioGroup type="modern" class={"radiogroup"} options={[
-							{label: "Stats", value: "stats"},
-							{label: "Parts", value: "parts"},
-							{label: "Minimal", value: "minimal"},
-						]} active_option={"minimal"} onChange={this.onOptionChange}>
-						</RadioGroup>
 
-						<div className="title">Size</div>
+						<div className="group">
+							<div className="title">Features</div>
 							<RadioGroup type="modern" class={"radiogroup"} options={[
-								{label: "Normal", value: "normal"},
-								{label: "Large", value: "large"},
-							]} active_option={"normal"} onChange={this.onSizeChange}>
+								{label: "Stats", value: "stats"},
+								{label: "Parts", value: "parts"},
+								{label: "Minimal", value: "minimal"},
+							]} active_option={"minimal"} onChange={this.onOptionChange}>
 							</RadioGroup>
+						</div>
+						<div className="group">
+							<div className="title">Size</div>
+								<RadioGroup type="modern" class={"radiogroup"} options={[
+									{label: "Normal", value: "normal"},
+									{label: "Large", value: "large"},
+									{label: "Small", value: "small"},
+									{label: "Tiny", value: "tiny"},
+								]} active_option={"normal"} onChange={this.onSizeChange}>
+								</RadioGroup>
+							</div>
 						</div>
 
 

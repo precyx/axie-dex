@@ -2,6 +2,7 @@
 //axios
 import axios from 'axios';
 import { ExpSyncContract } from '../data/contracts/ExpSyncContract';
+import Web3 from "web3";
 
 /*
     A list of API URL generators for the Axie Infinity Website
@@ -230,6 +231,25 @@ export const AXIE_DATA_V1 = {
         })
     },
 }
+
+
+
+export const AXIE_DATA_V2 = {
+
+	getAxiesByAddress(address, offset, additionalParams){
+        let url = "https://axieinfinity.com/api/v2/addresses/";
+        let web3 = new Web3(Web3.givenProvider)
+        if(!web3.utils.isAddress(address)) throw new Error("invalid Ethereum address");
+        url = `${url}${address}/axies?a=1`;
+        if(offset) url += `&${offset}`;
+        if(additionalParams) url += `&${additionalParams}`;
+        return axios.get(url).then(data => {
+            return data.data;
+            console.log("data", data);
+        }).catch(error => console.log("err", error));
+	}
+}
+
 
 
 export const AXIE_DATA_TRANSFORM = {

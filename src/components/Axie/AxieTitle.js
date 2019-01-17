@@ -32,10 +32,13 @@ function AxieTitle(props) {
 			<div className="line1">
 				<div className="block left">
 					<a target="_blank" href={"https://axieinfinity.com/axie/" + id} className="name">{name} </a>
-					{axieClass ? 
-						<ReactSVG className="icon" svgStyle={{fill: axieColor}} src={"./img/icons/classes/" + axieClass + "_24px.svg"} />
-					: ""}
-					<div className="id">#{id}</div>
+
+					<div className="idGroup">
+						{axieClass ? 
+							<ReactSVG className="icon" svgStyle={{fill: axieColor}} src={"./img/icons/classes/" + axieClass + "_24px.svg"} />
+						: ""}
+						<div className="id">#{id}</div>
+					</div>
 				</div>
 				<div className="block right">
 					<AxieOwner owner={owner} axieClass={props}></AxieOwner>

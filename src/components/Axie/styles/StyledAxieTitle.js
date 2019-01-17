@@ -7,6 +7,7 @@ export const StyledAxieTitle = styled.div`
 
 	.name { font-size: 12px; margin-right:5px; color: #949494;}
 	.id {color: #8d65ff; border-radius:3px; font-style: italic; font-size: 12px; color: ${props => props.color}; }
+	.idGroup {display: flex; align-items: center;}
 	.icon {width:16px; height:16px; margin-right:5px;}
 	.stageText {color: #6f6f6f; font-size: 18px;}
 	.block {display:flex; align-items: center;}

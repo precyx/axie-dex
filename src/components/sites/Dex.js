@@ -49,9 +49,11 @@ class Dex extends React.PureComponent {
 		};
 	}
 
-	componentWillMount(){
+	
+	componentWillMount() {
 		this.getAxiesByIds();
 	}
+
 
 	/**
 	 * Gets Axies by {ids} in a list
@@ -120,15 +122,17 @@ class Dex extends React.PureComponent {
 	
 	
 	render() {
+			const status = this.state.status;
+			const axies = this.state.axies;
 			return(
 				<StyledDex>
-					{this.state.status.code !== "all_loaded" ? 
+					{status.code !== "all_loaded" ? 
 						<div className="center">
 						<StatusBox status={this.state.status}/> 
 						</div>
 					: ""}
 					
-					{this.state.axies ? 
+					{axies ? 
 					<div>
 						<BasicCenterContainer>
 							<div className="getAxieByIdContainer">

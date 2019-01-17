@@ -7,6 +7,7 @@ import {AI_CONTRACTS} from "../../data/contracts/AxieInfinity/AxieInfinityContra
 import {StyledEtherInterface} from "./styles/StyledEtherInterface";
 import Contract from "./Contract";
 import ContractFilter from "./ContractFilter";
+import Web3 from 'web3';
 
 class EtherInterface extends React.PureComponent{
 	constructor(props){
@@ -21,6 +22,44 @@ class EtherInterface extends React.PureComponent{
 		WEB3_V1.getDefaultAccount().then(acc => {
 			console.log("acc", acc);
 		})
+		this.getEvents();
+	}
+
+
+	async getEvents(){
+
+		try {
+			let block = await WEB3_V1.getBlock();
+			console.log("b", block);
+		}
+		catch(err){
+			console.log(err);
+		}
+		//window.web3.eth.getBlockNumber().then(console.log);
+
+		/*window.web3.eth.getBlockNumber().then((block)=>{
+			var contract = AI_CONTRACTS.clock_auction;
+			var clockAuctionContract = WEB3_V1.getContract(contract.abi, contract.address);
+			console.log(clockAuctionContract);
+			clockAuctionContract.getPastEvents('AuctionSuccessful', {// Using an array means OR: e.g. 20 or 23
+					fromBlock: block-1000,
+					toBlock: block
+			}, function(error, events){ console.log(events); })
+			.then(function(events){
+					console.log(events) // same results as the optional callback above
+			});
+		});*/
+
+		/*var contract = AI_CONTRACTS.clock_auction;
+		var clockAuctionContract = WEB3_V1.getContract(contract.abi, contract.address);
+		console.log(clockAuctionContract);
+		clockAuctionContract.getPastEvents('AuctionSuccessful', {// Using an array means OR: e.g. 20 or 23
+				fromBlock: 0,
+				toBlock: 'latest'
+		}, function(error, events){ console.log(events); })
+		.then(function(events){
+				console.log(events) // same results as the optional callback above
+		});*/
 	}
 
 	getContracts(){

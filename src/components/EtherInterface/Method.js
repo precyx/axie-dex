@@ -6,6 +6,7 @@ import {DexColorTheme} from "../../data/dex-material-color-theme";
 import {MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import {StyledMethod} from "./styles/StyledMethod";
 import TextField from '@material-ui/core/TextField';
+import PureTextField from '../ui/Material/PureTextField';
 //
 import PropTypes from 'prop-types';
 
@@ -65,7 +66,7 @@ class Method extends React.PureComponent{
 			const label = name + " (" + type + ")";
 			const id = "field_"+i;
 			return (
-				<TextField
+				<TextField 
 					key={i}
 					id={id}
 					label={label}

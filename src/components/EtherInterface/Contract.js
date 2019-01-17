@@ -69,6 +69,7 @@ class Contract extends React.PureComponent{
 				<Method key={i} data={method} onSend={this.handleSendMethod}/>	
 			)
 		})
+		console.log("render contract");
 		return (
 			<StyledContract>
 				<h1>{this.props.name}</h1>

@@ -41,6 +41,9 @@ export const WEB3_V1 = {
 	getContract: function(abi, address){
 		return new window.web3.eth.Contract(abi, address);
 	},
+	getBlock: function(){
+		return window.web3.eth.getBlockNumber();
+	}
 }
 
 export const WEB3_V0xx = {
