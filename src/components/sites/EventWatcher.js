@@ -4,8 +4,6 @@ import BasicCenterContainer from "../containers/BasicCenterContainer";
 import {StyledEventWatcher} from "./styles/StyledEventWatcher";
 //
 
-//
-import EtherInterface from "../EtherInterface/EtherInterface";
 
 class EventWatcher extends React.PureComponent{
 
@@ -16,7 +14,7 @@ class EventWatcher extends React.PureComponent{
 			<BasicCenterContainer>
 				<StyledEventWatcher>
 
-					<EtherInterface />
+					<h1>Event Watcher</h1>
 
 				</StyledEventWatcher>
 			</BasicCenterContainer>

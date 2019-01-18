@@ -18,6 +18,7 @@ import XmasSkins from './components/sites/XmasSkins';
 import PartTierlist from './components/sites/PartTierlist';
 import MassSync from './components/sites/MassSync';
 import Comps from './components/sites/Comps';
+import ContractViewer from './components/sites/ContractViewer';
 import EventWatcher from './components/sites/EventWatcher';
 
 
@@ -51,7 +52,8 @@ class App extends Component {
               <NavLink activeClassName="selected" to="/part-tierlist">Part Tierlist</NavLink>
               <NavLink activeClassName="selected" to="/mass-sync">Mass Sync</NavLink>
               <NavLink activeClassName="selected" to="/comps">Comps</NavLink>
-              <NavLink activeClassName="selected" to="/events">Events</NavLink>
+              <NavLink activeClassName="selected" to="/contracts">Contracts</NavLink>
+              {/* <NavLink activeClassName="selected" to="/events">Events</NavLink> */}
             </div>
           </div>
           <Switch>
@@ -64,6 +66,7 @@ class App extends Component {
             <Route exact path="/part-tierlist" component={PartTierlist}/>
             <Route exact path="/mass-sync" component={MassSync}/>
             <Route exact path="/comps" component={Comps}/>
+            <Route exact path="/contracts" component={ContractViewer}/>
             <Route exact path="/events" component={EventWatcher}/>
             <Redirect from='/' to='/teambuilder'/>
           </Switch>
