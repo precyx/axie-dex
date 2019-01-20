@@ -9,8 +9,7 @@ import {AXIE_DATA} from "../../services/axie-data-service.js";
 import {AXIE_DATA_V2} from "../../services/axie-data-service";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
 import StatusBox from "../StatusBox";
-import RadioGroup from '../ui/RadioGroup/RadioGroup';
-import AxieInputs from '../Profile/AxieInputs';
+import AxieInputs from '../Profile/AxieFilter';
 
 //CSS
 const StyledProfile = styled.div`
@@ -21,8 +20,11 @@ const StyledProfile = styled.div`
 	.controlBar {text-align:center;}
 	.controlBar .textfield{ width:auto; margin-right:10px;}
 	.controlBar .axieInput {display:inline-flex; align-items:center; }
-	.controlBar .pageBar {display:flex; justify-content:center; margin-bottom:20px;}
-	.controlBar .stageBar {display:flex; justify-content:center; margin-bottom:10px;}
+	.controlBar .pageBar {display:flex; justify-content:center; align-items:center; margin-bottom:20px;}
+	.controlBar .pageBar .text {color: #4e4e4e;
+    font-weight: 600;
+    font-size: 14px;
+		margin:0 10px;}
 
 	.loadingArea {
 		position: absolute;
@@ -60,7 +62,9 @@ class Profile extends Component {
 			address: this.address_pool[Math.floor(Math.random() * this.address_pool.length)],
 			offset: 0,
 			limit: 12,
+			page: 1,
 			additionalParams: "",
+			filters: {},
 			stage: "4",
 			totalAxies: 0,
 			axies: null,
@@ -72,7 +76,6 @@ class Profile extends Component {
 		this.onStageChange(this.state.stage, () => {
 			//this.getAxiesByAddress();
 			this.getAxiesByAddressV2();
-
 		});
 
 	}
@@ -84,7 +87,9 @@ class Profile extends Component {
 		const addr = this.state.address;
 		const offset = this.state.offset;
 		const additionalParams = this.state.additionalParams;
+		console.log(offset, additionalParams);
 		var axieData = await AXIE_DATA_V2.getAxiesByAddress(addr, offset, additionalParams);
+		console.log("d", axieData);
 		this.setState({
 			axies : axieData.axies.slice(0,this.state.limit),
 			totalAxies: axieData.totalAxies,
@@ -121,15 +126,29 @@ class Profile extends Component {
 
 	loadPrevPage = () => {
 		this.setState(
-			(prevState) => ({offset: +prevState.offset-12}),
+			(prevState) => ({
+				page: this.validatePage(prevState.page-1),
+				offset: this.offsetFromPage(prevState.page-1)
+			}),
 			this.getAxiesByAddressV2
 		);
 	}
 	loadNextPage = () => {
 		this.setState(
-			(prevState) => ({offset: +prevState.offset+12}),
+			(prevState) => ({
+				page: this.validatePage(prevState.page+1),
+				offset: this.offsetFromPage(prevState.page+1),
+			}),
 			this.getAxiesByAddress
 		);
+	}
+
+	validatePage(page){
+		const p = parseInt(page);
+		return Number.isInteger(p) ? Math.max(1, p) : "";
+	}
+	offsetFromPage (page){
+		return Math.max(page*12 - 12, 0);
 	}
 
 
@@ -138,10 +157,22 @@ class Profile extends Component {
 	 * @memberof AxieList
 	 */
 	handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
+		switch(name){
+			case "page" :
+				const newPage = this.validatePage(event.target.value);
+				const newOffset = this.offsetFromPage(newPage);
+				this.setState({
+					page: newPage,
+					offset: newOffset,
+				});
+			break;
+			default :
+			this.setState({
+				[name]: event.target.value,
+			});
+		}
+	};
+	
 
 	onStageChange = (stage, callback) => {
 		this.setState({
@@ -150,6 +181,20 @@ class Profile extends Component {
 		}, callback);
 	}
 
+	onChangeFilter = (filterName, val) => {
+		let newFilters = Object.assign({}, this.state.filters);
+		newFilters[filterName] = val;
+		//
+		let newAdditionalParams = "";
+		Object.keys(newFilters).forEach(filterKey => {
+			if(newFilters[filterKey] != "null") newAdditionalParams += `&${filterKey}=${newFilters[filterKey]}`;
+		});
+		console.log(newAdditionalParams);
+		this.setState({
+			filters: newFilters,
+			additionalParams: newAdditionalParams,
+		}, () => { console.log(this.state.filters); })
+	}
 
 
 	render() {
@@ -157,9 +202,12 @@ class Profile extends Component {
 		const axies = this.state.axies;
 		const totalAxies = this.state.totalAxies;
 		//
+		const filters = this.state.filters;
 		const address = this.state.address;
+		const limit = Math.min(this.state.limit, 12);
+		const currentPage = this.state.page;
+		const maxPages = Math.ceil(totalAxies / limit) 
 		const offset = this.state.offset;
-		const limit = this.state.limit;
 		const stage = this.state.stage;
 		return (
 			<StyledProfile>
@@ -167,20 +215,11 @@ class Profile extends Component {
 					<div className="getAxieByAddressContainer">
 					<h1>Profile <span className="count">{totalAxies}</span></h1>
 					<div className="controlBar">
-						<AxieInputs address={address} offset={offset} limit={limit} onChange={this.handleChange} onClickSubmit={this.getAxiesByAddress}/>
-
-
-						<div className="stageBar">
-							<RadioGroup class={"radiogroup"} type="simple" options={[
-								{label: "Adult", value: "4"},
-								{label: "Petite", value: "3"},
-								{label: "Larva", value: "2"},
-							]} active_option={stage} onChange={this.onStageChange}>
-							</RadioGroup>
-						</div>
+						<AxieInputs stage={stage} address={address} page={currentPage} filters={filters} onChangeFilter={this.onChangeFilter} onChange={this.handleChange} onClickSubmit={this.getAxiesByAddress}/>
 
 						<div className="pageBar">
 							<Button className="prev" type="color" color="#a146ef" onClick={this.loadPrevPage} name={"Prev"} />
+							<div className="text">{currentPage} / {maxPages}</div>
 							<Button className="next" type="color" color="#a146ef" onClick={this.loadNextPage} name={"Next"} />
 						</div>
 

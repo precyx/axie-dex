@@ -22,6 +22,7 @@ function AxieTitle(props) {
 	const axieClass = props.class;
 	const axieColor = axieClassColors[axieClass];
 	const id = props.id;
+	const title = props.title;
 	const name = props.name;
 	const owner = props.owner;
 	const stage = props.stage;
@@ -29,21 +30,27 @@ function AxieTitle(props) {
 
 	return (
 		<StyledAxieTitle className="axieTitle" color={axieColor}>
-			<div className="line1">
+			<div className="line line1">
 				<div className="block left">
-					<a target="_blank" href={"https://axieinfinity.com/axie/" + id} className="name">{name} </a>
-
 					<div className="idGroup">
-						{axieClass ? 
-							<ReactSVG className="icon" svgStyle={{fill: axieColor}} src={"./img/icons/classes/" + axieClass + "_24px.svg"} />
-						: ""}
 						<div className="id">#{id}</div>
 					</div>
+					{title &&
+						<div className="title">{title}</div>
+					}
 				</div>
 				<div className="block right">
 					<AxieOwner owner={owner} axieClass={props}></AxieOwner>
 				</div>
 				<div style={{display:"none"}} className="class">{axieClass}</div>
+			</div>
+			<div className="line">
+				<div className="nameGroup">
+				{axieClass ? 
+						<ReactSVG className="icon" svgStyle={{fill: axieColor}} src={"./img/icons/classes/" + axieClass + "_24px.svg"} />
+					: ""}
+					<a target="_blank" href={"https://axieinfinity.com/axie/" + id} className="name">{name} </a>
+				</div>
 			</div>
 			{stage <= 2 ?
 			<div className="line2">

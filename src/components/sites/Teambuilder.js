@@ -19,15 +19,15 @@ import BasicCenterContainer from "../containers/BasicCenterContainer";
 import {AXIE_DATA, AXIE_DATA_V1} from "../../services/axie-data-service.js";
 import {AXIE_PIXI} from "../../services/axie-pixi-service";
 //import AxieTitle from "../AxieTitle";
-import AxieBadges from "../AxieBadges";
+import AxieBadges from "../Axie/AxieBadges";
 //import AxieScores from "../AxieScores";
 //import AxieParts from "../AxieParts";
 import AxieComponent from "../Axie/Axie/Axie";
 import Button from "../ui/Button";
 import IconButton from "../ui/IconButton";
 import Textfield from "../ui/Textfield";
-import AxieTeams from '../AxieTeams';
-import AxiePartList from '../AxiePartList';
+import AxieTeams from '../TeamBuilder/AxieTeams';
+import AxiePartList from '../TeamBuilder/AxiePartList';
 //import AxiePartClasses from '../AxiePartClasses';
 // classes
 import {Grid} from "../classes/Grid";

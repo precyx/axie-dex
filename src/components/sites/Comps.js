@@ -58,7 +58,7 @@ class Comps extends React.PureComponent{
 
 					<div className="box">
 						<h2>Modern</h2>
-						<RadioGroup active_option={"stone"} type="modern" color="pink" options={[
+						<RadioGroup active_option={"stone"} type="modern" color="#77aa02" options={[
 							{value: "tree", label:"Tree"},
 							{value: "leaf", label:"Leaf"},
 							{value: "stone", label:"Stone"},
@@ -68,7 +68,7 @@ class Comps extends React.PureComponent{
 
 					<div className="box">
 						<h2>Simple</h2>
-						<RadioGroup active_option={"giraffe"} type="simple" color="brown" options={[
+						<RadioGroup active_option={"giraffe"} type="simple" color="#b024ab" options={[
 							{value: "cat", label:"Cat"},
 							{value: "giraffe", label:"Giraffe"},
 							{value: "badger", label:"Badger"},

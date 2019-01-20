@@ -241,8 +241,9 @@ export const AXIE_DATA_V2 = {
         let web3 = new Web3(Web3.givenProvider)
         if(!web3.utils.isAddress(address)) throw new Error("invalid Ethereum address");
         url = `${url}${address}/axies?a=1`;
-        if(offset) url += `&${offset}`;
+        if(offset) url += `&offset=${offset}`;
         if(additionalParams) url += `&${additionalParams}`;
+        console.log(url);
         return axios.get(url).then(data => {
             return data.data;
             console.log("data", data);

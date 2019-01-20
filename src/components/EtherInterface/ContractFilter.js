@@ -28,7 +28,7 @@ class ContractFilter extends React.PureComponent{
 		const active_option = contracts[0].value;
 		return (
 			<StyledContractFilter>
-				<RadioGroup onChange={this.handleChangeOption} type="simple" color="green" active_option={active_option} options={contracts}/>
+				<RadioGroup onChange={this.handleChangeOption} type="simple" color="#1ab9d1" active_option={active_option} options={contracts}/>
 			</StyledContractFilter>
 		)
 	}

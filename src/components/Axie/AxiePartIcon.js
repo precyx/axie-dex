@@ -2,7 +2,7 @@ import React from 'react';
 import ReactSVG from 'react-svg';
 import styled, { css } from 'styled-components';
 //custom
-import axieClassColors from '../data/axie-class-colors';
+import axieClassColors from '../../data/axie-class-colors';
 
 //CSS
 const StyledAxiePartIcon = styled.div`

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 //custom
-import {axieStats} from '../data/axie-stats';
-import {axieStatRatingColors} from '../data/axie-stats';
+import {axieStats} from '../../data/axie-stats';
+import {axieStatRatingColors} from '../../data/axie-stats';
 
 const StyledAxieStats  = styled.div`
 	width:160px;

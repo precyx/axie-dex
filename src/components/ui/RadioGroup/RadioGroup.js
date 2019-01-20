@@ -1,7 +1,7 @@
 import React from 'react';
 //import styled, { css } from "styled-components";
 // CSS
-import {StyledRadioGroup} from "./StyledRadioGroup";
+import {StyledRadioGroup} from "./styles/StyledRadioGroup";
 import RadioButton from "../RadioButton/RadioButton";
 import PropTypes from "prop-types";
 
@@ -33,11 +33,13 @@ class RadioGroup extends React.PureComponent {
 			{option.label}
 			</RadioButton>
 		);
+		const label = this.props.label;
 		const classNames = this.props.class;
-		const color = this.props.class;
+		const color = this.props.color;
 		const type = this.props.type;
 		return (
 			<StyledRadioGroup className={"radiogroup " + classNames} type={type} color={color}>
+				{label && <div className="label">{label}</div> }
 				{radios}
 			</StyledRadioGroup>
 		);

@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import Chart from 'chart.js';
 //own
-import {getBattleParts, getTotalStats, rateStats} from '../services/axie-part-and-stats-transform';
+import {getBattleParts, getTotalStats, rateStats} from '../../services/axie-part-and-stats-transform';
 //
-import {minMaxPartStatsByType} from '../data/axie-stats';
-import axieClassColors from '../data/axie-class-colors';
-import {axieStats} from '../data/axie-stats';
-import {hexToRGB} from '../services/utils';
-import AxieStatBar from '../components/AxieStatBar';
+import {minMaxPartStatsByType} from '../../data/axie-stats';
+import axieClassColors from '../../data/axie-class-colors';
+import {axieStats} from '../../data/axie-stats';
+import {hexToRGB} from '../../services/utils';
+import AxieStatBar from './AxieStatBar';
 
 //CSS
 const StyledAxieScores = styled.div`

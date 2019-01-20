@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 // own
-import {getRatingByStatPercentage} from "../data/axie-stats";
-import {axieStatRatingColors} from "../data/axie-stats";
+import {getRatingByStatPercentage} from "../../data/axie-stats";
+import {axieStatRatingColors} from "../../data/axie-stats";
 
 const StyledAxieStatBar = styled.div`
 	width:100%;

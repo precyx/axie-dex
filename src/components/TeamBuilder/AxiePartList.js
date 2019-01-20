@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from "styled-components";
 // axie
-import AxiePartIcon from './AxiePartIcon';
+import AxiePartIcon from '../Axie/AxiePartIcon';
 
 //CSS
 const StyledAxiePartList = styled.div`

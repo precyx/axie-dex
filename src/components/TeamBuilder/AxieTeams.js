@@ -6,7 +6,7 @@ import Resizable from "re-resizable";
 import AxieTeam from "./AxieTeam";
 //import {AXIE_DATA_V1} from "../services/axie-data-service";
 /* ui */
-import IconButton from "./ui/IconButton";
+import IconButton from "../ui/IconButton";
 
 // Resizable Style 
 const resizeStyle = {

@@ -65,7 +65,7 @@ export const StyledAxie = styled.div`
     canvas {width:280px!important; height:auto!important;}
 
     .axieTitle  .name {font-size:16px; margin:0;}
-    .block.left {flex-flow:column; align-items: baseline;}
+    .block.left {}
     .salesData .text {font-size:20px;}
   `}
   ${({ size, features }) => size === "large" && features === "stats" && css`

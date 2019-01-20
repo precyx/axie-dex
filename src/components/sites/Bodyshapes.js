@@ -85,7 +85,7 @@ class Profile extends Component {
 		var axies = "";
 		if(this.state.bodyShapesAxies){
 			axies = Object.keys(this.state.bodyShapesAxies).map((key) => 
-				<div>
+				<div key={key}>
 					<h2>{key} ({this.state.bodyShapesAxies[key].length})</h2>
 					{this.state.bodyShapesAxies[key].map( (axie) =>
 						<Axie data={axie} features={"minimal"} rendering={"image"} />

@@ -3,11 +3,11 @@ import styled, { css } from "styled-components";
 import ReactSVG from 'react-svg';
 import ReactTooltip from 'react-tooltip';
 //own
-import {getBattleParts, getTotalStats, rateStats} from '../services/axie-part-and-stats-transform';
+import {getBattleParts, getTotalStats, rateStats} from '../../services/axie-part-and-stats-transform';
 //
-import {minMaxPartStatsByType} from '../data/axie-stats';
-import {axieStats} from '../data/axie-stats';
-import axieClassColors from '../data/axie-class-colors';
+import {minMaxPartStatsByType} from '../../data/axie-stats';
+import {axieStats} from '../../data/axie-stats';
+import axieClassColors from '../../data/axie-class-colors';
 
 //CSS
 const StyledAxieBadges = styled.div`

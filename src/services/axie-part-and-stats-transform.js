@@ -158,6 +158,7 @@ export function rateStats(axieData, axieStats, battleParts, minMaxPartStatsByTyp
 	// harmonize score to scala 1-10
 	//console.log("X", axieData);
 	stats2.forEach(stat=>{
+		console.log("dd", axieData.stats);
 		let val = axieData.stats[stat];
 		let min = axieStats[stat].base;
 		let max = axieStats[stat].max;

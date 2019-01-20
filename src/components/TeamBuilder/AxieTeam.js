@@ -2,10 +2,10 @@ import React from 'react';
 import styled from "styled-components";
 // own
 //import AxieBadges from "./AxieBadges";
-import AxieParts from "./AxieParts";
-import Axie from "./Axie/Axie/Axie";
+import AxieParts from "../Axie/AxieParts";
+import Axie from "../Axie/Axie/Axie";
 /* ui */
-import IconButton from "./ui/IconButton";
+import IconButton from "../ui/IconButton";
 
 // CSS
 const StyledAxieTeam = styled.div`

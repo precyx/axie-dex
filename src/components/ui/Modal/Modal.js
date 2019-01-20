@@ -2,7 +2,8 @@ import React from 'react';
 import styled from "styled-components";
 
 const StyledModal = styled.div`
-	position: fixed; 
+	position: fixed;
+	z-index:1000;
 	left: 0; 
 	right: 0; 
 	top: 10vh; 

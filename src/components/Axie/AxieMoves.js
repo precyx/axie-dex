@@ -2,8 +2,8 @@ import React from 'react';
 import ReactSVG from 'react-svg';
 import styled from 'styled-components';
 //own
-import {getBattleParts} from '../services/axie-part-and-stats-transform';
-import axieClassColors from '../data/axie-class-colors';
+import {getBattleParts} from '../../services/axie-part-and-stats-transform';
+import axieClassColors from '../../data/axie-class-colors';
 
 //CSS
 const AxieMovesStyled = styled.div`
