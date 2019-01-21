@@ -43,6 +43,9 @@ export const WEB3_V1 = {
 	},
 	getBlock: function(){
 		return window.web3.eth.getBlockNumber();
+	},
+	getBlockOf: function(blockNumber) {
+		return window.web3.eth.getBlock(blockNumber);
 	}
 }
 

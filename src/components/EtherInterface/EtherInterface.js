@@ -15,6 +15,7 @@ class EtherInterface extends React.PureComponent{
 		this.state = {
 			contracts: this.getContracts(),
 			activeContract: "AxieCore",
+			layout: "normal",
 		}
 	}
 	componentDidMount() {
@@ -88,19 +89,28 @@ class EtherInterface extends React.PureComponent{
 		})
 	}
 
+	handleContractFilterChange = (newFilters) => {
+		let layout = "normal";
+		if(newFilters["tag"] == "event") layout = "big";
+		this.setState({
+			layout: layout,
+		})
+	}
+
 	render(){
 		const contracts = this.state.contracts;
 		const activeContractObj = this.getContractByName(this.state.activeContract);
 		const contractElems = contracts.map(contract => {
 			const active = contract.name == activeContractObj.name;
 			if(active) return (
-				<Contract key={contract.name} abi={contract.abi} address={contract.address} name={contract.name} />
+				<Contract key={contract.name} abi={contract.abi} address={contract.address} name={contract.name} onFilterChange={this.handleContractFilterChange}/>
 			);
 			else return "";
 		});
+		const layout = this.state.layout;
 		//
 		return (
-			<StyledEtherInterface>
+			<StyledEtherInterface layout={layout}>
 
 			<div className="mainContainer">
 				<div className="contractFilterContainer">

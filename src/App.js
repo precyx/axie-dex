@@ -53,7 +53,7 @@ class App extends Component {
               <NavLink activeClassName="selected" to="/mass-sync">Mass Sync</NavLink>
               <NavLink activeClassName="selected" to="/comps">Comps</NavLink>
               <NavLink activeClassName="selected" to="/contracts">Contracts</NavLink>
-              {/* <NavLink activeClassName="selected" to="/events">Events</NavLink> */}
+              {/* <NavLink activeClassName="selected" to="/zr">ZR</NavLink> */}
             </div>
           </div>
           <Switch>
@@ -67,7 +67,7 @@ class App extends Component {
             <Route exact path="/mass-sync" component={MassSync}/>
             <Route exact path="/comps" component={Comps}/>
             <Route exact path="/contracts" component={ContractViewer}/>
-            <Route exact path="/events" component={EventWatcher}/>
+            <Route exact path="/zr" component={EventWatcher}/>
             <Redirect from='/' to='/teambuilder'/>
           </Switch>
         </StyledApp>

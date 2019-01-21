@@ -2,6 +2,7 @@ import React from 'react';
 //
 import {WEB3_V1} from "../../services/web3-service";
 import Method from "./Method";
+import Event from "./Event";
 import MethodFilter from "./MethodFilter";
 // 
 import {StyledContract} from "./styles/StyledContract";
@@ -35,11 +36,31 @@ class Contract extends React.PureComponent{
 			callback(data);
 		})
 	}
+	handleClickEvent = async (event, timeframe, callback) => {
+		const latestBlock = await WEB3_V1.getBlock();
+		//console.log("getEvents", this.contract, event);
+		let fromBlock = 0;
+		switch(timeframe){
+			case "5m" : fromBlock = 30; break;
+			case "1h" : fromBlock = 250; break;
+			case "1d" : fromBlock = 6000; break;
+			case "1w" : fromBlock = 42000; break;
+			case "1m" : fromBlock = 168000; break;
+			case "all": fromBlock = latestBlock; break;
+		}
+		this.contract.getPastEvents(event.name,{
+			fromBlock: (latestBlock - fromBlock),
+    	toBlock: latestBlock
+		}).then(events => {
+			callback(events);
+		})
+	}
 
 	/* Sets filter */
 	setFilter(filterName, value) {
 		let newFilters = Object.assign({}, this.state.filters);
 		newFilters[filterName] = value;
+		if(this.props.onFilterChange) this.props.onFilterChange(newFilters);
 		this.setState({
 			filters: newFilters
 		}, this.filterList)
@@ -65,9 +86,12 @@ class Contract extends React.PureComponent{
 
 	render(){
 		const methods = this.state.methods.map((method, i) => {
-			return (
-				<Method key={i} data={method} onSend={this.handleSendMethod}/>	
-			)
+			if(method.type == "event"){
+				return (<Event key={i} data={method} onClickEvent={this.handleClickEvent} />)
+			}
+			else{
+				return ( <Method key={i} data={method} onSend={this.handleSendMethod}/>	)
+			}
 		})
 		console.log("render contract");
 		return (
@@ -89,6 +113,7 @@ Contract.propTypes = {
 	name: PropTypes.string.isRequired,
 	address: PropTypes.string.isRequired,
 	abi: PropTypes.array.isRequired,
+	onFilterChange: PropTypes.func,
 }
 
 export default Contract;

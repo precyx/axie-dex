@@ -15,5 +15,11 @@ export const StyledEtherInterface = styled.div`
 	.methods .method { border-bottom: 1px solid #e2e2e2; border-radius:0;}
 
 	/* x state */
-	${({ x }) => x && css``}
+	${({ layout }) => layout == "big" && css`
+	
+		.mainContainer { width:1500px; left:-135px; }
+
+		.contractFilterContainer {width: 250px; margin-right:20px;}
+		.contractContainer { width:1250px; }
+	`}
 `;

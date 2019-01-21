@@ -13,6 +13,7 @@ export const StyledAxie = styled.div`
   background:white;
   position:relative;
 
+
   .axieTitleContainer {height:60px;}
   .axieContainer {display:flex; flex-flow:column; margin-bottom:5px;}
   .statContainer {display:flex; justify-content: space-between; margin-bottom:10px;}
@@ -83,6 +84,7 @@ export const StyledAxie = styled.div`
     .staticImg, .axieContainer canvas {width:148px!important; height:auto!important; margin-left:-10px;}
     .salesData {margin-top:-15px;}
     .salesData .text {font-size:12px;}
+    .nameGroup {display:none;}
   `}
   ${({ size }) => size === "tiny" && css`
     width:80px;
@@ -95,6 +97,7 @@ export const StyledAxie = styled.div`
     .cardController {display:none!important;}
     .axieTitle .name {font-size:10px; margin:0;}
     .axieTitle .icon, .axieTitle .id  {display:none;}
+    .axieTitle .title {display:none;}
 		.breedingData .xpProgress {display:none;}
 		.breedingData * {line-height:100%;}
 		.breedingData .xp {font-size:10px;}

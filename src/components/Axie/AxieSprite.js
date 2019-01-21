@@ -99,7 +99,7 @@ class AxieSprite extends React.PureComponent {
         //
         //console.log(this.axie.spineData.animations);
         var animation = this.axie.spineData.animations[56] || this.axie.spineData.animations[2] || this.axieSpineData.animations[0];
-        this.axie.state.setAnimation(0, animation.name, true);
+        //this.axie.state.setAnimation(0, animation.name, true);
         
         //console.log("ww", this.axie.children[5].position.y);
       
@@ -165,6 +165,14 @@ class AxieSprite extends React.PureComponent {
     );
     this.axie.position.set(
       centerX, centerY
+    );
+    console.log("axie", aw, ah)
+    console.log("canvas", cw, ch)
+    var newX = cwc/2*1.15
+    var newY = chc*0.8;
+    this.axie.position.set(
+      newX,
+      newY
     );
   }
 

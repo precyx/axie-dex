@@ -6,5 +6,7 @@ export const StyledContract = styled.div`
 	.header {font-size:14px; color:grey; margin-bottom:5px; height:auto!important; background:none!important;}
 
 	/* x state */
-	${({ x }) => x && css``}
+	${({ tag }) => tag == "event" && css`
+	
+	`}
 `;
