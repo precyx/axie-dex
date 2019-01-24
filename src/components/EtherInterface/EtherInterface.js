@@ -70,6 +70,7 @@ class EtherInterface extends React.PureComponent{
 			AI_CONTRACTS.egg_shop,
 			AI_CONTRACTS.egg_lab2,
 			AI_CONTRACTS.presale_extended,
+			AI_CONTRACTS.land_sale,
 		];
 	}
 

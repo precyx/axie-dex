@@ -13,7 +13,7 @@ const StyledStatusBox = styled.div`
  */
 function StatusBox(props) {
 	return (
-		<StyledStatusBox>
+		<StyledStatusBox className={"statusBox " + props.className} >
 			<div className="box">{props.status.msg}</div>
 		</StyledStatusBox>
 	);
