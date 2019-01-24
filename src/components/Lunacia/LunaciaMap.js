@@ -71,9 +71,10 @@ class LunaciaMap extends React.PureComponent {
 	async getChestEvents (){
 
 		let uniqueBuyers = [];
-		uniqueBuyers.push (...await this.getUniqueBuyersOfContract(AI_CONTRACTS.land_sale, this.LAND_SALE_GENESIS_BLOCK))
-		uniqueBuyers.push(...await this.getUniqueBuyersOfContract(AI_CONTRACTS.land_sale_v2, this.LAND_SALE_V2_GENESIS_BLOCK))
-		
+		const uniqueBuyers1 = await this.getUniqueBuyersOfContract(AI_CONTRACTS.land_sale, this.LAND_SALE_GENESIS_BLOCK)
+		const uniqueBuyers2 = await this.getUniqueBuyersOfContract(AI_CONTRACTS.land_sale_v2, this.LAND_SALE_V2_GENESIS_BLOCK)
+		uniqueBuyers = Array.from(new Set(uniqueBuyers1.concat(uniqueBuyers2)));
+
 		console.log("uniqueBuyers", uniqueBuyers);
 
 		this.loadPlotsOfAddresses(uniqueBuyers); 
@@ -96,8 +97,9 @@ class LunaciaMap extends React.PureComponent {
 			fromBlock: _fromBlock,
 			toBlock: latestBlock
 		});
+		console.log("evt", events);
 
-		const buyers = events.map(event => { return event.returnValues["_buyer"] });
+		const buyers = events.map(event => { return event.returnValues["_owner"] });
 		const uniqueBuyers = Array.from(new Set(buyers));
 		return uniqueBuyers;
 	}
