@@ -6,7 +6,7 @@ import ReactSVG from 'react-svg';
 
 //CSS
 const StyledParts = styled.div`
-	svg {width:30px; height:auto; opacity:0.8;}
+	svg {width:40px; height:auto; opacity:1;}
 `;
 
 function AxieDexLogo(props) {
