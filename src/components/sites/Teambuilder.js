@@ -79,7 +79,7 @@ const StyledTeamBuilder = styled.div`
 	.closeButton {position:relative; top: 40px; left:200px; z-index:10;}
 	/* filtering */
 	.filterBar {display:inline-flex; border: 1px solid #e8e8e8; margin-bottom:10px; border-radius:8px; background:white;}
-	.filterGroup {display:flex; position:relative;  border-right: 1px solid #e8e8e8; /*margin-right:10px;*/ padding:10px 15px;   }
+	.filterGroup {display:flex; position:relative;  border-right: 1px solid #e8e8e8; align-items:center; /*margin-right:10px;*/ padding:10px 15px;   }
 	.filterGroup:last-child {border:none; margin:0; }
 	.filterGroup > div { margin-right:5px;}
 	.filterGroup .btx {cursor: pointer; display: flex; align-items: center; font-size: 12px; color: #a146ef; margin: 0 5px; padding: 0 10px; border-radius: 50px;}
@@ -891,30 +891,36 @@ class Teambuilder extends React.PureComponent {
 							<Button name={"Reset"} onClick={this.showAllAxies} />
 						</div>
 						<div className="filterGroup">
-						<ReactTooltip id={"tb_attack_level_1"} type='dark' effect='solid' place="top">ATK Level 1</ReactTooltip>
-						<ReactTooltip id={"tb_attack_level_2"} type='dark' effect='solid' place="top">ATK Level 2</ReactTooltip>
-						<ReactTooltip id={"tb_attack_level_3"} type='dark' effect='solid' place="top">ATK Level 3</ReactTooltip>
-						<ReactTooltip id={"sale_filter"} type='dark' effect='solid' place="top">Sale filter</ReactTooltip>
+							<ReactTooltip id={"sale_filter"} type='dark' effect='solid' place="top">Sale filter</ReactTooltip>
+							<div data-tip data-for={"sale_filter"}>
+								<IconButton color={"#4e4e4e"} icon={"./img/icons/money.svg"} onClick={() => this.showAxiesByPricing()} />
+							</div>
+						</div>
 
+						<div className="filterGroup">
+							<ReactTooltip id={"tb_attack_level_1"} type='dark' effect='solid' place="top">ATK Level 1</ReactTooltip>
+							<ReactTooltip id={"tb_attack_level_2"} type='dark' effect='solid' place="top">ATK Level 2</ReactTooltip>
+							<ReactTooltip id={"tb_attack_level_3"} type='dark' effect='solid' place="top">ATK Level 3</ReactTooltip>
+							<ReactTooltip id={"tb_attack_level_4"} type='dark' effect='solid' place="top">ATK Level 4</ReactTooltip>
 
 							<div data-tip data-for={"tb_attack_level_1"}> 
 								<IconButton active="true" color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_1.svg"} onClick={() => this.showAxiesByRating("attack", 1)}/> 
 							</div>
-
 							<div data-tip data-for={"tb_attack_level_2"}> 
 								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_2.svg"} onClick={() => this.showAxiesByRating("attack", 2)} />
 							</div>
 							<div data-tip data-for={"tb_attack_level_3"}>
 								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_3.svg"} onClick={() => this.showAxiesByRating("attack", 3)} />
 							</div>
-							<div data-tip data-for={"sale_filter"}>
-								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/attack_level_3.svg"} onClick={() => this.showAxiesByPricing()} />
+							<div data-tip data-for={"tb_attack_level_4"}>
+								<IconButton color={"#d62323"} icon={"./img/icons/statLevels/attack_level_3.svg"} onClick={() => this.showAxiesByRating("attack", 4)} />
 							</div>
 						</div>
 						<div className="filterGroup">
 							<ReactTooltip id={"tb_tank_level_1"} type='dark' effect='solid' place="top">TNK Level 1</ReactTooltip>
 							<ReactTooltip id={"tb_tank_level_2"} type='dark' effect='solid' place="top">TNK Level 2</ReactTooltip>
 							<ReactTooltip id={"tb_tank_level_3"} type='dark' effect='solid' place="top">TNK Level 3</ReactTooltip>
+							<ReactTooltip id={"tb_tank_level_4"} type='dark' effect='solid' place="top">TNK Level 4</ReactTooltip>
 							<div data-tip data-for={"tb_tank_level_1"}>
 								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_1.svg"} onClick={() => this.showAxiesByRating("tankiness", 1)} />
 							</div>
@@ -923,6 +929,9 @@ class Teambuilder extends React.PureComponent {
 							</div>
 							<div data-tip data-for={"tb_tank_level_3"}>
 								<IconButton color={"#4e4e4e"} icon={"./img/icons/statLevels/defense_level_3.svg"} onClick={() => this.showAxiesByRating("tankiness", 3)} />
+							</div>
+							<div data-tip data-for={"tb_tank_level_4"}>
+								<IconButton color={"#d62323"} icon={"./img/icons/statLevels/defense_level_3.svg"} onClick={() => this.showAxiesByRating("tankiness", 4)} />
 							</div>
 						</div>
 						<div className="filterGroup">

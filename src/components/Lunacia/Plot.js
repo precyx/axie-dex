@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {StyledPlot} from "./styles/StyledPlot";
 
 function Plot(props){
 	const data = props.data;
@@ -9,9 +8,17 @@ function Plot(props){
 	const x = data.col * plotSize + mapSize/2 - plotSize/2 +"px";
 	const y = data.row * plotSize + mapSize/2 - plotSize/2 +"px";
 	const color = props.color;
+	const styles = {
+		position: "absolute",
+		left: x,
+		top: y,
+		width: plotSize + "px",
+		height: plotSize + "px",
+		backgroundColor: color,
+	}
 	return (
-		<StyledPlot className="plot" x={x} y={y} plotSize={plotSize} color={color}>
-		</StyledPlot>
+		<div className="plot" style={styles}>
+		</div>
 	);
 }
 

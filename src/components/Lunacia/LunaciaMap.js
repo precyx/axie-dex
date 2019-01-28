@@ -6,8 +6,11 @@ import {LAND_BUYERS_1} from "../Lunacia/data/data";
 import {LAND_DATA} from "../../services/land-data"
 import Plot from "./Plot";
 import StatusBox from "../StatusBox";
+import Button from "../ui/Button";
+import Draggable from 'react-draggable';
 import TimeAgo from 'react-timeago';
 import {randomHex, shadeColor2} from "../../services/utils";
+import {randomColor} from "randomcolor";
 // css
 import {StyledLunacia} from "./styles/StyledLunacia";
 
@@ -23,8 +26,10 @@ class LunaciaMap extends React.PureComponent {
 			totalPlots: 17217,
 			plotsPurchased: 0,
 			lastUpdated: 1548357929,
+			BASE_MAP_SIZE: 602,
 			mapSize: 602,
 			numPlots: 301,
+			zoom: 1,
 			plots: [],
 			uniqueBuyers: [],
 			plotsPerPlayer : [],
@@ -114,12 +119,15 @@ class LunaciaMap extends React.PureComponent {
 	}
 
 	renderPlotsPerPlayer(){
+		console.log(this.state.zoom);
 		const plotsPerPlayer = this.state.plotsPerPlayer;
-		const mapSize= this.state.mapSize;
+		const mapSize= Math.round(this.state.mapSize * this.state.zoom);
 		const numPlots= this.state.numPlots;
 		return (
 			plotsPerPlayer.map((plots) => {
-					let color = randomHex();
+					let color = randomColor({
+						luminosity: 'dark',
+					});
 					return plots.map((plotData,i) => <Plot key={i} color={color} data={plotData} mapSize={mapSize} numPlots={numPlots}/>)
 				}
 			)
@@ -135,8 +143,25 @@ class LunaciaMap extends React.PureComponent {
 		)
 	}
 
+
+	/* Event Handlers */
+	handleZoomIn = () => {
+		this.setState(prevState =>({
+			zoom: Math.min(prevState.zoom+0.5, 3), 
+		}));
+	}
+	handleZoomOut = () => {
+		this.setState(prevState =>({
+			zoom: Math.max(prevState.zoom-0.5, 0.5), 
+		}));
+	}
+
 	render() {
-		const mapSize = this.state.mapSize + "px";
+		const zoom = this.state.zoom;
+		const BASE_MAP_SIZE = this.state.BASE_MAP_SIZE;
+		const mapSize = Math.round(this.state.mapSize * this.state.zoom);
+		const dragLimitY = Math.round((BASE_MAP_SIZE - mapSize)/2);
+		console.log("mapsize", mapSize);
 		const status = this.state.status;
 		const lastUpdated = this.state.lastUpdated;
 		const uniqueBuyers = this.state.uniqueBuyers;
@@ -145,19 +170,27 @@ class LunaciaMap extends React.PureComponent {
 		const totalPlots = this.state.totalPlots;
 		const plotsPurchasedPercentage = (plotsPurchased / totalPlots * 100).toFixed(2)
 		return (
-			<StyledLunacia mapSize={mapSize} >
+			<StyledLunacia mapSize={mapSize + "px"} >
 				<div className="mapGroup">
-					<div className="mapContainer">
+				<div className="mapOuterContainer">
 					{status && <StatusBox className="status" status={status}/>}
-						{this.renderPlotsPerPlayer()}
-						<img className="map" src="./img/lunacia/lunacia_map.png" />
-					</div>
-					<div className="uniqueBuyers">
-						<h2>Land Owners <span className="count">{uniqueBuyers.length}</span></h2>
-						<div className="list">
-							{this.renderUniqueBuyers()}
+					<Draggable bounds={{left: 0, top: dragLimitY}}>
+						<div className="mapContainer">
+							{this.renderPlotsPerPlayer()}
+							<img className="map" src="./img/lunacia/lunacia_map.png" />
 						</div>
+					</Draggable>
+					<div className="zoomButtons">
+						<Button name="-" type="filled" color="#4f288c" onClick={this.handleZoomOut}/>
+						<Button name="+" type="filled" color="#4f288c" onClick={this.handleZoomIn}/>
 					</div>
+				</div>
+				<div className="uniqueBuyers">
+					<h2>Land Owners <span className="count">{uniqueBuyers.length}</span></h2>
+					<div className="list">
+						{this.renderUniqueBuyers()}
+					</div>
+				</div>
 				</div>
 				<div className="plotCount"> Plots purchased: {plotsPurchasedPercentage}% ({plotsPurchased} / {totalPlots} plots)</div>
 			</StyledLunacia>
