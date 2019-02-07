@@ -230,6 +230,13 @@ export const AXIE_DATA_V1 = {
             return data.data;
         })
     },
+    getTeamsByAddress(address){
+        if(!address) throw new Error("address required");
+        const url = `https://api.axieinfinity.com/v1/battle/teams/?address=${address}&offset=0&count=9999&no_limit=1`;
+        return axios.get(url).then(data=>{
+            return data.data;
+        });
+    }
 }
 
 

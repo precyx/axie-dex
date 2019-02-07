@@ -15,48 +15,23 @@ import {bodyparts} from "../../data/axie-body-parts";
  */
 class TierList extends React.PureComponent{
 
-	partTierList = {
-		"S": {
-					tails: ["tail-hot-butt", "tail-tiny-dino"], 
-					backs: ["back-pumpkin", "back-red-ear"],
-					horns: ["horn-rose-bud", "horn-beech"],
-					mouth: ["mouth-zigzag", "mouth-herbivore"]
-		},
-		"A": {
-					tails: ["tail-carrot", "tail-cattail", "tail-thorny-cattepilar"], 
-					backs: ["back-hermit", "back-sponge", "back-indian-star", "back-snail-shell", "back-shiitake"],
-					horns: ["horn-cerastes", "horn-cactus", "horn-leaf-bug"],
-					mouth: ["mouth-serious", "mouth-silence-whisper"]
-		},
-		"B": {
-					tails: ["tail-hatsune", "tail-ant", "tail-snake-jar", "tail-fish-snack", "tail-feather-fan", "tail-potato-leaf", "tail-wall-gecko", "tail-gila", "tail-grass-snake"],
-					backs: ["back-bidens", "back-mint", "back-timber"],
-					horns: ["horn-bamboo-shoot", "horn-merry", "horn-incisor", "horn-watermelon"],
-					mouth: ["mouth-razor-bite", "mouth-toothless-bite", "mouth-tiny-turtle"]
-		},
-		"C": {
-					tails: ["tail-koi", "tail-pupae", "tail-shrimp", "tail-grass-snake", "tail-navaga", "tail-nimo"],
-					backs: ["back-bone-sail", "back-turnip", "back-anemone", "back-croc", "back-green-thorns", "back-watering-can"],
-					horns: ["horn-lagging", "horn-scaly-spear", "horn-teal-shell", "horn-babylonia", "horn-pliers", "horn-scaly-spoon"],
-					mouth: ["mouth-lam", "mouth-pincer", "mouth-piranha", "mouth-risky-fish"],
-		},
-		"D": {},
-		"E": {},
-		"F": {},
-	};
-
 	componentDidMount(){
 		//AXIE_DATA.getBodyParts().then((parts)=>{
+			let partTierList = this.props.parts;
+			console.log("p", partTierList)
 			this.setState({
 				parts: bodyparts,
-			}, () => { this.mapPartsToTierList() });
+			}, () => { this.mapPartsToTierList(partTierList) });
 		//});
+	}
+	componentWillUnmount(){
+
 	}
 
 	/**
 	 * Maps complete {part} data onto the entries in the {tierList}
 	 */
-	mapPartsToTierList(){
+	mapPartsToTierList(_partTierList){
 		// create parts lookup table
 		let partsLookupTable = {};
 		let parts = this.state.parts;
@@ -66,9 +41,10 @@ class TierList extends React.PureComponent{
 		});
 		console.log("partsLookupTable", partsLookupTable);
 		// map parts to tierlist
-		let tierList = this.partTierList;
-		for(const tierKey of Object.keys(tierList)){	
-			for(const partGroupKey of Object.keys(tierList[tierKey])){
+		console.log("tierList", _partTierList);
+		let tierList = JSON.parse(JSON.stringify(_partTierList))
+		for(let tierKey of Object.keys(tierList)){	
+			for(let partGroupKey of Object.keys(tierList[tierKey])){
 				let newParts = [];
 				tierList[tierKey][partGroupKey].forEach((part)=>{
 					if(partsLookupTable[part]) newParts.push(partsLookupTable[part]);
@@ -79,7 +55,7 @@ class TierList extends React.PureComponent{
 		this.setState({
 			tierList: tierList,
 		});
-		console.log("mapped", this.partTierList)
+		//console.log("mapped", _partTierList, tierList)
 	}
 
 	constructor(props){
@@ -94,9 +70,10 @@ class TierList extends React.PureComponent{
 		);*/
 		const loadingParts = <StatusBox status={{msg: "Loading Bodyparts..."}} />
 		// tierlist
+		const type = this.props.type;
 		const tierList = this.state.tierList;
 		const tiers = tierList ? Object.keys(tierList).map((partGroupKey)=>
-			<Tier key={partGroupKey} name={partGroupKey} parts={tierList[partGroupKey]} />
+			<Tier key={partGroupKey} name={partGroupKey} parts={tierList[partGroupKey]} type={type}/>
 		) :  "";
 		return(
 			<StyledTierList className="tierList">

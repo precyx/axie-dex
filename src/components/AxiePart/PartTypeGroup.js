@@ -12,13 +12,15 @@ import {StyledPartTypeGroup} from './styles/StyledPartTypeGroup';
 class PartTypeGroup extends React.PureComponent{
 
 	render(){
+		const type = this.props.type; // tierlist type either ("dps" || "tank" || "support") 
+		const label = this.props.label;
+		const color = this.props.color;
 		const partsArr = this.props.parts;
 		const parts = partsArr.map((part)=>
-			<AxiePart key={part.id} data={part} size="normal"/>
+			<AxiePart key={part.id} data={part} size="normal" color={color} type={type} features="extended"/>
 		);
-		const label = this.props.label;
 		return(
-			<StyledPartTypeGroup className="partTypeGroup">
+			<StyledPartTypeGroup className="partTypeGroup" color={color}>
 				<div className="label">{label}</div>
 				<div className="parts">
 					{parts}

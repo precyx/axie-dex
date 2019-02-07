@@ -5,10 +5,10 @@ import BasicCenterContainer from "../containers/BasicCenterContainer";
 import Axie from "../Axie/Axie/Axie";
 import AxieCheck from "../MassSync/AxieCheck";
 import SyncContoller from "../MassSync/SyncController";
+import StartScreen from "../MassSync/StartScreen";
+import ConfirmationBox from "../MassSync/ConfirmationBox";
+import AxieCardOptions from "../MassSync/AxieCardOptions";
 import Button from "../ui/Button";
-import Textfield from "../ui/Textfield";
-import Overlay from "../ui/Overlay/Overlay";
-import Modal from "../ui/Modal/Modal";
 //import Axie from "../Axie/Axie/Axie";
 import {AXIE_DATA_V1, AXIE_DATA_TRANSFORM} from "../../services/axie-data-service";
 import {ExpSyncContract} from "../../data/contracts/ExpSyncContract";
@@ -36,7 +36,20 @@ class MassSync extends React.PureComponent{
 			status: {code:"", msg:""},
 			view: "",
 			selectedAxies: {},
+			axiesCache: null,
 			axies: null,
+			// axie card options
+			axieFeatures: "breeding",  
+			axieSize: "normal",
+		}
+
+		this.firstAxieDomRef = React.createRef();
+
+		this.axieCardSizes = {
+			parts: 446,
+			stats: 440,
+			breeding: 282,
+			minimal: 260,
 		}
 
 		this._columnYMap = [];
@@ -50,6 +63,7 @@ class MassSync extends React.PureComponent{
 			view: "start-screen",
 		})
 	}
+
 
 	setupContract(){
 		this.expSyncContract = WEB3_V1.getContract(ExpSyncContract.abi, ExpSyncContract.address);
@@ -68,11 +82,13 @@ class MassSync extends React.PureComponent{
 
 	/**
 	 * Sets axies & axieGrid
-	 * @param {*} axies 
+	 * @param {array} axies 
+	 * @param {boolean} initial_load 
+	 * @param {function} axies 
 	 */
-	setAxieState(axies, callback){
+	setAxieState(axies, initial_load, callback){
 		const columns = 6;
-		const rows = Math.floor(axies.length / columns);
+		const rows = Math.ceil(axies.length / columns);
 		let axieGrid = [];
 		let axiesClone = axies.slice(0);
 		for(let i=0; i < rows; i++){
@@ -80,12 +96,16 @@ class MassSync extends React.PureComponent{
 		}
 		console.log("Axies", axies);
 		console.log("Axie Grid", axieGrid);
+		if(axies.length == 0){
+			axieGrid = null;
+		}
 
 		this.setState({axieGrid: null},() => {
-			this.setState({
+			this.setState(prevState => ({
+				axiesCache: initial_load ? axies : prevState.axiesCache,
 				axies: axies,
 				axieGrid: axieGrid,
-			}, () => { if(callback) callback(); });
+			}), () => { if(callback) callback(); });
 		})
 	}
 
@@ -107,7 +127,7 @@ class MassSync extends React.PureComponent{
 				// add exp field
 				AXIE_DATA_TRANSFORM.mergeXPDataIntoV1API(axies2, axieData.axies);
 				AXIE_DATA_TRANSFORM.getAndMergePendingBlockchainXPIntoV1API(axies2, this.expSyncContract).then(()=>{
-					this.setAxieState(axies2);
+					this.setAxieState(axies2, true);
 					this.setState({
 						status: {code:"loading-complete", msg:""}
 					})
@@ -153,7 +173,7 @@ class MassSync extends React.PureComponent{
 				// add exp field
 				AXIE_DATA_TRANSFORM.mergeXPDataIntoV1API(axies2, axies);
 				AXIE_DATA_TRANSFORM.getAndMergePendingBlockchainXPIntoV1API(axies2, this.expSyncContract).then(()=>{
-					this.setAxieState(axies2);
+					this.setAxieState(axies2, true);
 					this.setState({
 						status: {code:"loading-complete", msg:""}
 					}, () => {
@@ -268,7 +288,6 @@ class MassSync extends React.PureComponent{
 		this.loadAllBreedableAxies();
 	}
 
-
 	handleChangeAddress = (evt) => {
 		this.setState({
 			address: evt.target.value
@@ -291,17 +310,31 @@ class MassSync extends React.PureComponent{
 		})
 	}
 
+	handleChangeFeatures = (features) => {
+		this.setState({
+			axieFeatures: features
+		}, () => {
+			this.setAxieState(this.state.axies, false, () => {
+			})
+		})
+	}
+
 
 	/**
 	 * Virtuas Scroll cell render
 	 */
 	cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
 		const axie = this.state.axieGrid[rowIndex][columnIndex];
+		if(!axie) return;
+		const isFirst = (columnIndex == 0 && rowIndex == 0) ? true : false;
+		console.log("AXX", isFirst);
+		//console.log("AXX penXp2", axie.pendingExp2);
 		let realPendingExp = (axie.pendingExp2||0) - (axie.pendingExp||0);
+		const axieFeatures = this.state.axieFeatures;
 		return (
 			<div key={key} style={style}>
 				<AxieCheck data={axie} onCheck={this.handleCheckAxie} disable={realPendingExp != 0} >
-					<Axie data={axie} rendering="image" img={axie} features={"breeding"}/>
+					<Axie ref={isFirst ? this.firstAxieDomRef : null} data={axie} rendering="image" img={axie} features={axieFeatures}/>
 				</AxieCheck>
 			</div>
 		)
@@ -322,31 +355,36 @@ class MassSync extends React.PureComponent{
 		// selected axies
 		const selectedAxies = this.state.selectedAxies;
 		const hasSelectedAxies = Object.keys(selectedAxies).length !== 0;
+		// axie options
+		const axieFeatures = this.state.axieFeatures;
+		const axieSize = this.state.axieSize;
 		// axies
-		const axies = this.state.axies ? this.state.axies.map(axie => {
+		/*const axies = this.state.axies ? this.state.axies.map(axie => {
 			let realPendingExp = (axie.pendingExp2||0) - (axie.pendingExp||0);
  			return (
 				<AxieCheck key={axie.id} data={axie} onCheck={this.handleCheckAxie} disable={realPendingExp != 0} >
-					<Axie data={axie} rendering="image" img={axie} features={"breeding"}/>
+					<Axie data={axie} rendering="image" img={axie} features={axieFeatures}/>
+					{axieFeatures}
 				</AxieCheck>
 			 )
 			}
-		) : null;
+		) : null;*/
 
-		const axies2 = this.state.axieGrid ? this.state.axieGrid.map((axieRow, i) => {
+		/*const axies2 = this.state.axieGrid ? this.state.axieGrid.map((axieRow, i) => {
 			return (
 				<div key={i} className="row"> 
 					{axieRow.map(axie => {
 						let realPendingExp = (axie.pendingExp2||0) - (axie.pendingExp||0);
 						return (
 							<AxieCheck key={axie.id} data={axie} onCheck={this.handleCheckAxie} disable={realPendingExp != 0} >
-								<Axie data={axie} rendering="image" img={axie} features={"breeding"}/>
+								<Axie data={axie} rendering="image" img={axie} features={axieFeatures}/>
+								{axieFeatures}
 							</AxieCheck>
 						)
 					})}
 				</div>
 			)
-		}) : null;
+		}) : null;*/
 
 		const spinner = (
 			<div className="spinnerContainer"> 
@@ -355,6 +393,8 @@ class MassSync extends React.PureComponent{
 			</div>
 		);
 
+		console.log("dom ref", this.firstAxieDomRef.current);
+
 		return (
 			<WindowScroller>
 				{({ height, isScrolling, onChildScroll, scrollTop }) => (
@@ -362,31 +402,17 @@ class MassSync extends React.PureComponent{
 				<StyledMassSync>
 
 					{showSuccessBox &&
-						<Overlay className="fullOverlay">
-							<Modal className="box successBox">
-								<div className="title">Exp Sync TX Sent</div>
-								<div className="transaction">
-									<a target="_blank" href={"https://etherscan.io/tx/" + this.state.syncTxHash}>View Sync TX on Etherscan</a>
-								</div>
-								<div className="subtitle">EXP Sync for {Object.keys(selectedAxies).length} Axies:</div>
-								<div className="linkList">
-									{Object.keys(selectedAxies).map(axieKey => 
-										<div className="link" key={axieKey}>
-											<a target="_blank" href={"https://axieinfinity.com/axie/" + selectedAxies[axieKey].id}>
-												https://axieinfinity.com/axie/{selectedAxies[axieKey].id}
-											</a>
-										</div>
-									 )}
-								</div>
-								<Button name="OK" type="filled" color="#a146ef" size="normal" onClick={this.handleClickOkSuccessBox}/>
-							</Modal>
-						</Overlay>
+						<ConfirmationBox 
+							syncTxHash={this.state.syncTxHash}
+							selectedAxies={selectedAxies}
+							onClickOkSuccessBox={this.handleClickOkSuccessBox}
+						/>
 					}
 
 					<div className="headerBox">
 						<div className="titleBox">
 							<div className="topActionBar">
-								<h1>Mass Sync</h1>
+								<h1>Mass Sync </h1>
 							</div>
 							<div className="addressBar">
 								<h3>{address}</h3>
@@ -394,15 +420,18 @@ class MassSync extends React.PureComponent{
 							{ view == "axie-pages" && 
 							<div>
 								<div className="pageBar">
-									<Button name="Prev" type="outline" color="#a146ef" onClick={this.handleClickPrevPage}/>
+									<Button disable={currentPage <= 1} name="Prev" type="outline" color="#a146ef" onClick={this.handleClickPrevPage}/>
 									<h2> Page {currentPage} / {totalPages}  </h2>
-									<Button name="Next" type="outline" color="#a146ef" onClick={this.handleClickNextPage}/>
+									<Button disable={currentPage >= totalPages} name="Next" type="outline" color="#a146ef" onClick={this.handleClickNextPage}/>
 								</div>
 							</div>}
 							{ this.state.axies && 
-								<div className="infoBar">
-									<h2 className="v2">Showing {this.state.axies.length} {this.totalAxies ? " of " + this.total : ""} Axies</h2>
-								</div>	
+								<div>
+									<div className="infoBar">
+										<h2 className="v2">Showing {this.state.axies.length} {this.totalAxies ? " of " + this.total : ""} Axies</h2>
+									</div>
+									<AxieCardOptions features={axieFeatures} onChangeFeatures={this.handleChangeFeatures}/>	
+								</div>
 							}
 						</div>
 						{hasSelectedAxies &&
@@ -417,13 +446,11 @@ class MassSync extends React.PureComponent{
 
 					<div className="axieList">
 						{view == "start-screen" && 
-							<div className="startScreen">
-								<Textfield name="address" value={address} onChange={this.handleChangeAddress}/>
-								<div className="bar">
-									<Button onClick={this.handleClickLoadBreedableAxies} className="loadBreedingAxiesButton" name="Load All Axies" type="filled" color="#a146ef" /> 
-									<Button onClick={this.handleClickLoadPages} className="loadAxiePages" name="Load Pages" type="outline" color="#a146ef" />
-								</div>
-							</div>
+							<StartScreen 
+							address={address} 
+							onClickLoadAll={this.handleClickLoadBreedableAxies} 
+							onClickLoadPages={this.handleClickLoadPages}
+							onChangeAddress={this.handleChangeAddress} />
 						}
 						{status.code == "loading" && spinner}
 				
@@ -435,7 +462,7 @@ class MassSync extends React.PureComponent{
 										cellRenderer={this.cellRenderer}
 										columnCount={this.state.axieGrid[0].length}
 										columnWidth={234}
-										rowHeight={296}
+										rowHeight={this.axieCardSizes[axieFeatures] + 10 }
 										rowCount={this.state.axieGrid.length}
 										overscanRowCount={1}
 										autoHeight

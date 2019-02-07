@@ -36,6 +36,13 @@ const StyledButton = styled.button`
 		padding: 7px 10px;
 		font-size: 13px;
 	`}
+
+	${({ disable }) => disable && css`
+		pointer-events: none;
+    color: #bdbdbd!important;
+    border-color: #d6d6d6!important;
+	`}
+
 `;
 
 class Button extends React.PureComponent {
@@ -44,9 +51,10 @@ class Button extends React.PureComponent {
 		const type = this.props.type;
 		const color = this.props.color;
 		const size = this.props.size;
+		const disable = this.props.disable;
 		//
 		return (
-			<StyledButton className={className} onClick={this.props.onClick} type={type} color={color} size={size}>
+			<StyledButton className={className} onClick={this.props.onClick} type={type} color={color} size={size} disable={disable}>
 				{this.props.name}
 			</StyledButton>
 		);

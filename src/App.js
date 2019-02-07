@@ -21,6 +21,7 @@ import Comps from './components/sites/Comps';
 import ContractViewer from './components/sites/ContractViewer';
 import EventWatcher from './components/sites/EventWatcher';
 import Lunacia from './components/sites/Lunacia';
+import Teams from './components/sites/Teams';
 
 
 const StyledApp = styled.div`
@@ -55,6 +56,7 @@ class App extends Component {
               <NavLink activeClassName="selected" to="/comps">Comps</NavLink>
               <NavLink activeClassName="selected" to="/contracts">Contracts</NavLink>
               <NavLink activeClassName="selected" to="/lunacia-map">Lunacia</NavLink>
+              <NavLink activeClassName="selected" to="/teams">Teams</NavLink>
               {/* <NavLink activeClassName="selected" to="/zr">ZR</NavLink> */}
             </div>
           </div>
@@ -71,6 +73,7 @@ class App extends Component {
             <Route exact path="/contracts" component={ContractViewer}/>
             <Route exact path="/zr" component={EventWatcher}/>
             <Route exact path="/lunacia-map" component={Lunacia}/>
+            <Route exact path="/teams" component={Teams}/>
             <Redirect from='/' to='/teambuilder'/>
           </Switch>
         </StyledApp>

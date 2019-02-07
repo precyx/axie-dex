@@ -6,7 +6,7 @@ export const StyledMassSync = styled.div`
 	position:relative;
 
 	.headerBox {max-width: 1500px; margin:0 auto; display:flex; justify-content:space-between; align-items:baseline;}
-	.titleBox {margin-top:20px; text-align: left; width:auto; }
+	.titleBox {margin-top:20px; text-align: left; width:auto; display: flex; flex-flow: column; width:100%; }
 	/* axieList */
 	.axieList { position:relative; display: flex; flex-flow: wrap; max-width: 1500px; margin: 0 auto; margin-top: 10px; }
 	.axieList .row {display:flex; }
@@ -25,15 +25,8 @@ export const StyledMassSync = styled.div`
 	/* start screen */
 	.startScreen {position:absolute; z-index: 200; background:rgba(255,255,255,0.8); width: 100%; 
 		margin: 0 auto;  height: 100%; min-height:40vh; align-items: center; justify-content:center; display: flex; flex-flow:column; }
-	.startScreen .button { padding: 10px 15px; font-size: 14px; margin-left:20px;}
-	.startScreen .bar { flex-flow: row; margin:10px 0; }
-	.startScreen .textfield { justify-content:center; }
 
-	/* successBox */
-	.successBox .linkList {height:300px; overflow-y:scroll; height: 300px; overflow-y: scroll; background: #f9f9f9; padding: 15px}
-	.successBox .linkList .link {font-size:14px; margin-bottom:5px; }
-	.successBox .title {font-size: 28px; margin-bottom: 10px;}
-	.successBox .subtitle {font-size: 18px; margin-bottom: 5px; margin-top:30px;}
+	.axieCardOptions {display:flex; justify-content:center;}
 
 	/* colelction */
 	.ReactVirtualized__Grid__innerScrollContainer {display:flex; flex-flow:wrap;}

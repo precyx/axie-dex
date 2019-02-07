@@ -1,3 +1,8 @@
+
+/**
+ * @param {*} hex e.g. #ff00aa
+ * @param {*} alpha 0-1
+ */
 export function hexToRGB(hex, alpha) {
 	var r = parseInt(hex.slice(1, 3), 16),
 			g = parseInt(hex.slice(3, 5), 16),
@@ -19,7 +24,9 @@ export function nearest_sq(n){
 	return Math.round(Math.sqrt(n));
 }
 
-
+/**
+ * return random hex e.g. #ff00aa
+ */
 export function randomHex(){
 	return '#' + (function co(lor){   return (lor +=
 		[0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
