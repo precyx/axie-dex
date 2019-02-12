@@ -20,7 +20,6 @@ export const dps_bonuses = {
 	"horn-trump": 4,
 	"horn-cerastes": 5,
 	"horn-bamboo-shoot": 4,
-
 }
 
 export const type_bonus = (atk_type, def_type1, def_type2) => {

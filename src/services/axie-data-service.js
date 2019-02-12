@@ -289,3 +289,14 @@ export const AXIE_DATA_TRANSFORM = {
     }
     
 }
+
+
+export const AXIE_ICU = {
+
+    getAxies(params){
+        const url = `https://axie.icu/api/search?${params}`;
+        return axios.get(url).then(data=>{
+            return data.data;
+        })
+    }
+}

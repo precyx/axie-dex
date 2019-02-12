@@ -56,14 +56,14 @@ class AxieListControl extends React.PureComponent {
 	}
 
 	render() {
+		const classNames = this.props.className;
 		return (
-				<BasicCenterContainer>
-					<StyledAxieListControl>
+					<StyledAxieListControl className={`${classNames}`}>
 
 					<div className="centerControl">
 
 						<div className="group">
-							<RadioGroup label="Features" type="modern" color="#7a9b02" class={"radiogroup"} options={[
+							<RadioGroup label="Features" type="modern" color="#a146ef" class={"radiogroup"} options={[
 								{label: "Stats", value: "stats"},
 								{label: "Parts", value: "parts"},
 								{label: "Minimal", value: "minimal"},
@@ -84,7 +84,6 @@ class AxieListControl extends React.PureComponent {
 
 						<AxieList axies={this.props.axies} features={this.state.features} size={this.state.size}/>
 					</StyledAxieListControl>
-				</BasicCenterContainer>
 		);
 	}
 }

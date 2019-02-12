@@ -35,14 +35,14 @@ export const TIERLISTS = {
 			mouth: ["mouth-little-owl", "mouth-nut-cracker", "mouth-doubletalk"]
 		},
 		"A": {
-			tails: ["tail-granmas-fan", "tail-swallow", "tail-shiba", "tail-gerbil", "tail-nut-cracker", "tail-cloud", "tail-navaga", "tail-iguana", "tail-shrimp", ], 
-			backs: ["back-raven", "back-cupid", "back-scarab", "back-furball", "back-risky-beast",  "back-jaguar", "back-hero", "back-pigeon-post", ],
+			tails: ["tail-swallow", "tail-shiba", "tail-gerbil", "tail-nut-cracker", "tail-cloud", "tail-navaga", "tail-iguana", "tail-shrimp", ], 
+			backs: ["back-raven", "back-cupid", "back-scarab", "back-furball", "back-risky-beast",  "back-jaguar", "back-hero"],
 			horns: ["horn-trump", "horn-wing-horn", "horn-cuckoo", "horn-shoal-star", "horn-scaly-spear", "horn-cerastes", "horn-shell-jab","horn-arco"],
 			mouth: ["mouth-peace-maker", "mouth-hungry-bird", "mouth-axie-kiss", "mouth-cute-bunny", "mouth-tiny-turtle", "mouth-razor-bite", "mouth-toothless-bite"]
 		},
 		"B": {
-			tails: ["tail-tadpole", "tail-cottontail", "tail-shibe", "tail-nimo", "tail-ranchu", "tail-rice", "tail-grass-snake"], 
-			backs: ["back-bone-sail", "back-perch", "back-balloon", "back-blue-moon", "back-goldfish", "back-tri-spikes", "back-spiky-wing"],
+			tails: ["tail-granmas-fan", "tail-tadpole", "tail-cottontail", "tail-shibe", "tail-nimo", "tail-ranchu", "tail-rice", "tail-grass-snake"], 
+			backs: ["back-pigeon-post", "back-bone-sail", "back-perch", "back-balloon", "back-blue-moon", "back-goldfish", "back-tri-spikes", "back-spiky-wing"],
 			horns: ["horn-pocky", "horn-pliers", "horn-dual-blade", "horn-lagging", "horn-parasite", "horn-kestrel", "horn-bumpy", "horn-babylonia", "horn-bamboo-shoot", "horn-beech"],
 			mouth: ["mouth-goda", "mouth-kotaro", "mouth-piranha", "mouth-risky-fish",]
 		},

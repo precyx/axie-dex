@@ -26,11 +26,11 @@ class AxieList extends React.PureComponent {
 			);
 		}
 		return (
-			<BasicCenterContainer>
-				<StyledAxieList>
-						{axies}
-				</StyledAxieList>
-			</BasicCenterContainer>
+
+			<StyledAxieList>
+					{axies}
+			</StyledAxieList>
+
 		);
 	}
 }
