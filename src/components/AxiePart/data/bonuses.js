@@ -1,6 +1,7 @@
 export const dps_bonuses = {
 	"mouth-little-owl" : 4,
 	"mouth-nut-cracker" : 4,
+	"mouth-peace-maker" : 2,
 	"tail-navaga" : 5,
 	"tail-swallow" : 5,
 	"tail-granmas-fan" : 5,

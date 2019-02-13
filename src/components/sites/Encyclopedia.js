@@ -9,6 +9,11 @@ import BasicCenterContainer from "../containers/BasicCenterContainer";
 import AxieListControl from '../AxieListControl';
 import StatusBox from "../StatusBox";
 import RadioGroup from '../ui/RadioGroup/RadioGroup';
+import RadioButton from '../ui/RadioButton/RadioButton';
+import Select from '../ui/Select/Select';
+import ExpansionPanel from '../ui/ExpansionPanel/ExpansionPanel';
+
+import {bodyparts} from "../../data/axie-body-parts";
 
 //CSS
 const StyledEncyclopedia = styled.div`
@@ -16,6 +21,9 @@ const StyledEncyclopedia = styled.div`
 
 	h1 {margin-top:15px;}
 	.count {font-weight: normal; color: grey; font-size: 14px;}
+
+	.filterSwitch {}
+	.filterSwitch .radioButton { width:50%;}
 
 	.getAxieByAddressContainer {width:90%; margin:0 auto; padding:30px; }
 	.center {display:flex; justify-content:center;}
@@ -32,6 +40,12 @@ const StyledEncyclopedia = styled.div`
 	.pageBar .button {width: 60px; text-align: center; margin: 0 10px;}
 	.pageBar .text {white-space:pre;}
 
+	.partGroup {border-bottom: 1px solid #e6e6e6;}
+	.partGroup .label {display:flex; font-weight: 500; font-size: 14px; color: #9e9e9e; text-transform: uppercase; padding:20px 0px; }
+	.partGroup .label:hover {color:#333; }
+	.partGroup .label .count {margin-left:5px; color:#bdbdbd;}
+	.partGroup .parts {}
+	.partGroup .radiogroup {border:none;}
 
 	.axieList { margin-left: 370px; justify-content: flex-start; width: 1300px;}
 `;
@@ -49,6 +63,9 @@ class Encyclopedia extends Component {
 			stageParam: "&stage=4",
 			additionalParams : "",
 			filter : {},
+			geneFilter: {},
+			filterView: "axie",
+			query: "",
 		}
 	}
 
@@ -79,6 +96,7 @@ class Encyclopedia extends Component {
 
 	buildAxieQuery = () => {
 		const filter = this.state.filter;
+		const geneFilter = this.state.geneFilter;
 		let query = "";
 
 		if(this.validFilter(filter["color"])) query += `&gene_detail.color.d=${filter["color"]}`;
@@ -88,6 +106,16 @@ class Encyclopedia extends Component {
 		if(this.validFilter(filter["pureness"])) query += `&pureness.purest.count=${filter["pureness"]}`;
 		if(this.validFilter(filter["title"])) query += `&title=${filter["title"]}`;
 		if(this.validFilter(filter["auction"])) query += `&auction.type=${filter["auction"]}`;
+
+		Object.keys(geneFilter).forEach(geneKey => {
+			const partKey = geneFilter[geneKey];
+			console.log("kl", partKey);
+			if(this.validFilter(partKey)) query+= `&parts.${geneKey}.id=${partKey}`;
+		})
+
+		this.setState({
+			query: query,
+		})
 
 		return query;
 	}
@@ -161,109 +189,190 @@ class Encyclopedia extends Component {
 	onChangeFilter = (filterType, option) =>{
 		console.log("change filter", filterType, option);
 		let newFilter = Object.assign({}, this.state.filter);
-		newFilter[filterType] = option;
+		if(this.state.filter[filterType] == option) delete newFilter[filterType];
+		else newFilter[filterType] = option;
 		this.setState({
 			page: 1,
 			filter: newFilter,
 		}, () => { console.log("filter", this.state.filter) }) 
 	}
 
-	renderFilterBoard = () => {
-		return (
-			<React.Fragment>
-				<h2>Filter</h2>
-				<RadioGroup label="color" class={"radiogroup"} color="#a146ef" type="modern" options={[
-					{label: "ANY", value: "null"},
-					{label: "white", value: "ffffff"},
-					{label: "black", value: "7a6767"},
-					{label: "orange", value: "ffa12a"},
-					{label: "yellow", value: "ffec51"},
-					{label: "dirt", value: "f0c66e"},
-					{label: "purple", value: "ef93ff"},
-					{label: "blue", value: "759edb"},
-					{label: "sky blue", value: "2de8f2"},
-					{label: "cyan", value: "4cffdf"},
-					{label: "lime", value: "ccef5e"},
-					{label: "red", value: "f74e4e"},
-					{label: "pink", value: "ffb4bb"},
-					{label: "toxic", value: "43e27d"},
-					{label: "star", value: "c0fcfe"},
-					{label: "grey", value: "d0dada"},
-				]} active_option={"null"} onChange={(option) => { this.onChangeFilter("color", option) }}>
-				</RadioGroup>
-				<RadioGroup label="class" class={"radiogroup"} color="#a146ef" type="modern" options={[
-					{label: "ANY", value: "null"},
-					{label: "beast", value: "beast"},
-					{label: "aquatic", value: "aquatic"},
-					{label: "plant", value: "plant"},
-					{label: "reptile", value: "reptile"},
-					{label: "bird", value: "bird"},
-					{label: "bug", value: "bug"},
-					{label: "nut", value: "hidden_1"},
-					{label: "star", value: "hidden_2"},
-					{label: "moon", value: "hidden_3"},
-				]} active_option={"null"} onChange={(option) => { this.onChangeFilter("class", option) }}>
-				</RadioGroup>
-				<RadioGroup label="stage" class={"radiogroup"} color="#a146ef" type="modern" options={[
-					{label: "ANY", value: "null"},
-					{label: "egg", value: "1"},
-					{label: "adult", value: "4"},
-				]} active_option={"null"} onChange={(option) => { this.onChangeFilter("stage", option) }}>
-				</RadioGroup>
-				<RadioGroup label="pattern" class={"radiogroup"} color="#a146ef" type="modern" options={[
-					{label: "ANY", value: "null"},
-					{label: "fluffy", value: "000001"},
-					{label: "big yak", value: "110001"},
-					{label: "wetdog", value: "100001"},
-					{label: "sumo", value: "100010"},
-					{label: "curly", value: "011110"},
-					{label: "spikey", value: "011101"},
-					{label: "trispike", value: "000011"},
-				]} active_option={"null"} onChange={(option) => { this.onChangeFilter("pattern", option) }}>
-				</RadioGroup>
-				<RadioGroup label="pureness" class={"radiogroup"} color="#a146ef" type="modern" options={[
-					{label: "ANY", value: "null"},
-					{label: "1", value: "1"},
-					{label: "2", value: "2"},
-					{label: "3", value: "3"},
-					{label: "4", value: "4"},
-					{label: "5", value: "5"},
-					{label: "6", value: "6"},
-				]} active_option={"null"} onChange={(option) => { this.onChangeFilter("pureness", option) }}>
-				</RadioGroup>
-				<RadioGroup label="tag" class={"radiogroup"} color="#a146ef" type="modern" options={[
-					{label: "ANY", value: "null"},
-					{label: "Origin", value: "Origin"},
-					{label: "MEO I", value: "MEO Corp"},
-					{label: "MEO II", value: "MEO Corp II"},
-					{label: "Agamogenesis", value: "Agamogenesis"},
-				]} active_option={"null"} onChange={(option) => { this.onChangeFilter("title", option) }}>
-				</RadioGroup>
-				<RadioGroup label="auction" class={"radiogroup"} color="#a146ef" type="modern" options={[
-					{label: "ANY", value: "null"},
-					{label: "Sale", value: "sale"},
-					{label: "Siring", value: "siring"},
-				]} active_option={"null"} onChange={(option) => { this.onChangeFilter("auction", option) }}>
-				</RadioGroup>
-				
-				<Button className="loadDataButton" onClick={this.getAxies2} name={"Get Axies"} />
-			</React.Fragment>
-		);
+	onChangeGeneFilter = (partType, option) => {
+		
+		let newGeneFilter = Object.assign({}, this.state.geneFilter);
+		if(newGeneFilter[partType] && newGeneFilter[partType] == option) delete newGeneFilter[partType];
+		else newGeneFilter[partType] = option;
+
+		this.setState({
+			geneFilter: newGeneFilter,
+		}, () => {
+			console.log("change gene filter", this.state.geneFilter);
+		})
 	}
 
-	render() {
-		const totalAxies = this.state.totalAxies;
-		const totalPages = this.state.totalPages;
+	handleChangeFilterView = (newOption) => {
+		this.setState({
+			filterView: newOption,
+		})
+	}
+
+	renderFilterBoard = () => {
+		const filterView = this.state.filterView;
+		const filter = this.state.filter;
+		const geneFilter = this.state.geneFilter;
+
+		const axieBodyParts = bodyparts.map(part => ({label: part.name, value: part.id}));
+		const bodyPartsByType = {};
+		["eyes", "ears", "mouth", "horn", "back", "tail"].forEach(partType => {
+			bodyPartsByType[partType] = bodyparts
+				.filter(part => part.type == partType)
+				.map(part => ({label: part.name, value: part.id}));
+		})
+		console.log("xd", bodyPartsByType);
 		return (
-			<StyledEncyclopedia>
-				
+
+				<React.Fragment>
+					
+				<RadioGroup className="filterSwitch" class={"radiogroup"} color="#f346cc" type="modern" options={[
+					{label: "Axie", value: "axie"},
+					{label: "Genes", value: "genes"},
+				]} active_option={"axie"} onChange={this.handleChangeFilterView}>
+				</RadioGroup>
+
+				{filterView == "axie" && (
+					<React.Fragment>
+						<RadioGroup enableDeselect={true} label="color" class={"radiogroup"} color="#a146ef" type="modern" options={[
+							{label: "white", value: "ffffff"},
+							{label: "black", value: "7a6767"},
+							{label: "orange", value: "ffa12a"},
+							{label: "yellow", value: "ffec51"},
+							{label: "dirt", value: "f0c66e"},
+							{label: "purple", value: "ef93ff"},
+							{label: "blue", value: "759edb"},
+							{label: "sky blue", value: "2de8f2"},
+							{label: "cyan", value: "4cffdf"},
+							{label: "lime", value: "ccef5e"},
+							{label: "red", value: "f74e4e"},
+							{label: "pink", value: "ffb4bb"},
+							{label: "toxic", value: "43e27d"},
+							{label: "star", value: "c0fcfe"},
+							{label: "grey", value: "d0dada"},
+						]} active_option={filter["color"] || "zero"} onChange={(option) => { this.onChangeFilter("color", option) }}>
+						</RadioGroup>
+						<RadioGroup enableDeselect={true} label="class" class={"radiogroup"} color="#a146ef" type="modern" options={[
+							{label: "beast", value: "beast"},
+							{label: "aquatic", value: "aquatic"},
+							{label: "plant", value: "plant"},
+							{label: "reptile", value: "reptile"},
+							{label: "bird", value: "bird"},
+							{label: "bug", value: "bug"},
+							{label: "nut", value: "hidden_1"},
+							{label: "star", value: "hidden_2"},
+							{label: "moon", value: "hidden_3"},
+						]} active_option={filter["class"] || "zero"} onChange={(option) => { this.onChangeFilter("class", option) }}>
+						</RadioGroup>
+						<RadioGroup enableDeselect={true} label="stage" class={"radiogroup"} color="#a146ef" type="modern" options={[
+							{label: "egg", value: "1"},
+							{label: "petite", value: "3"},
+							{label: "adult", value: "4"},
+						]} active_option={filter["stage"] || "zero"} onChange={(option) => { this.onChangeFilter("stage", option) }}>
+						</RadioGroup>
+						<RadioGroup enableDeselect={true} label="pattern" class={"radiogroup"} color="#a146ef" type="modern" options={[
+							{label: "fluffy", value: "000001"},
+							{label: "big yak", value: "110001"},
+							{label: "wetdog", value: "100001"},
+							{label: "sumo", value: "100010"},
+							{label: "curly", value: "011110"},
+							{label: "spikey", value: "011101"},
+							{label: "trispike", value: "000011"},
+						]} active_option={filter["pattern"] || "zero"} onChange={(option) => { this.onChangeFilter("pattern", option) }}>
+						</RadioGroup>
+						<RadioGroup enableDeselect={true} label="pureness" class={"radiogroup"} color="#a146ef" type="modern" options={[
+							{label: "1", value: "1"},
+							{label: "2", value: "2"},
+							{label: "3", value: "3"},
+							{label: "4", value: "4"},
+							{label: "5", value: "5"},
+							{label: "6", value: "6"},
+						]} active_option={filter["pureness"] || "zero"} onChange={(option) => { this.onChangeFilter("pureness", option) }}>
+						</RadioGroup>
+						<RadioGroup enableDeselect={true} label="tag" class={"radiogroup"} color="#a146ef" type="modern" options={[
+							{label: "Origin", value: "Origin"},
+							{label: "MEO I", value: "MEO Corp"},
+							{label: "MEO II", value: "MEO Corp II"},
+							{label: "Agamogenesis", value: "Agamogenesis"},
+						]} active_option={filter["title"] || "zero"} onChange={(option) => { this.onChangeFilter("title", option) }}>
+						</RadioGroup>
+						<RadioGroup enableDeselect={true} label="auction" class={"radiogroup"} color="#a146ef" type="modern" options={[
+							{label: "ANY", value: "null"},
+							{label: "Sale", value: "sale"},
+							{label: "Siring", value: "siring"},
+						]} active_option={filter["auction"] || "zero"} onChange={(option) => { this.onChangeFilter("auction", option) }}>
+						</RadioGroup>
+						
+						<Button className="loadDataButton" onClick={this.getAxies2} name={"Get Axies"} />
+					
+					</React.Fragment>)
+				}	
+
+
+				{filterView == "genes" &&
+					<React.Fragment>
+						{/*<Select multiple type="chip" color="#b8a9b7" options={axieBodyParts} active={geneFilter} onChange={this.onChangeGeneFilter }/>*/}
+
+						{Object.keys(bodyPartsByType).map((partTypeKey, i) => {
+							return (
+									<div className="partGroup" key={i}>
+
+										<ExpansionPanel 
+											label={
+												<React.Fragment>
+													<div className="label">{partTypeKey} <p className="count">{bodyPartsByType[partTypeKey].length}</p></div>
+													
+												</React.Fragment>
+											} 
+											closedContent={
+												<div>{geneFilter[partTypeKey]}</div>
+											}
+											content={
+												<div className="parts">
+													<RadioGroup 
+														enableDeselect={true}
+														type="chip"
+														color="#a146ef"
+														options={bodyPartsByType[partTypeKey]} 
+														active_option={geneFilter[partTypeKey] || ""} 
+														onChange={(option) => {this.onChangeGeneFilter(partTypeKey, option)} }
+													/>
+												</div>
+											}
+										/>
+										
+									</div>
+								)
+							}
+						)}
+						<Button className="loadDataButton" onClick={this.getAxies2} name={"Get Axies"} />
+					</React.Fragment>
+				}
+
+				</React.Fragment>
+				);
+			}
+			
+			render() {
+				const totalAxies = this.state.totalAxies;
+				const totalPages = this.state.totalPages;
+				return (
+					<StyledEncyclopedia>
+					
 					<div className="getAxiesContainer">
-						<div className="headerBar">
-							<h1>Encyclopedia</h1>
-							<h2 className="count">{totalAxies} Axies</h2>
-							<div className="pageBar">
-								<Button type="color" color="#a146ef" className="prev" onClick={this.loadPrevPage} name={"Prev"} />
-								<div>Page</div>
+					<div className="headerBar">
+					<h1>Encyclopedia</h1>
+					<h2 className="count">{totalAxies} Axies</h2>
+					<div className="pageBar">
+					<Button type="color" color="#a146ef" className="prev" onClick={this.loadPrevPage} name={"Prev"} />
+					<div>Page</div>
 								<Textfield id="market_getaxies_page" value={this.state.page} name="" placeholder="Page" onChange={this.handleChange("page")} />
 								<div className="text">of {totalPages}</div>
 								<Button type="color" color="#a146ef" className="next" onClick={this.loadNextPage} name={"Next"} />

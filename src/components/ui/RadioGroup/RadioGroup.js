@@ -16,27 +16,35 @@ class RadioGroup extends React.PureComponent {
 			active_option: this.props.active_option,
 		}
 	}
+
 	handleClickOption = (option) => {
+		let newOption = option;
+		if(this.props.enableDeselect && this.state.active_option == option) newOption = null;
+		console.log("new", newOption);
 		this.setState({
-			active_option: option,
+			active_option: newOption,
 		});
 		if(this.props.onChange) this.props.onChange(option);
 	}
+
 	render() {
+
+		const label = this.props.label;
+		const classNames = this.props.class;
+		const color = this.props.color;
+		const type = this.props.type;
 		const radios = this.props.options.map((option) => 
 			<RadioButton 
 				active={this.state.active_option === option.value ? true : false} 
 				onChange={()=>{this.handleClickOption(option.value)}} 
 				key={option.value} 
 				value={option.value}
+				color={color}
+				type={type}
 			>
 			{option.label}
 			</RadioButton>
 		);
-		const label = this.props.label;
-		const classNames = this.props.class;
-		const color = this.props.color;
-		const type = this.props.type;
 		return (
 			<StyledRadioGroup className={"radiogroup " + classNames} type={type} color={color}>
 				{label && <div className="label">{label}</div> }
@@ -50,8 +58,9 @@ RadioGroup.propTypes = {
 	active_option: PropTypes.string.isRequired,
 	options: PropTypes.array.isRequired,
 	onChange: PropTypes.func,
-	type: PropTypes.oneOf(['modern', 'default', 'simple']),
+	type: PropTypes.oneOf(['modern', 'default', 'simple', 'chip']),
 	color: PropTypes.string,
+	enableDeselect: PropTypes.bool,
 }
 
 export default RadioGroup;

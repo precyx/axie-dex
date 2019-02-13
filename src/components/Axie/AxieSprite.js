@@ -26,6 +26,16 @@ class AxieSprite extends React.PureComponent {
 	constructor(props) {
     super(props);
     //console.log("ddd", this.props.axieData);
+    console.log("axie data", this.props.axieData);
+    let axieData = this.props.axieData;
+    let axieImg = null;
+    let axieAtlas = null;
+    let axieModel = null;
+    if(axieData.figure){
+      axieImg   = axieData.figure.images ? axieData.figure.images[axieData.id + ".png"] : axieData.figure.axie.image.replace(/^http:\/\//i, 'https://'); //old API //images[axieData.id + ".png"],
+      axieAtlas = axieData.figure.atlas ? axieData.figure.atlas : axieData.figure.axie.atlas.replace(/^http:\/\//i, 'https://');
+      axieModel = axieData.figure.model ? axieData.figure.model : axieData.figure.axie.spineModel.replace(/^http:\/\//i, 'https://');
+    } 
 		this.state = {
       crisp_factor: 2,
       axie_width: this.props.width/1.5,
@@ -35,9 +45,9 @@ class AxieSprite extends React.PureComponent {
       AXIE_INITIAL_H: NaN,
       AXIE_INITIAL_RATIO: NaN,
 			axieData:   this.props.axieData,
-			axieImg:    this.props.axieData.figure.images ? this.props.axieData.figure.images[this.props.axieData.id + ".png"] : this.props.axieData.figure.axie.image.replace(/^http:\/\//i, 'https://'), //old API //images[this.props.axieData.id + ".png"],
-			axieAtlas:  this.props.axieData.figure.atlas ? this.props.axieData.figure.atlas : this.props.axieData.figure.axie.atlas.replace(/^http:\/\//i, 'https://'),
-			axieModel:  this.props.axieData.figure.model ? this.props.axieData.figure.model : this.props.axieData.figure.axie.spineModel.replace(/^http:\/\//i, 'https://'),
+			axieImg:    axieImg, //old API //images[this.props.axieData.id + ".png"],
+			axieAtlas:  axieAtlas,
+			axieModel:  axieModel,
 			axieID:     "axie_"+this.props.axieData.id,
 			canvasID:   "canvas"+this.props.axieData.id,
 			canvasW:    0,
