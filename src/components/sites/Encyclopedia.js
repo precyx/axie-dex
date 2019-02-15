@@ -11,6 +11,7 @@ import StatusBox from "../StatusBox";
 import RadioGroup from '../ui/RadioGroup/RadioGroup';
 import RadioButton from '../ui/RadioButton/RadioButton';
 import Select from '../ui/Select/Select';
+import {SimpleSelect, ListOption} from '../ui/Select/SimpleSelect';
 import ExpansionPanel from '../ui/ExpansionPanel/ExpansionPanel';
 
 import {bodyparts} from "../../data/axie-body-parts";
@@ -30,7 +31,9 @@ const StyledEncyclopedia = styled.div`
 	.button {margin:5px;}
 
 	.filterBoard { background: white; z-index:100; width:380px; padding: 20px; box-shadow: 0 2px 2px #0000002e; border-radius: 10px; position:absolute; left:0; top:20px;}
-	.filterBoard .radiogroup {margin-bottom:10px; flex-flow: wrap;  border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding-bottom: 15px;}
+	.filterBoard .headbar {display:flex; justify-content:space-between; border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+	.filterBoard .headbar > .radiogroup {border:none;}
+	.filterBoard .radiogroup { flex-flow: wrap; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 8px 0; }
 	.loadDataButton {}
 
 	.headerBar {display:flex; justify-content:center; flex-flow: column; align-items: center;}
@@ -41,8 +44,9 @@ const StyledEncyclopedia = styled.div`
 	.pageBar .text {white-space:pre;}
 
 	.partGroup {border-bottom: 1px solid #e6e6e6;}
+	.partGroup .panel-label {display: flex; cursor:pointer; align-items: center; justify-content: space-between;}
 	.partGroup .label {display:flex; font-weight: 500; font-size: 14px; color: #9e9e9e; text-transform: uppercase; padding:20px 0px; }
-	.partGroup .label:hover {color:#333; }
+	.partGroup .panel-label:hover .label-text {color:#333; }
 	.partGroup .label .count {margin-left:5px; color:#bdbdbd;}
 	.partGroup .parts {}
 	.partGroup .radiogroup {border:none;}
@@ -63,6 +67,7 @@ class Encyclopedia extends Component {
 			stageParam: "&stage=4",
 			additionalParams : "",
 			filter : {},
+			sorting : "",
 			geneFilter: {},
 			filterView: "axie",
 			query: "",
@@ -96,7 +101,9 @@ class Encyclopedia extends Component {
 
 	buildAxieQuery = () => {
 		const filter = this.state.filter;
+		const sorting = this.state.sorting;
 		const geneFilter = this.state.geneFilter;
+		console.log("sort", sorting);
 		let query = "";
 
 		if(this.validFilter(filter["color"])) query += `&gene_detail.color.d=${filter["color"]}`;
@@ -112,6 +119,16 @@ class Encyclopedia extends Component {
 			console.log("kl", partKey);
 			if(this.validFilter(partKey)) query+= `&parts.${geneKey}.id=${partKey}`;
 		})
+
+		if(sorting) {
+			const sortingValue = sorting.split("_")[0]
+			const sortingType = sorting.split("_")[1].toUpperCase();
+			switch(sortingValue){
+				case "id" : query += `&sort.id=${sortingType}`; break;
+				case "price" : query += `&sort.auction.buyNowPrice=${sortingType}`; break;
+				case "exp" : query += `&sort.exp=${sortingType}`; break;
+			}
+		}
 
 		this.setState({
 			query: query,
@@ -210,6 +227,12 @@ class Encyclopedia extends Component {
 		})
 	}
 
+	onSelectOption = (option) => {
+		this.setState({
+			sorting: option.value,
+		})
+	}
+
 	handleChangeFilterView = (newOption) => {
 		this.setState({
 			filterView: newOption,
@@ -233,11 +256,21 @@ class Encyclopedia extends Component {
 
 				<React.Fragment>
 					
-				<RadioGroup className="filterSwitch" class={"radiogroup"} color="#f346cc" type="modern" options={[
-					{label: "Axie", value: "axie"},
-					{label: "Genes", value: "genes"},
-				]} active_option={"axie"} onChange={this.handleChangeFilterView}>
-				</RadioGroup>
+				<div className="headbar">
+					<RadioGroup className="filterSwitch" class={"radiogroup"} color="#f346cc" type="modern" options={[
+						{label: "Axie", value: "axie"},
+						{label: "Genes", value: "genes"},
+					]} active_option={"axie"} onChange={this.handleChangeFilterView}>
+					</RadioGroup>
+
+					<SimpleSelect options={[
+						{label: "Lowest ID first", value: "id_asc"},
+						{label: "Highest ID first", value: "id_desc"},
+						{label: "Cheapest first", value: "price_asc"},
+						{label: "Most expensive first", value: "price_desc"},
+					]} onSelectOption={this.onSelectOption}>
+					</SimpleSelect>
+				</div>
 
 				{filterView == "axie" && (
 					<React.Fragment>
@@ -332,7 +365,13 @@ class Encyclopedia extends Component {
 												</React.Fragment>
 											} 
 											closedContent={
-												<div>{geneFilter[partTypeKey]}</div>
+												<>
+													{geneFilter[partTypeKey] && 
+														<RadioButton type="chip" active={true}>
+															{geneFilter[partTypeKey]}
+														</RadioButton> 
+													}
+												</>
 											}
 											content={
 												<div className="parts">

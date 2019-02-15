@@ -4,8 +4,15 @@ import BasicCenterContainer from "../containers/BasicCenterContainer";
 import Button from "../ui/Button";
 import Textfield from "../ui/Textfield";
 import RadioGroup from "../ui/RadioGroup/RadioGroup";
+
+import {ToggleBase} from "../ui/Toggle/ToggleBase";
+import {Toggle} from "../ui/Toggle/Toggle";
+import {ToggleButtonType} from "../ui/Toggle/Toggle";
+import {Select2} from "../ui/Select/Select2";
+import {SimpleSelect} from "../ui/Select/SimpleSelect";
 //
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
+import ReactSVG from 'react-svg';
 
 //CSS
 export const StyledPartTierList = styled.div`
@@ -18,7 +25,23 @@ export const StyledPartTierList = styled.div`
 
 class Comps extends React.PureComponent{
 
+
+
 	render(){
+		let StyledBadge = styled.p`
+			font-weight: bold;
+			background: #ff3d3d;
+			display: inline-flex;
+			border-radius: 50%;
+			width: 18px;
+			height: 18px;
+			justify-content: center;
+			align-items: center;
+			font-size: 10px;
+			color: white;
+			margin-right: 5px;
+		`;
+
 		return (
 			<BasicCenterContainer>
 				<StyledPartTierList>
@@ -30,6 +53,28 @@ class Comps extends React.PureComponent{
 					
 					<h1>Components</h1>
 
+					<div className="box">
+							<h2>Toggle</h2>
+							<ToggleBase on={true}>
+									Test
+							</ToggleBase>
+
+
+							{[ToggleButtonType.Chip, ToggleButtonType.Modern, ToggleButtonType.Simple].map((type,i) => (
+								[null, "#ff00aa", "#97ddb9", "#350baa"].map((color,j) => 
+									<Toggle key={i+j} type={type} color={color}>{type} #{j}</Toggle>
+								)
+							)
+							)}
+
+							<Toggle type="simple" color="#dd9b7a5" toggleOn={false}>
+								<StyledBadge>5</StyledBadge>
+								<p>Test</p>
+							</Toggle>
+
+							<Toggle onToggle={console.log} value="test" type="modern" color="#ff00aa" toggleOn={true}>Modern</Toggle>
+					</div>
+
 					<div className="box buttons">
 						<h2>Buttons</h2>
 						<Button name="vanilla button" />
@@ -40,6 +85,28 @@ class Comps extends React.PureComponent{
 						<Button name="small" type="filled" color="#63adf7" size="small"/>
 						<Button name="small outline" type="outline" color="#63adf7" size="small"/>
 					</div>
+
+					<div className="box">
+						<h2>Select</h2>
+						<Select2 options={[
+							<Toggle onToggle={console.log} value="test" type="modern" color="#ff00aa" toggleOn={false}>Option 1</Toggle>,
+							<Toggle onToggle={console.log} value="test2" type="modern" color="#ff00aa" toggleOn={true}>Option 2</Toggle>
+						]}/>
+					</div>
+
+
+					<div className="box">
+						<h2>Simple Select</h2>
+						<SimpleSelect options={[
+							{label: "Apple", value: "apple"},
+							{label: "Banana", value: "banana"},
+							{label: "Melon", value: "melon"},
+							{label: "Kiwi", value: "kiwi"},
+						]}>
+						</SimpleSelect>
+					</div>
+								
+
 
 					<div className="box">
 						<h2>Textfields</h2>
@@ -74,6 +141,9 @@ class Comps extends React.PureComponent{
 							{value: "badger", label:"Badger"},
 							]}/>
 					</div>
+
+
+
 					
 
 				</StyledPartTierList>
