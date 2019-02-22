@@ -61,14 +61,16 @@ class Comps extends React.PureComponent{
 							</ToggleBase>
 
 
-							{[ToggleButtonType.Chip, ToggleButtonType.Modern, ToggleButtonType.Simple].map((type,i) => (
+							{[ToggleButtonType.Chip, ToggleButtonType.Modern, ToggleButtonType.Simple, ToggleButtonType.Checkbox].map((type,i) => (
 								[null, "#ff00aa", "#97ddb9", "#350baa"].map((color,j) => 
 									<Toggle key={i+j} type={type} color={color}>{type} #{j}</Toggle>
 								)
 							)
 							)}
 
-							<Toggle type="simple" color="#dd9b7a5" toggleOn={false}>
+							<Toggle type="checkbox"/>
+
+							<Toggle type="simple" color="#dd97a5" toggleOn={false}>
 								<StyledBadge>5</StyledBadge>
 								<p>Test</p>
 							</Toggle>
