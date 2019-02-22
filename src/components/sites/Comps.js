@@ -10,6 +10,7 @@ import {Toggle} from "../ui/Toggle/Toggle";
 import {ToggleButtonType} from "../ui/Toggle/Toggle";
 import {Select2} from "../ui/Select/Select2";
 import {SimpleSelect} from "../ui/Select/SimpleSelect";
+import {TextField} from "../ui/TextField/TextField";
 //
 import styled, {css} from 'styled-components';
 import ReactSVG from 'react-svg';
@@ -84,6 +85,25 @@ class Comps extends React.PureComponent{
 						<Button name="color outline" type="outline" color="#f8bad9"/>
 						<Button name="small" type="filled" color="#63adf7" size="small"/>
 						<Button name="small outline" type="outline" color="#63adf7" size="small"/>
+					</div>
+
+					<div className="box">
+								<TextField 
+									label="Size"
+									onChange={()=>{}}
+								/>
+								<TextField 
+									label="Num Elems"
+									onChange={()=>{}}
+								/>
+								<TextField 
+									label="Color"
+									onChange={()=>{}}
+								/>
+								<TextField 
+									label="Type"
+									onChange={()=>{}}
+								/>
 					</div>
 
 					<div className="box">
