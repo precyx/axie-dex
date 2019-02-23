@@ -3,7 +3,7 @@ import {StyledSelect2} from "./styles/StyledSelect2";
 
 export interface Select2Props {
 	className?:string,
-	options:Array<any>,
+	options?:Array<string>,
 	onChange:Function,
 	multiselect?:boolean,
 	deselect?:boolean,

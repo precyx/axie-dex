@@ -38,6 +38,7 @@ export interface ToggleProps {
 	color?:string,
 	onToggle?:Function,
 	CustomComponent?:any,
+	style:any,
 }
 
 interface ToggleState {
@@ -66,14 +67,15 @@ export class Toggle extends React.Component<ToggleProps, ToggleState> {
 	}
 
 	render():JSX.Element{
-		const {type, color, label, children, CustomComponent, className, ...other} = this.props;
+		const {type, color, label, children, CustomComponent, className, style, ...other} = this.props;
 		const isOn = this.state.isControlled ? this.props.isOn : this.state.isOn;
 		//console.log("k", CustomComponent);
 
 		const ToggleComponent = CustomComponent ? Custom : ToggleTypeMapping[type!] || Chip;
+		
 		return (
 			<>
-			<ToggleComponent CustomComponent={CustomComponent} isOn={isOn!} color={color!} label={label!} onClick={this.handleClick} {...other}>
+			<ToggleComponent CustomComponent={CustomComponent} isOn={isOn!} color={color!} label={label!} onClick={this.handleClick} style={style} {...other}>
 				{children} 
 			</ToggleComponent>
 			</>

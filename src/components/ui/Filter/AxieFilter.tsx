@@ -4,8 +4,12 @@ import RadioGroup from '../ui/../RadioGroup/RadioGroup';
 import RadioButton from '../ui/../RadioButton/RadioButton';
 import {SimpleSelect, ListOption} from '../ui/../Select/SimpleSelect';
 import ExpansionPanel from '../ui/../ExpansionPanel/ExpansionPanel';
+import {Select2} from '../Select/Select2';
+import {Toggle} from "../Toggle/Toggle";
+import {StyledToggleBase} from "../Toggle/ToggleBase";
 import Button from '../../ui/Button';
 import {TextField} from '../../ui/TextField/TextField';
+import {Icon} from "../Icon/Icon";
 
 import {bodyparts} from "../../../data/axie-body-parts";
 
@@ -13,7 +17,7 @@ import styled, {css} from "styled-components";
 
 
 const StyledAxieFilter:any = styled.div`
-  background: white; z-index:100; width:380px; padding: 20px; box-shadow: 0 2px 2px #0000002e; border-radius: 10px; position:absolute; left:0; top:20px;}
+  background: white; z-index:100; width:410px; padding: 20px; box-shadow: 0 2px 2px #0000002e; border-radius: 10px; position:absolute; left:0; top:20px;}
 	.headbar {display:flex; justify-content:space-between; border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
 	.headbar > .radiogroup {border:none;}
 	.radiogroup { flex-flow: wrap; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 8px 0; }
@@ -88,6 +92,147 @@ interface AxieFilterState{
   geneFilter:Filter,
   sorting: string,
   address: string,
+}
+
+
+const ColorDrop = styled(StyledToggleBase)`
+	padding:0;
+	margin:0;
+
+	width:30px;
+	height:30px;
+	background:grey;
+	border-radius:50%;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14);
+
+	&:hover {
+		opacity:0.75;
+	}
+
+	${props => props.isOn && `
+		& {
+			border:3px solid white;
+			box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+		}
+	`}
+
+	${props => props.color && `
+		& {
+			background: ${props.color}
+		}
+	`}
+
+`;
+
+
+const axieClasses = [
+ "beast", "plant", "aquatic", "reptile", "bug", "bird", "hidden_1", "hidden_2", "hidden_3"
+];
+
+const axieClassColors:{[key:string]:string} = {
+	"aquatic"   : "#00B8CF",
+	"beast"     : "#FFB70F",
+	"plant"     : "#6BBF00",
+	"bird"      : "#FF8ABC",
+	"bug"       : "#FF5241",
+	"reptile"   : "#A979F8",
+	"hidden_1"  : "#c6bcd4",
+	"hidden_2"  : "#beceff",
+	"hidden_3"  : "#369ab7",
+}
+
+const StyledClassIcon:any = styled(StyledToggleBase)`
+	display:flex;
+	justify-content:center;
+	align-items:center;
+
+	border-radius:50%;
+
+	width:30px;
+	height:30px;
+
+	background:white;
+
+	&:hover {
+		background:#eaeaea;
+	}
+
+	${props => props.color && `
+		& {
+			svg {fill: ${props.color}!important }
+		}
+	`}
+
+	${props => props.isOn && `
+		${props.color && `
+			&& {
+				background: ${props.color};
+				svg {fill: white!important; }
+			}
+		`}
+	`}
+`;
+
+
+const ClassIcon = (props:any) => (
+	<Icon src={"./img/icons/classes/" + props.class + "_24px.svg"} size={22}/>
+);
+
+
+const Label = styled.div`
+	font-size: 14px;
+	font-weight: bold;
+	color: #8e8e8e;
+	margin-right: 15px;
+`;
+
+const Row = styled.div`
+		display:flex;
+		border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding: 15px 0;
+`;
+
+
+const body_colors:{[key:string]:string} = {
+	white: 			"ffffff",
+	black: 			"7a6767",
+	orange: 		"ffa12a",
+	yellow: 		"ffec51",
+	dirt: 			"f0c66e",
+	
+	blue: 			"759edb",
+	sky_blue: 	"2de8f2",
+	cyan: 			"4cffdf",
+
+	lime: 			"ccef5e",
+	grass:			"c5ffd9",
+	kiwi:				"efd636",
+
+	purple: 		"ef93ff",
+	candy: 			"fdbcff",
+	dream: 			"f5e1ff",
+
+	red: 				"f74e4e",
+	straw: 			"ff6d61",
+	bug: 				"ff7183",
+
+	pink: 			"ffb4bb",
+	pillow:			"ff778e",
+	fantasy:		"ff9ab8",
+
+	mist: 			"c0fcfe",
+	star: 			"fefda0",
+	wonder: 		"d7ccfe",
+
+	grey: 			"d0dada",
+	rust: 			"d4a69e",
+	coal: 			"93828a",
+
+	abyss: 			"389ec6",
+	swamp: 			"62c5c3",
+	dust: 			"60afce",
+
+	toxic: 			"43e27d",
 }
 
 
@@ -194,36 +339,30 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 
 				{viewMode == FilterViewMode.Axie && (
 					<React.Fragment>
-						<RadioGroup enableDeselect={true} label="color" class={"radiogroup"} color="#a146ef" type="modern" options={[
-							{label: "white", value: "ffffff"},
-							{label: "black", value: "7a6767"},
-							{label: "orange", value: "ffa12a"},
-							{label: "yellow", value: "ffec51"},
-							{label: "dirt", value: "f0c66e"},
-							{label: "purple", value: "ef93ff"},
-							{label: "blue", value: "759edb"},
-							{label: "sky blue", value: "2de8f2"},
-							{label: "cyan", value: "4cffdf"},
-							{label: "lime", value: "ccef5e"},
-							{label: "red", value: "f74e4e"},
-							{label: "pink", value: "ffb4bb"},
-							{label: "toxic", value: "43e27d"},
-							{label: "star", value: "c0fcfe"},
-							{label: "grey", value: "d0dada"},
-						]} active_option={filter["color"] || "zero"} onChange={(option:string) => { this.onChangeFilter(FilterType.Color, option) }}>
-						</RadioGroup>
-						<RadioGroup enableDeselect={true} label="class" class={"radiogroup"} color="#a146ef" type="modern" options={[
-							{label: "beast", value: "beast"},
-							{label: "aquatic", value: "aquatic"},
-							{label: "plant", value: "plant"},
-							{label: "reptile", value: "reptile"},
-							{label: "bird", value: "bird"},
-							{label: "bug", value: "bug"},
-							{label: "nut", value: "hidden_1"},
-							{label: "star", value: "hidden_2"},
-							{label: "moon", value: "hidden_3"},
-						]} active_option={filter["class"] || "zero"} onChange={(option:string) => { this.onChangeFilter(FilterType.Class, option) }}>
-						</RadioGroup>
+
+
+
+						 
+						<Row>
+							<Label>Color</Label>
+							<Select2 deselect={true} onChange={(options:[]) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
+								{Object.keys(body_colors).map(colorKey => 
+									<Toggle value={body_colors[colorKey]} CustomComponent={ColorDrop} color={"#"+body_colors[colorKey]} style={{marginRight: "5px", marginBottom: "5px"}}/>
+									)}
+							</Select2>
+						</Row>
+						
+						<Row>
+							<Label>Class</Label>
+							<Select2 deselect={true} onChange={(options:[]) => { this.onChangeFilter(FilterType.Class, Object.keys(options)[0] || "") } }>
+								{axieClasses.map(axieClass => (
+									<Toggle value={axieClass} CustomComponent={ StyledClassIcon } color={axieClassColors[axieClass]} style={{marginRight: "5px", marginBottom: "5px"}}>
+										<ClassIcon className="classIcon" class={axieClass}/>
+									</Toggle>
+								))}
+							</Select2>
+						</Row>
+
 						<RadioGroup enableDeselect={true} label="stage" class={"radiogroup"} color="#a146ef" type="modern" options={[
 							{label: "egg", value: "1"},
 							{label: "petite", value: "3"},
