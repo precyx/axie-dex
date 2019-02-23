@@ -6,6 +6,7 @@ interface TextFieldProps {
   value:string,
   label:string,
   onChange?:Function,
+  className:string,
 }
 interface TextFieldState {
   isControlled:boolean;
@@ -60,9 +61,10 @@ export class TextField extends React.PureComponent<TextFieldProps, TextFieldStat
   }
 
   render(){
+    const {className} = this.props;
     const isControlled = this.state.isControlled;
     const {label} = this.props;
-    return <StyledTextField>
+    return <StyledTextField className={className}>
       {label && <label>{label}</label>}
       <div className="inputContainer">
       <input

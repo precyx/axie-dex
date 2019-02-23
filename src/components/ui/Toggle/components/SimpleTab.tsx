@@ -19,8 +19,10 @@ const StyledSimpleTab = styled(StyledToggleBase)<{isOn?:boolean, color:string}>`
 	`}
 `;
 
-export const SimpleTab:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => (
-	<StyledSimpleTab color={props.color} isOn={props.isOn} className={props.isOn ? "isOn" : ""} onClick={props.onClick}>
-		{props.label || props.children}
+export const SimpleTab:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => {
+	const {label, children, color, isOn, onClick, ...other} = props;
+	return(
+	<StyledSimpleTab color={color} isOn={isOn} className={isOn ? "isOn" : ""} onClick={onClick} {...other}>
+		{label || children}
 	</StyledSimpleTab>
-);
+)};

@@ -9,6 +9,7 @@ export interface ToggleBaseProps {
 	label?:string,
 	children?:any,
 	onClick:any,
+	CustomComponent:any,
 }
 
 export const StyledToggleBase = styled.div<ToggleBaseProps>`
@@ -18,23 +19,13 @@ export const StyledToggleBase = styled.div<ToggleBaseProps>`
 	color: #333;
 	user-select: none;
 	cursor: pointer;
-	margin-bottom: 5px;
 `;
 
-
-
-/**
- * @deprecated
- */
-interface ToggleBaseProps2 {
-	on:boolean,
-}
-
-export const ToggleBase:React.FC<ToggleBaseProps2> = (props) => {
+/*
+export const ToggleBase:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => {
+	const {label, children, color, isOn, onClick, ...other} = props;
 	return (
-		<div>
-			{props.on ? "on" : "offf"}
-			{props.children && props.children}
-		</div>
+		<></>
 	)
-}
+};
+*/

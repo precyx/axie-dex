@@ -17,6 +17,8 @@ const StyledAxieFilter:any = styled.div`
 	.headbar {display:flex; justify-content:space-between; border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
 	.headbar > .radiogroup {border:none;}
 	.radiogroup { flex-flow: wrap; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 8px 0; }
+
+	.tfield {margin-top:10px;}
 `;
 
 enum FilterViewMode {
@@ -315,8 +317,8 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
         
 				{viewMode == FilterViewMode.User &&
 					<>
-						<h2>User</h2>
-						<TextField 
+						<TextField
+							className="tfield" 
 							label="address"
 							value={this.state.filter[FilterType.Owner]}
 							onChange={(value:string) => { this.onChangeFilter(FilterType.Owner, value) }}

@@ -43,9 +43,10 @@ const ActiveModernTab = css<{color:string}>`
 `;
 
 export const ModernTab:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => {
+	const {label, children, color, isOn, onClick, ...other} = props;
 	return (
-		<StyledModernTab color={props.color} isOn={props.isOn} className={props.isOn ? "isOn" : ""} onClick={props.onClick}>
-			{props.label || props.children}
+		<StyledModernTab color={color} isOn={isOn} className={isOn ? "isOn" : ""} onClick={onClick} {...other}>
+			{label || children}
 		</StyledModernTab>
 	)
 };

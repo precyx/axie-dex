@@ -29,8 +29,10 @@ const StyledChip = styled(StyledToggleBase)<{isOn?:boolean, color:string}>`
 	`}
 `;
 
-export const Chip:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => (
-	<StyledChip color={props.color} isOn={props.isOn} className={props.isOn ? "isOn" : ""} onClick={props.onClick}>
+export const Chip:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => {
+	const {label, children, color, isOn, onClick, ...other} = props;
+	return (
+	<StyledChip color={props.color} isOn={props.isOn} className={props.isOn ? "isOn" : ""} onClick={props.onClick} {...other}>
 		{props.label || props.children}
 	</StyledChip>
-);
+)};
