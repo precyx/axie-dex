@@ -59,7 +59,7 @@ export class Toggle extends React.Component<ToggleProps, ToggleState> {
 	handleClick = () => {
 		this.setState(prevState=>({ isOn: !prevState.isOn }), 
 			() => { 
-				console.log(this.state.isOn);
+				//console.log(this.state.isOn);
 				this.props.onToggle && this.props.onToggle(this.props.value, this.state.isOn) 
 			}
 		)
@@ -68,7 +68,7 @@ export class Toggle extends React.Component<ToggleProps, ToggleState> {
 	render():JSX.Element{
 		const {type, color, label, children, CustomComponent, className, ...other} = this.props;
 		const isOn = this.state.isControlled ? this.props.isOn : this.state.isOn;
-		console.log("k", CustomComponent);
+		//console.log("k", CustomComponent);
 
 		const ToggleComponent = CustomComponent ? Custom : ToggleTypeMapping[type!] || Chip;
 		return (

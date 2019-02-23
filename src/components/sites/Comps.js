@@ -90,6 +90,7 @@ const IconToggle = styled(StyledToggleBase)`
 
 const Row = styled.div`
 		display:flex;
+		margin-bottom:10px;
 `;
 
 
@@ -122,9 +123,48 @@ class Comps extends React.PureComponent{
 					<h1>Components</h1>
 
 					<Paper className="box">
+						<h2>Select2</h2>
+
+						<h3>single select</h3>
+						<Row>
+							<Select2 multiselect={false} options={["kiwi"]} onChange={console.log}>
+								<Toggle value="banana" type="radio" color="#00fa77" >Banana</Toggle>
+								<Toggle value="apple" type="radio" color="#ff00aa" >Apple</Toggle>
+								<Toggle value="kiwi" type="radio" color="#00ad55" >Kiwi</Toggle>
+							</Select2>
+						</Row>
+						<h3>single select (deselect)</h3>
+						<Row>
+							<Select2 multiselect={false} deselect={true} onChange={console.log} options={["apple"]}>
+								<Toggle value="banana" type="radio" color="#00fa77" >Banana</Toggle>
+								<Toggle value="apple" type="radio" color="#ff00aa" >Apple</Toggle>
+								<Toggle value="kiwi" type="radio" color="#00ad55" >Kiwi</Toggle>
+							</Select2>
+						</Row>
+						<h3>multiselect</h3>
+						<Row>
+							<Select2 multiselect={true} options={["kiwi", "banana"]}>
+								<Toggle value="banana" type="checkbox" color="#00fa77" >Banana</Toggle>
+								<Toggle value="apple" type="checkbox" color="#ff00aa" >Apple</Toggle>
+								<Toggle value="kiwi" type="checkbox" color="#00ad55" >Kiwi</Toggle>
+							</Select2>
+						</Row>
+						<h3>custom</h3>
+						<Row>
+							<Select2 deselect={true}>
+								{rainbow.map((color, i) => 
+									<Toggle key={i} value={"color"+i} CustomComponent={ColorDrop} color={color} style={{marginRight: "5px"}}> </Toggle>
+								)}
+							</Select2>
+						</Row>
+					</Paper>
+
+
+
+					<Paper className="box">
 							<h2>Toggle</h2>
 
-							<h3>chip, modern, simple, radio, checkbox, radio</h3>
+							<h3>chip, modern, simple, radio, checkbox</h3>
 
 							{[ToggleButtonType.Chip, 
 							ToggleButtonType.Modern, 
@@ -132,12 +172,17 @@ class Comps extends React.PureComponent{
 							ToggleButtonType.Radio, 
 							ToggleButtonType.Checkbox].map((type,i) => 
 								<>
+									<Row>
 									{[null, "#ff00aa", "#97ddb9", "#350baa"].map((color,j) => 
-											<Toggle isOn={true} key={i+j} type={type} color={color} style={{marginLeft:"10px", marginBottom:"10px"}}>{type} #{j}</Toggle>
+										<Toggle isOn={true} key={i+j} type={type} color={color} style={{marginLeft:"10px", marginBottom:"10px"}}>{type} #{j}</Toggle>
 									)}
+									</Row>
+									<Row>
+
 									{[null, "#ffa73b", "#ff4f4f", "#82bf3e"].map((color,j) => 
-											<Toggle key={i+j} type={type} color={color} style={{marginLeft:"5px"}}>{type} #{j}</Toggle>
+										<Toggle key={i+j} type={type} color={color} style={{marginLeft:"5px"}}>{type} #{j}</Toggle>
 									)}
+									</Row>
 								</>
 							)}
 
@@ -153,13 +198,13 @@ class Comps extends React.PureComponent{
 							<h3>custom</h3>
 
 							<Row>
-							{rainbow.map(color => 
-								<Toggle type="custom" CustomComponent={ColorDrop} color={color}> </Toggle>
+							{rainbow.map((color, i) => 
+								<Toggle key={i} type="custom" CustomComponent={ColorDrop} color={color} style={{marginRight: "5px"}}> </Toggle>
 								)}
 							</Row>
 
 							<Row>
-								<Toggle CustomComponent={IconToggle} color={"#ff00aa"}>
+								<Toggle CustomComponent={IconToggle} color={"#ff00aa"} style={{marginRight: "10px"}}>
 									<Icon className="icon" src={`./img/icons/general/star_border.svg`} size={24} />
 									<Icon className="icon2" src={`./img/icons/general/star.svg`} size={24} />
 								</Toggle>
@@ -198,13 +243,7 @@ class Comps extends React.PureComponent{
 								/>
 					</Paper>
 
-					<Paper className="box">
-						<h2>Select</h2>
-						<Select2 options={[
-							<Toggle onToggle={console.log} value="test" type="modern" color="#ff00aa" toggleOn={false}>Option 1</Toggle>,
-							<Toggle onToggle={console.log} value="test2" type="modern" color="#ff00aa" toggleOn={true}>Option 2</Toggle>
-						]}/>
-					</Paper>
+
 
 
 					<Paper className="box">
