@@ -5,7 +5,7 @@ import RadioButton from '../ui/../RadioButton/RadioButton';
 import {SimpleSelect, ListOption} from '../ui/../Select/SimpleSelect';
 import ExpansionPanel from '../ui/../ExpansionPanel/ExpansionPanel';
 import {Select2} from '../Select/Select2';
-import {Toggle} from "../Toggle/Toggle";
+import {Toggle, ToggleButtonType} from "../Toggle/Toggle";
 import {StyledToggleBase} from "../Toggle/ToggleBase";
 import Button from '../../ui/Button';
 import {TextField} from '../../ui/TextField/TextField';
@@ -21,6 +21,22 @@ const StyledAxieFilter:any = styled.div`
 	.headbar {display:flex; justify-content:space-between; border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
 	.headbar > .radiogroup {border:none;}
 	.radiogroup { flex-flow: wrap; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 8px 0; }
+
+	.loadDataButton {
+		position: absolute;
+		top: 55px;
+    right: -80px;
+    border-radius: 50px;
+    background: #55adfb;
+    border: none;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 1px 7px rgba(0, 0, 0, 0.2);
+	}
+	.loadDataButton:hover {
+		background:#6ca6ff;
+	}
 
 	.tfield {margin-top:10px;}
 `;
@@ -141,6 +157,12 @@ const axieClassColors:{[key:string]:string} = {
 	"hidden_3"  : "#369ab7",
 }
 
+const axieStages:{[key:string]:number} = {
+	"egg" : 1,
+	"petite" : 3,
+	"adult" : 4,
+}
+
 const StyledClassIcon:any = styled(StyledToggleBase)`
 	display:flex;
 	justify-content:center;
@@ -188,6 +210,7 @@ const Label = styled.div`
 
 const Row = styled.div`
 		display:flex;
+		align-items:center;
 		border-bottom: 1px solid rgba(0,0,0,0.1);
     padding: 15px 0;
 `;
@@ -345,7 +368,7 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 						 
 						<Row>
 							<Label>Color</Label>
-							<Select2 deselect={true} onChange={(options:[]) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
+							<Select2 deselect={true} options={[ filter["color"] ]} onChange={(options:[]) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
 								{Object.keys(body_colors).map(colorKey => 
 									<Toggle value={body_colors[colorKey]} CustomComponent={ColorDrop} color={"#"+body_colors[colorKey]} style={{marginRight: "5px", marginBottom: "5px"}}/>
 									)}
@@ -354,7 +377,7 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 						
 						<Row>
 							<Label>Class</Label>
-							<Select2 deselect={true} onChange={(options:[]) => { this.onChangeFilter(FilterType.Class, Object.keys(options)[0] || "") } }>
+							<Select2 deselect={true} options={[ filter["class"] ]} onChange={(options:[]) => { this.onChangeFilter(FilterType.Class, Object.keys(options)[0] || "") } }>
 								{axieClasses.map(axieClass => (
 									<Toggle value={axieClass} CustomComponent={ StyledClassIcon } color={axieClassColors[axieClass]} style={{marginRight: "5px", marginBottom: "5px"}}>
 										<ClassIcon className="classIcon" class={axieClass}/>
@@ -363,12 +386,16 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 							</Select2>
 						</Row>
 
-						<RadioGroup enableDeselect={true} label="stage" class={"radiogroup"} color="#a146ef" type="modern" options={[
-							{label: "egg", value: "1"},
-							{label: "petite", value: "3"},
-							{label: "adult", value: "4"},
-						]} active_option={filter["stage"] || "zero"} onChange={(option:string) => { this.onChangeFilter(FilterType.Stage, option) }}>
-						</RadioGroup>
+						<Row>
+							<Label>Stage</Label>
+							<Select2 deselect={true} options={[ filter["stage"] ]} onChange={(options:[]) => { this.onChangeFilter(FilterType.Stage, Object.keys(options)[0] || "") } }>
+								{["egg", "petite", "adult"].map(axieStage => (
+									<Toggle value={axieStages[axieStage].toString()} type={ToggleButtonType.Radio} color={"#ff00aa"} style={{marginRight: "5px", marginBottom: "5px"}}>
+										{axieStage}
+									</Toggle>
+								))}
+							</Select2>
+						</Row>
 						<RadioGroup enableDeselect={true} label="pattern" class={"radiogroup"} color="#a146ef" type="modern" options={[
 							{label: "fluffy", value: "000001"},
 							{label: "big yak", value: "110001"},
@@ -395,12 +422,17 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 							{label: "Agamogenesis", value: "Agamogenesis"},
 						]} active_option={filter["title"] || "zero"} onChange={(option:string) => { this.onChangeFilter(FilterType.Title, option) }}>
 						</RadioGroup>
-						<RadioGroup enableDeselect={true} label="auction" class={"radiogroup"} color="#a146ef" type="modern" options={[
-							{label: "ANY", value: "null"},
-							{label: "Sale", value: "sale"},
-							{label: "Siring", value: "siring"},
-						]} active_option={filter["auction"] || "zero"} onChange={(option:string) => { this.onChangeFilter(FilterType.Auction, option) }}>
-						</RadioGroup>
+
+						<Row>
+							<Label>Auction</Label>
+							<Select2 deselect={true} options={[ filter["auction"] ]} onChange={(options:[]) => { this.onChangeFilter(FilterType.Auction, Object.keys(options)[0] || "") } }>
+								{["sale", "siring"].map(auctionType => (
+									<Toggle value={auctionType} type={ToggleButtonType.Radio} color={"#ff00aa"} style={{marginRight: "5px", marginBottom: "5px"}}>
+										{auctionType}
+									</Toggle>
+								))}
+							</Select2>
+						</Row>
 						
 						{this.renderLoadButton()}
 					
