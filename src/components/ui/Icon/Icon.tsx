@@ -13,7 +13,8 @@ interface IconProps {
 
 
 export const Icon:React.FC<IconProps> = (props:IconProps) => {
-	const {src, size, color, className} = props;
+	const {src, size, color} = props;
+	const className = props.className || "";
 	return (
-	<ReactSVG className={className} src={src} style={{width:size, height:size}} svgStyle={{width:size, height:size, fill:color || "#000000"}}/>
+	<ReactSVG className={"ui-icon " + className} src={src} style={{width:size, height:size}} svgStyle={{width:size, height:size, fill:color || "#000000"}}/>
 )}

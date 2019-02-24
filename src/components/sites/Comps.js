@@ -12,6 +12,8 @@ import {Select2} from "../ui/Select/Select2";
 import {SimpleSelect} from "../ui/Select/SimpleSelect";
 import {TextField} from "../ui/TextField/TextField";
 import { Icon } from '../ui/Icon/Icon';
+
+import axieClassColors from "../../data/axie-class-colors";
 //
 import styled, {css} from 'styled-components';
 import ReactSVG from 'react-svg';
@@ -23,8 +25,8 @@ export const StyledPartTierList = styled.div`
 
 	.box {margin-bottom:40px;}
 	.box.buttons .button {margin-right:10px;}
-
 `;
+
 
 const Badge = styled.p`
 	font-weight: bold;
@@ -101,8 +103,140 @@ const Paper = styled.div`
 `;
 
 
+const Tiger = styled.div`
+	padding:20px;
+	background:orange;
+`;
+
+const Bear = styled.div`
+		border:2px solid brown;
+`;
+
+
+
 const rainbow = ["#ff1744", "#d500f9", "#651fff", "#3d5afe", "#2979ff", "#00b0ff", "#00e5ff", "#1de9b6", "#c6ff00", "#ffea00", "#ffc400", "#ff9100", "#ff3d00"];
 
+
+const StyledClassIcon = styled(StyledToggleBase)`
+	display:flex;
+	justify-content:center;
+	align-items:center;
+
+	border-radius:50%;
+
+	width:30px;
+	height:30px;
+
+	background:white;
+
+	&:hover {
+		background:#eaeaea;
+	}
+
+	${props => props.color && `
+		& {
+			svg {fill: ${props.color}!important }
+		}
+	`}
+
+	${props => props.isOn && `
+		${props.color && `
+			&& {
+				background: ${props.color};
+				svg {fill: white!important; }
+			}
+		`}
+	`}
+`;
+
+
+const ClassIcon = (props) => (
+	<Icon src={"./img/icons/classes/" + props.class + "_24px.svg"} size={22}/>
+);
+
+
+const StyledToggleRect = styled(StyledToggleBase)`
+	.rect { 
+		background:black;
+	}
+
+	:hover {
+		opacity:0.8;
+	}
+
+	${props => props.isOn && `
+		.rect { border:2px solid red; }
+	`}
+`;
+
+const StyledRect = styled.div`
+	background:grey;
+	width:40px;
+	height:40px;
+
+	${props => props.size && `
+		width: ${props.size}px;
+		height: ${props.size}px;
+	`}
+`;
+
+const Rect = (props) => (
+	<StyledRect className="rect" {...props} />
+);
+
+
+const Option = styled(StyledToggleBase)`
+	font-size:14px;
+	color:grey;
+	padding:10px;
+	width:100%;
+	
+	:hover {
+		background:whitesmoke;
+	}
+
+	${props => props.isOn && `
+		&&{
+			color:black;
+			font-weight:500;
+		}
+	`}
+`;
+
+
+const IconOption = styled(Option)`
+	display:flex;
+	align-items:center;
+
+	.ui-icon {width:35px!important; opacity:0.5;}
+
+	${props => props.isOn && `
+	&&{
+		.ui-icon {opacity:1;}
+	}
+	`}
+`;
+
+const StyledOptionBoard = styled.div`
+	background:white;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+	display:flex;
+	flex-flow:column;
+
+	.ui-select {
+		display:flex;
+	flex-flow:column;
+	}
+`; 
+
+
+const HeaderField = styled.div`
+	font-size: 14px;
+	font-weight: 500;
+	color: grey;
+	text-transform: uppercase;
+	padding: 10px;
+`;
 
 class Comps extends React.PureComponent{
 
@@ -121,6 +255,7 @@ class Comps extends React.PureComponent{
 
 					
 					<h1>Components</h1>
+
 
 					<Paper className="box">
 						<h2>Select2</h2>
@@ -156,6 +291,19 @@ class Comps extends React.PureComponent{
 									<Toggle key={i} value={"color"+i} CustomComponent={ColorDrop} color={color} style={{marginRight: "5px"}}> </Toggle>
 								)}
 							</Select2>
+						</Row>
+						<Row>
+							<StyledOptionBoard>
+							<HeaderField>Header</HeaderField>
+							<Select2 multiselect={false}>
+								<Toggle value="x1" CustomComponent={Option}>Banana Shake</Toggle>
+								<Toggle value="x2" CustomComponent={Option}>Strawberry Cake</Toggle>
+								<Toggle value="x3" CustomComponent={Option}>Pinapple Pie</Toggle>
+								<Toggle value="x4" CustomComponent={IconOption}> <Icon src="./img/icons/general/star.svg" size="20px" /> Mango Bread </Toggle>
+								<Toggle value="x5" CustomComponent={IconOption}> <Icon src="./img/icons/general/star.svg" size="20px" color="#ecad03" /> Orange Juice</Toggle>
+								<Toggle value="x6" CustomComponent={IconOption}> <Icon src="./img/icons/general/star.svg" size="20px" color="#74b35a" /> Avocado Soup</Toggle>
+							</Select2>
+							</StyledOptionBoard>
 						</Row>
 					</Paper>
 
@@ -210,6 +358,19 @@ class Comps extends React.PureComponent{
 								</Toggle>
 							</Row>
 
+						<Row>
+							{Object.keys(axieClassColors).map(axieClassKey => 
+								<Toggle style={{display:"inline-flex", marginLeft: "5px"}} CustomComponent={StyledClassIcon} color={axieClassColors[axieClassKey]}>
+									<ClassIcon class={axieClassKey}/>
+								</Toggle>
+							)}
+						</Row>
+						<Row>
+							{[10, 15, 20, 25, 40, 60].map(size => (
+								<Toggle CustomComponent={StyledToggleRect}> <Rect size={size}/> </Toggle>
+							))}
+						</Row>
+
 							
 					</Paper>
 
@@ -248,12 +409,11 @@ class Comps extends React.PureComponent{
 
 					<Paper className="box">
 						<h2>Simple Select</h2>
-						<SimpleSelect options={[
-							{label: "Apple", value: "apple"},
-							{label: "Banana", value: "banana"},
-							{label: "Melon", value: "melon"},
-							{label: "Kiwi", value: "kiwi"},
-						]}>
+						<SimpleSelect deselect={true}>
+							<Toggle label="Option" value="x1"/> 
+							<Toggle label="Option" value="x2"/> 
+							<Toggle label="Option" value="x3"/> 
+							<Toggle label="Option" value="x4"/> 
 						</SimpleSelect>
 					</Paper>
 								

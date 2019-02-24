@@ -2,7 +2,7 @@ import React from "react";
 
 import RadioGroup from '../ui/../RadioGroup/RadioGroup';
 import RadioButton from '../ui/../RadioButton/RadioButton';
-import {SimpleSelect, ListOption} from '../ui/../Select/SimpleSelect';
+import {SimpleSelect, StyledOption} from '../ui/../Select/SimpleSelect';
 import ExpansionPanel from '../ui/../ExpansionPanel/ExpansionPanel';
 import {Select2} from '../Select/Select2';
 import {Toggle, ToggleButtonType} from "../Toggle/Toggle";
@@ -200,6 +200,11 @@ const ClassIcon = (props:any) => (
 	<Icon src={"./img/icons/classes/" + props.class + "_24px.svg"} size={22}/>
 );
 
+const FlexWrap = styled.div`
+	display:flex;
+	flex-flow:wrap;
+`;
+
 
 const Label = styled.div`
 	font-size: 14px;
@@ -300,9 +305,10 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 		})
 	}
 
-	onSelectOption = (option:{[V:string]:string}) => {
+	onSelectOption = (option:any) => {
+		console.log("oop", option);
 		this.setState({
-			sorting: option.value,
+			sorting: option,
 		}, () => {
       if(this.props.onChangeSorting) this.props.onChangeSorting(this.state.sorting);
     })
@@ -327,9 +333,7 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 	}
   
 	renderAxieFilter = () => {
-		const viewMode:FilterViewMode = this.state.viewMode;
-		const filter:Filter | undefined = this.state.filter;
-		const geneFilter:Filter | undefined = this.state.geneFilter;
+		const {viewMode, filter, geneFilter, sorting} = this.state;
 
 		//const axieBodyParts = bodyparts.map(part => ({label: part.name, value: part.id}));
 		const bodyPartsByType:{[key:string]:any} = {};
@@ -351,13 +355,13 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 					]} active_option={"axie"} onChange={this.handleChangeViewMode}>
 					</RadioGroup>
 
-					<SimpleSelect options={[
-						{label: "Lowest ID first", value: "id_asc"},
-						{label: "Highest ID first", value: "id_desc"},
-						{label: "Cheapest first", value: "price_asc"},
-						{label: "Most expensive first", value: "price_desc"},
-					]} onSelectOption={this.onSelectOption}>
+					<SimpleSelect options={[sorting]} deselect={true} onChangeOption={(options:any) => {this.onSelectOption(Object.keys(options)[0]) } }>
+						<Toggle value="id_asc" label="lowest ID" CustomComponent={StyledOption}/>
+						<Toggle value="id_desc" label="Highest ID" CustomComponent={StyledOption}/>
+						<Toggle value="price_asc" label="Lowest Price" CustomComponent={StyledOption}/>
+						<Toggle value="price_desc" label="Highest Price" CustomComponent={StyledOption}/>
 					</SimpleSelect>
+
 				</div>
 
 				{viewMode == FilterViewMode.Axie && (
@@ -368,7 +372,7 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 						 
 						<Row>
 							<Label>Color</Label>
-							<Select2 deselect={true} options={[ filter["color"] ]} onChange={(options:[]) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
+							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["color"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
 								{Object.keys(body_colors).map(colorKey => 
 									<Toggle value={body_colors[colorKey]} CustomComponent={ColorDrop} color={"#"+body_colors[colorKey]} style={{marginRight: "5px", marginBottom: "5px"}}/>
 									)}
@@ -377,7 +381,7 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 						
 						<Row>
 							<Label>Class</Label>
-							<Select2 deselect={true} options={[ filter["class"] ]} onChange={(options:[]) => { this.onChangeFilter(FilterType.Class, Object.keys(options)[0] || "") } }>
+							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["class"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Class, Object.keys(options)[0] || "") } }>
 								{axieClasses.map(axieClass => (
 									<Toggle value={axieClass} CustomComponent={ StyledClassIcon } color={axieClassColors[axieClass]} style={{marginRight: "5px", marginBottom: "5px"}}>
 										<ClassIcon className="classIcon" class={axieClass}/>
@@ -388,7 +392,7 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 
 						<Row>
 							<Label>Stage</Label>
-							<Select2 deselect={true} options={[ filter["stage"] ]} onChange={(options:[]) => { this.onChangeFilter(FilterType.Stage, Object.keys(options)[0] || "") } }>
+							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["stage"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Stage, Object.keys(options)[0] || "") } }>
 								{["egg", "petite", "adult"].map(axieStage => (
 									<Toggle value={axieStages[axieStage].toString()} type={ToggleButtonType.Radio} color={"#ff00aa"} style={{marginRight: "5px", marginBottom: "5px"}}>
 										{axieStage}
@@ -425,7 +429,7 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 
 						<Row>
 							<Label>Auction</Label>
-							<Select2 deselect={true} options={[ filter["auction"] ]} onChange={(options:[]) => { this.onChangeFilter(FilterType.Auction, Object.keys(options)[0] || "") } }>
+							<Select2 deselect={true} options={[ filter["auction"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Auction, Object.keys(options)[0] || "") } }>
 								{["sale", "siring"].map(auctionType => (
 									<Toggle value={auctionType} type={ToggleButtonType.Radio} color={"#ff00aa"} style={{marginRight: "5px", marginBottom: "5px"}}>
 										{auctionType}

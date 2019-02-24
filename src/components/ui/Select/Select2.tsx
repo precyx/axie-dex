@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import {StyledSelect2} from "./styles/StyledSelect2";
 
+import { StyledComponentClass } from 'styled-components';
+
 export interface Select2Props {
+	CustomComponent?:StyledComponentClass<any, any>,
 	className?:string,
 	options?:Array<string>,
-	onChange:Function,
+	onChange:(options:{[key:string]:string}) => void,
 	multiselect?:boolean,
 	deselect?:boolean,
+	style?:any,
 }
 interface Select2State {
 	isControlled?:boolean,
@@ -48,16 +52,18 @@ export class Select2 extends React.Component<Select2Props, Select2State> {
 	}
 
 	render(){
-		const {children, className, onChange} = this.props;
+		const {children, className, CustomComponent, onChange} = this.props;
 
-		const elems = React.Children.map(children, (child:any)=>{
+		const elems = React.Children.map(children, (child:any, i:number)=>{
 			return React.cloneElement(child, {onToggle: this.onToggleOption, isOn: this.state.selectedOptions[child.props.value] || false});
 		})
 
+		const Component = CustomComponent ? CustomComponent : StyledSelect2;
+
 		return (
-			<StyledSelect2 className={`ui-select ${className}`} >
+			<Component className={`ui-select ${className}`} >
 				{elems}
-			</StyledSelect2>
+			</Component>
 		)
 	}
 }
