@@ -5,11 +5,16 @@ import styled, {css} from 'styled-components';
 
 export interface ToggleBaseProps {
 	isOn: boolean,
+	disabled?:boolean,
+	value?:string,
 	color:string,
 	label?:string,
 	children?:any,
-	onClick:any,
-	CustomComponent:any,
+	className?:string,
+	onClick?:any,
+	CustomComponent?:any,
+	style?:any,
+	[a:string]:any,
 }
 
 export const StyledToggleBase = styled.div<ToggleBaseProps>`

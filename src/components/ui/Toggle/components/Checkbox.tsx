@@ -9,7 +9,7 @@ import {Icon} from "../../Icon/Icon";
 
 import {ToggleBaseProps, StyledToggleBase} from "../ToggleBase";
 
-const StyledCheckbox = styled(StyledToggleBase)<{isOn?:boolean, color:string}>`
+const StyledCheckbox = styled(StyledToggleBase)<{isOn?:boolean, disabled?:boolean, color:string}>`
 	display: inline-flex;
 	align-items: center;
 	border-radius:5px;
@@ -19,27 +19,11 @@ const StyledCheckbox = styled(StyledToggleBase)<{isOn?:boolean, color:string}>`
 	}
 
 	${props => props.isOn && `
-		&.isOn {
+		&& {
 			font-weight:500;
 			color: ${props.color};
 		}
-	`}
-`;
-
-const CheckerBox = styled.div<{isOn:boolean, color:string, content:any}>`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width:20px;
-	height:20px;
-	background:#f3f3f3;
-	border:2px solid grey;
-	border-radius:3px;
-
-	margin-right:10px;
-
-	${props => props.isOn && `
-		&&& {
+		.ui-checkerbox {
 			background:grey;
 			${props.color && `
 				background: ${props.color};
@@ -47,15 +31,40 @@ const CheckerBox = styled.div<{isOn:boolean, color:string, content:any}>`
 			`}
 		}
 	`}
+
+	${props => props.disabled &&`
+		user-select:none;
+		cursor:default;
+		color:#c1c1c1;
+		&& .ui-checkerbox { 
+			border-color:#b5b5b5;
+			background: white;
+		}
+	`}
+`;
+
+const CheckerBox = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width:20px;
+	height:20px;
+	background:white;
+	border:2px solid grey;
+	border-radius:3px;
+
+	margin-right:10px;
 `;
 
 export const Checkbox:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => {
-	const {label, children, color, isOn, onClick, ...other} = props;
+	const {label, children, color, isOn, disabled, className, onClick, style} = props;
+
 	return (
-	<StyledCheckbox color={color} isOn={isOn} className={isOn ? "isOn" : ""} onClick={onClick} {...other}>
-		<CheckerBox className="checkerbox" isOn={isOn} color={color} content={label || children}>
-			{isOn && <Icon className="icon" src={`./img/icons/general/check.svg`} size={16} color="white"/> }
-		</CheckerBox>
-		{label || children}
-	</StyledCheckbox>
-)};
+		<StyledCheckbox color={color} isOn={isOn} disabled={disabled} className={className} onClick={onClick} style={style} >
+			<CheckerBox className="ui-checkerbox">
+				{isOn && <Icon className="ui-icon" src={`./img/icons/general/check.svg`} size={16} color="white"/> }
+			</CheckerBox>
+			{label || children}
+		</StyledCheckbox>
+	)
+};

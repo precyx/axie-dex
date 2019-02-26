@@ -24,6 +24,17 @@ const StyledModernTab = styled(StyledToggleBase)<{isOn?:boolean, color:string}>`
 		`}
 	}
 	${props => props.isOn && ActiveModernTab}; 	
+
+	${props => props.disabled &&`
+		&&{
+			cursor:default;
+			color: rgba(0, 0, 0, 0.33);
+			border-radius: 3px 3px 0 0;
+			font-weight:normal;
+			background: #ececec;
+			border-bottom-color: #cacaca;
+		}
+	`}
 `;
 
 const ActiveModernTab = css<{color:string}>`
@@ -43,9 +54,10 @@ const ActiveModernTab = css<{color:string}>`
 `;
 
 export const ModernTab:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => {
-	const {label, children, color, isOn, onClick, ...other} = props;
+	const {label, children, color, isOn, disabled, className, onClick, style} = props;
+
 	return (
-		<StyledModernTab color={color} isOn={isOn} className={isOn ? "isOn" : ""} onClick={onClick} {...other}>
+		<StyledModernTab color={color} isOn={isOn} disabled={disabled} className={className} onClick={onClick} style={style}>
 			{label || children}
 		</StyledModernTab>
 	)

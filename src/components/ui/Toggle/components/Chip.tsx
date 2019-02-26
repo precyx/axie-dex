@@ -5,7 +5,7 @@ import {hexToRgbA} from "../../utils/color";
 
 import {ToggleBaseProps, StyledToggleBase} from "../ToggleBase";
 
-const StyledChip = styled(StyledToggleBase)<{isOn?:boolean, color:string}>`
+const StyledChip = styled(StyledToggleBase)<{isOn?:boolean, disabled?:boolean, color:string}>`
 	background: rgba(0,0,0,0.031);
 	border-radius: 50px;
 	border: 1px solid rgba(0,0,0,0.11);
@@ -14,8 +14,8 @@ const StyledChip = styled(StyledToggleBase)<{isOn?:boolean, color:string}>`
 		background: rgba(0, 0, 0, 0.1);
 	}
 
-	${props => props.isOn && `
-		&.isOn {
+	${props => props.isOn &&`
+		&& {
 			color: #313131;
 			font-weight: 500;
 			background: #d6d6d6;
@@ -27,12 +27,23 @@ const StyledChip = styled(StyledToggleBase)<{isOn?:boolean, color:string}>`
 			`}
 		}
 	`}
+
+	${props => props.disabled &&`
+		&&{
+			user-select:none;
+			cursor:default;
+			color: #cacaca;
+			background: #f7f7f7;
+		}	
+	`}
 `;
 
 export const Chip:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => {
-	const {label, children, color, isOn, onClick, ...other} = props;
+	const {label, children, color, isOn, disabled, className, onClick, style} = props;
+
 	return (
-	<StyledChip color={props.color} isOn={props.isOn} className={props.isOn ? "isOn" : ""} onClick={props.onClick} {...other}>
-		{props.label || props.children}
-	</StyledChip>
-)};
+		<StyledChip color={color} isOn={isOn} disabled={disabled} className={className} onClick={onClick} style={style}>
+			{label || children}
+		</StyledChip>
+	)
+};

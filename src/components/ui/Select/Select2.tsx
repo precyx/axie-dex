@@ -52,7 +52,7 @@ export class Select2 extends React.Component<Select2Props, Select2State> {
 	}
 
 	render(){
-		const {children, className, CustomComponent, onChange} = this.props;
+		const {children, className, CustomComponent} = this.props;
 
 		const elems = React.Children.map(children, (child:any, i:number)=>{
 			return React.cloneElement(child, {onToggle: this.onToggleOption, isOn: this.state.selectedOptions[child.props.value] || false});

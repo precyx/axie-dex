@@ -11,9 +11,9 @@ const StyledCustom = styled(StyledToggleBase)<{isOn?:boolean, color:string}>`
 `;
 
 export const Custom:React.FC<ToggleBaseProps> = (props:ToggleBaseProps) => {
-	const {label, children, CustomComponent, color, isOn, onClick, ...other} = props;
+	const {label, children, CustomComponent, color, isOn, onClick, style} = props;
 	return (
-	<CustomComponent color={color} isOn={isOn} className={isOn ? "isOn" : ""} onClick={onClick} {...other}>
+	<CustomComponent color={color} isOn={isOn} className={isOn ? "isOn" : ""} onClick={onClick} style={style}>
 		{children}
 	</CustomComponent>
 )};

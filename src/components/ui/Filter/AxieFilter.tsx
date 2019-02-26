@@ -207,6 +207,7 @@ const FlexWrap = styled.div`
 
 
 const Label = styled.div`
+	flex:1;
 	font-size: 14px;
 	font-weight: bold;
 	color: #8e8e8e;
@@ -214,10 +215,12 @@ const Label = styled.div`
 `;
 
 const Row = styled.div`
-		display:flex;
-		align-items:center;
-		border-bottom: 1px solid rgba(0,0,0,0.1);
-    padding: 15px 0;
+	display:flex;
+	align-items:center;
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+	padding: 10px 0;
+
+	.ui-select {flex:8; margin-bottom: -5px;}
 `;
 
 
@@ -261,6 +264,23 @@ const body_colors:{[key:string]:string} = {
 	dust: 			"60afce",
 
 	toxic: 			"43e27d",
+}
+
+const patterns:{[key:string]:string} = {
+	"000001" : "Fluffy",
+	"110001" : "Big Yak",
+	"100001" : "Wetdog",
+	"100010" : "Sumo",
+	"011110" : "Curly",
+	"011101" : "Spikey",
+	"000011" : "Trispike",
+}
+
+const tags:{[key:string]:string} = {
+	"Origin" : "Origin",
+	"MEO Corp" : "MEO I",
+	"MEO Corp II" : "MEO II",
+	"Agamogenesis" : "Agamogenesis",
 }
 
 
@@ -400,32 +420,39 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 								))}
 							</Select2>
 						</Row>
-						<RadioGroup enableDeselect={true} label="pattern" class={"radiogroup"} color="#a146ef" type="modern" options={[
-							{label: "fluffy", value: "000001"},
-							{label: "big yak", value: "110001"},
-							{label: "wetdog", value: "100001"},
-							{label: "sumo", value: "100010"},
-							{label: "curly", value: "011110"},
-							{label: "spikey", value: "011101"},
-							{label: "trispike", value: "000011"},
-						]} active_option={filter["pattern"] || "zero"} onChange={(option:string) => { this.onChangeFilter(FilterType.Pattern, option) }}>
-						</RadioGroup>
-						<RadioGroup enableDeselect={true} label="pureness" class={"radiogroup"} color="#a146ef" type="modern" options={[
-							{label: "1", value: "1"},
-							{label: "2", value: "2"},
-							{label: "3", value: "3"},
-							{label: "4", value: "4"},
-							{label: "5", value: "5"},
-							{label: "6", value: "6"},
-						]} active_option={filter["pureness"] || "zero"} onChange={(option:string) => { this.onChangeFilter(FilterType.Pureness, option) }}>
-						</RadioGroup>
-						<RadioGroup enableDeselect={true} label="tag" class={"radiogroup"} color="#a146ef" type="modern" options={[
-							{label: "Origin", value: "Origin"},
-							{label: "MEO I", value: "MEO Corp"},
-							{label: "MEO II", value: "MEO Corp II"},
-							{label: "Agamogenesis", value: "Agamogenesis"},
-						]} active_option={filter["title"] || "zero"} onChange={(option:string) => { this.onChangeFilter(FilterType.Title, option) }}>
-						</RadioGroup>
+
+						<Row>
+							<Label>Pattern</Label>
+							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["pattern"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Pattern, Object.keys(options)[0] || "") } }>
+								{Object.keys(patterns).map((patternKey, i) => (
+									<Toggle key={i} value={patternKey} color="#ff00aa" type={ToggleButtonType.Modern} style={{marginRight: "5px", marginBottom: "5px"}}>
+										{patterns[patternKey]}
+									</Toggle>
+								))}
+							</Select2>
+						</Row>
+
+						<Row>
+							<Label>Pureness</Label>
+							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["pureness"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Pureness, Object.keys(options)[0] || "") } }>
+								{["1","2","3","4","5","6"].map((pureness, i) => (
+									<Toggle key={i} value={pureness} color="#ff00aa" type={ToggleButtonType.Modern} style={{marginRight: "5px", marginBottom: "5px"}}>
+										{pureness}
+									</Toggle>
+								))}
+							</Select2>
+						</Row>
+
+						<Row>
+							<Label>Tag</Label>
+							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["title"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Title, Object.keys(options)[0] || "") } }>
+								{Object.keys(tags).map((tagKey, i) => (
+									<Toggle key={i} value={tagKey} color="#ff00aa" type={ToggleButtonType.Modern} style={{marginRight: "5px", marginBottom: "5px"}}>
+										{tags[tagKey]}
+									</Toggle>
+								))}
+							</Select2>
+						</Row>
 
 						<Row>
 							<Label>Auction</Label>
