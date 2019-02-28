@@ -280,7 +280,22 @@ const List = styled.div`
 	align-items:end;
 `;
 
+const Wrap = styled.div`
+	display:flex;
+	flex-flow:wrap;
+	align-items:end;
+`;
 
+const Textarea = styled.textarea`
+	outline:none;
+	padding:10px;
+	border-radius: 6px;
+  border-color: #d8d8d8;
+
+	&:focus{
+		border: 1px solid #338aea;
+	}
+`;
 
 /**
  *Class
@@ -299,6 +314,9 @@ class Comps extends React.PureComponent{
 				<StyledComps>
 
 
+
+
+
 					<Container>
 					<h1>Where is the Bear?</h1>
 					</Container>
@@ -308,6 +326,11 @@ class Comps extends React.PureComponent{
 					</Container>
 
 
+				<Section>
+					<Container>
+							<Textarea rows="5" cols="33" spellcheck="false"/>
+					</Container>
+				</Section>
 
 				<Section>
 					<Container>
@@ -317,17 +340,17 @@ class Comps extends React.PureComponent{
 							<Column w={1}>
 								<h3>single select</h3>
 								<Row>
-									<Select2 multiselect={false} options={["kiwi"]} onChange={console.log}>
+									<Select2 CustomComponent={Wrap} multiselect={false} options={["kiwi"]} onChange={console.log}>
 										<Toggle value="banana" type="radio" color="#00fa77" >Banana</Toggle>
 										<Toggle disabled value="apple" type="radio" color="#ff00aa" >Apple</Toggle>
-										<Toggle disabled isOn={true} value="kiwi" type="radio" color="#00ad55" >Kiwi</Toggle>
+										<Toggle disabled value="kiwi" type="radio" color="#00ad55" >Kiwi</Toggle>
 									</Select2>
 								</Row>
 							</Column>
 							<Column w={1}>
 							<h3>single select (deselect)</h3>
 							<Row>
-								<Select2 multiselect={false} deselect={true} onChange={console.log} options={["apple"]}>
+								<Select2 CustomComponent={Wrap} multiselect={false} deselect={true} onChange={console.log} options={["apple"]}>
 									<Toggle value="banana" type="radio" color="#00fa77" >Banana</Toggle>
 									<Toggle value="apple" type="radio" color="#ff00aa" >Apple</Toggle>
 									<Toggle value="kiwi" type="radio" color="#00ad55" >Kiwi</Toggle>
@@ -336,7 +359,7 @@ class Comps extends React.PureComponent{
 							</Column>
 							<Column w={1}>
 								<h3>multiselect</h3>
-								<Select2 multiselect={true} options={["kiwi", "banana"]}>
+								<Select2 CustomComponent={Wrap} multiselect={true} options={["kiwi", "banana"]}>
 									<Toggle value="banana" type="checkbox" color="#00fa77" >Banana</Toggle>
 									<Toggle value="apple" type="checkbox" color="#00fa77" >Apple</Toggle>
 									<Toggle value="kiwi" type="checkbox" color="#00ad55" >Kiwi</Toggle>
@@ -344,12 +367,37 @@ class Comps extends React.PureComponent{
 							</Column>
 							</Columns>
 
+
 							<h3>custom</h3>
 							<Columns>
 								<Column w={1}>
-									<Select2 deselect={true}>
+									<Select2 CustomComponent={List}>
+										<Toggle color="#bb99aa" type={ToggleButtonType.MaterialSwitch} value="1">one</Toggle>
+										<Toggle color="#55aadd" type={ToggleButtonType.MaterialSwitch} value="2">two</Toggle>
+										<Toggle color="#99ad01" type={ToggleButtonType.MaterialSwitch} value="3">three</Toggle>
+										<Toggle color="#0bfda9" type={ToggleButtonType.MaterialSwitch} value="4">four</Toggle>
+									</Select2>
+								</Column>
+								<Column w={1}>
+									<Select2 CustomComponent={List} options={["1", "3", "4"]}>
+										<Toggle color="#bb99aa" type={ToggleButtonType.iOSSwitch} value="1">one</Toggle>
+										<Toggle color="#55aadd" type={ToggleButtonType.iOSSwitch} value="2">two</Toggle>
+										<Toggle color="#99ad01" type={ToggleButtonType.iOSSwitch} value="3">three</Toggle>
+										<Toggle color="#0bfda9" type={ToggleButtonType.iOSSwitch} value="4">four</Toggle>
+									</Select2>
+								</Column>
+								<Column w={1}>
+									<Select2 CustomComponent={List}>
+										<Toggle color="#bb99aa" type={ToggleButtonType.FabricSwitch} value="1">one</Toggle>
+										<Toggle color="#55aadd" type={ToggleButtonType.FabricSwitch} value="2">two</Toggle>
+										<Toggle color="#99ad01" type={ToggleButtonType.FabricSwitch} value="3">three</Toggle>
+										<Toggle color="#0bfda9" type={ToggleButtonType.FabricSwitch} value="4">four</Toggle>
+									</Select2>
+								</Column>
+								<Column w={1}>
+									<Select2 deselect={true} CustomComponent={Wrap}>
 										{rainbow.map((color, i) => 
-											<Toggle key={i} value={"color"+i} CustomComponent={ColorDrop} color={color} style={{marginRight: "5px"}}> </Toggle>
+											<Toggle key={i} value={"color"+i} CustomComponent={ColorDrop} color={color} style={{marginRight: "5px", marginBottom: "5px"}}> </Toggle>
 											)}
 									</Select2>
 								</Column>
