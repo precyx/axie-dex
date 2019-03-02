@@ -35,6 +35,10 @@ const StyledRadio = styled(StyledToggleBase)<{isOn?:boolean, disabled?:boolean, 
 		&& .ui-radiobutton { 
 			border-color:#b5b5b5;
 			background: white;
+
+			.ui-circle {
+				background:#b5b5b5;
+			}
 		}
 	`}
 `;

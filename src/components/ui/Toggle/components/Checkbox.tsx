@@ -36,10 +36,18 @@ const StyledCheckbox = styled(StyledToggleBase)<{isOn?:boolean, disabled?:boolea
 		user-select:none;
 		cursor:default;
 		color:#c1c1c1;
+
 		&& .ui-checkerbox { 
 			border-color:#b5b5b5;
-			background: white;
 		}
+
+		${props.isOn &&`
+			&& .ui-checkerbox { 
+				border-color:#b5b5b5;
+				background: #b5b5b5;
+			}
+		`}	
+		
 	`}
 `;
 

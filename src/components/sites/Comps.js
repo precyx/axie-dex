@@ -7,6 +7,7 @@ import RadioGroup from "../ui/RadioGroup/RadioGroup";
 
 import {ToggleBaseProps, StyledToggleBase} from "../ui/Toggle/ToggleBase";
 import {Toggle, ToggleButtonType} from "../ui/Toggle/Toggle";
+import { Toggle2} from "../ui/Toggle/Toggle2";
 
 import {Select2} from "../ui/Select/Select2";
 import {SimpleSelect} from "../ui/Select/SimpleSelect";
@@ -305,7 +306,11 @@ const Textarea = styled.textarea`
  */
 class Comps extends React.PureComponent{
 
-
+	componentDidMount() {
+		console.log(React.version);
+		
+	}
+	
 
 	render(){
 
@@ -325,6 +330,12 @@ class Comps extends React.PureComponent{
 						<h2>And the Honey</h2>
 					</Container>
 
+
+				<Section>
+					<Container>
+					<Toggle2 />
+					</Container>
+				</Section>
 
 				<Section>
 					<Container>

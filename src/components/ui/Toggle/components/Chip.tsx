@@ -35,6 +35,14 @@ const StyledChip = styled(StyledToggleBase)<{isOn?:boolean, disabled?:boolean, c
 			color: #cacaca;
 			background: #f7f7f7;
 		}	
+
+		${props.isOn && `
+			&& {
+				background: #e8e8e8;
+				color:#b7b7b7;
+				border:1px solid #cacaca;
+			}
+		`}
 	`}
 `;
 

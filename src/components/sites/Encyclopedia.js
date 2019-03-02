@@ -105,9 +105,18 @@ class Encyclopedia extends Component {
 		if(this.validFilter(filter["owner"])) query += `&owner=${filter["owner"].toLowerCase()}`;
 
 		Object.keys(geneFilter).forEach(geneKey => {
-			const partKey = geneFilter[geneKey];
+			const partKey = geneFilter[geneKey]["part"];
 			console.log("kl", partKey);
 			if(this.validFilter(partKey)) query+= `&parts.${geneKey}.id=${partKey}`;
+			const geneRange = geneFilter[geneKey]["gene_range"];
+			if(this.validFilter(geneRange) && this.validFilter(partKey)) {
+				geneRange.map(geneVal => {
+					query+= `&gene_detail.${geneKey}.${geneVal}.id=${partKey}`;
+				})
+			}
+			/*if(this.validFilter(partKey)){
+
+			}*/
 		})
 
 		if(sorting) {

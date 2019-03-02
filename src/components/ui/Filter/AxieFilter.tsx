@@ -67,45 +67,28 @@ enum PartType {
   Tail = "tail",
 }
 
-
 interface Filter {
   [filtername:string] : string,
 }
 
 interface GeneFilter {
-  [filtername:string] : string
+  [partTypeKey:string] : {
+		gene_range?: string[],
+		part?:string,
+	}
 }
-
-/*
-interface Filter {
-  color:string,
-  class:string,
-  stage:string,
-  pattern:string,
-  pureness:string,
-  tag:string,
-}
-
-interface GeneFilter {
-  eyes:string,
-  ears:string,
-  mouth:string,
-  horn:string,
-  back:string,
-  tail:string,
-}*/
 
 interface AxieFilterProps {
-  onLoadData?(filter:Filter, geneFilter:Filter, sorting:string):Function,
+  onLoadData?(filter:Filter, geneFilter:GeneFilter, sorting:string):Function,
   onChangeFilter?(filter:Filter):any,
-  onChangeGeneFilter?(filter:Filter):any,
+  onChangeGeneFilter?(filter:GeneFilter):any,
   onChangeSorting?(sorting:string):any,
 }
 
 interface AxieFilterState{
   viewMode:FilterViewMode,
   filter:Filter,
-  geneFilter:Filter,
+  geneFilter:GeneFilter,
   sorting: string,
   address: string,
 }
@@ -223,6 +206,36 @@ const Row = styled.div`
 	.ui-select {flex:8; margin-bottom: -5px;}
 `;
 
+const FlexCenter = styled.div`
+	display:flex;
+	align-items:center;
+`;
+
+const GeneVal = styled.div`
+	background: #a146ef;
+	margin-left: 5px;
+	color: white;
+	width: 25px;
+	height: 18px;
+	display: flex;
+	border-radius: 25px;
+	font-size: 12px;
+	align-items: center;
+	justify-content: center;
+`;
+
+const StyledExpansionPanel = styled.div`
+	
+	color:grey;
+	&:hover .panel-label .label {
+		color:#333;
+	}
+	.panel-closed-content {
+		display:flex;
+		align-items:center;
+	}
+`;
+
 
 const body_colors:{[key:string]:string} = {
 	white: 			"ffffff",
@@ -297,7 +310,6 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
     }
   }
 
-  
 	onChangeFilter = (filterType:FilterType, option:string) =>{
 		console.log("change filter", filterType, option);
 		let newFilter = Object.assign({}, this.state.filter);
@@ -311,11 +323,28 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
     }) 
 	}
 
-	onChangeGeneFilter = (partType:PartType, option:string) => {
+	onChangeGeneFilter = (partType:PartType, part:string) => {
+		console.log("yui", partType, part);
 		
-		let newGeneFilter = Object.assign({}, this.state.geneFilter);
-		if(newGeneFilter[partType] && newGeneFilter[partType] == option) delete newGeneFilter[partType];
-		else newGeneFilter[partType] = option;
+		let newGeneFilter:GeneFilter = Object.assign({}, this.state.geneFilter);
+		if(!newGeneFilter[partType]) newGeneFilter[partType] = {};
+
+		if(!part) newGeneFilter[partType].part = "";
+		else newGeneFilter[partType].part = part;
+
+		this.setState({
+			geneFilter: newGeneFilter,
+		}, () => {
+      console.log("change gene filter", this.state.geneFilter);
+      if(this.props.onChangeGeneFilter) this.props.onChangeGeneFilter(this.state.geneFilter);
+		})
+	}
+
+	onChangeGeneRecessiveOptions = (partType:PartType, recessive_options:string[]) =>{
+
+		let newGeneFilter:GeneFilter = Object.assign({}, this.state.geneFilter);
+		if(!newGeneFilter[partType]) newGeneFilter[partType] = {};
+		newGeneFilter[partType]["gene_range"] = recessive_options;
 
 		this.setState({
 			geneFilter: newGeneFilter,
@@ -356,12 +385,12 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 		const {viewMode, filter, geneFilter, sorting} = this.state;
 
 		//const axieBodyParts = bodyparts.map(part => ({label: part.name, value: part.id}));
-		const bodyPartsByType:{[key:string]:any} = {};
+		const bodyPartsByType:{[partTypeKey:string]:Array<{label:string, value:string}> } = {};
 		["eyes", "ears", "mouth", "horn", "back", "tail"].forEach(partType => {
 			bodyPartsByType[partType] = bodyparts
 				.filter(part => part.type == partType)
 				.map(part => ({label: part.name, value: part.id}));
-		})
+			})
 		console.log("xd", bodyPartsByType);
 		return (
 
@@ -381,15 +410,11 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 						<Toggle value="price_asc" label="Lowest Price" CustomComponent={StyledOption}/>
 						<Toggle value="price_desc" label="Highest Price" CustomComponent={StyledOption}/>
 					</SimpleSelect>
-
 				</div>
 
 				{viewMode == FilterViewMode.Axie && (
 					<React.Fragment>
 
-
-
-						 
 						<Row>
 							<Label>Color</Label>
 							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["color"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
@@ -475,37 +500,59 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 					<React.Fragment>
 						{/*<Select multiple type="chip" color="#b8a9b7" options={axieBodyParts} active={geneFilter} onChange={this.onChangeGeneFilter }/>*/}
 
-						{Object.keys(bodyPartsByType).map((partTypeKey, i) => {
+						{Object.keys(bodyPartsByType).map((partTypeKey:string, i:number) => {
 							return (
 									<div className="partGroup" key={i}>
 
-										<ExpansionPanel 
+										<ExpansionPanel
+											CustomComponent={StyledExpansionPanel}
 											label={
 												<React.Fragment>
-													<div className="label">{partTypeKey} <p className="count">{bodyPartsByType[partTypeKey].length}</p></div>
-													
+													<div className="label">{partTypeKey} <p className="count">{Object.keys(bodyPartsByType[partTypeKey]).length}</p></div>
 												</React.Fragment>
 											} 
 											closedContent={
 												<>
-													{geneFilter[partTypeKey] && 
-														<RadioButton type="chip" active={true}>
-															{geneFilter[partTypeKey]}
-														</RadioButton> 
+
+													{geneFilter[partTypeKey] && geneFilter[partTypeKey]["part"] && 
+														<Toggle disabled type={ToggleButtonType.Chip} isOn={true}>
+
+															{geneFilter[partTypeKey]["part"]}
+
+															{geneFilter[partTypeKey] &&
+																geneFilter[partTypeKey]["gene_range"] &&
+																geneFilter[partTypeKey]["gene_range"]!.map(geneVal => 
+																<GeneVal>{geneVal.toUpperCase()}</GeneVal>
+															)}
+
+														</Toggle> 
 													}
 												</>
 											}
 											content={
-												<div className="parts">
-													<RadioGroup 
-														enableDeselect={true}
-														type="chip"
-														color="#a146ef"
-														options={bodyPartsByType[partTypeKey]} 
-														active_option={geneFilter[partTypeKey] || ""} 
-														onChange={(option:string) => {this.onChangeGeneFilter(partTypeKey as PartType, option)} }
-													/>
+												<>
+												<div className="recessive_options">
+													<Select2  multiselect={true} options={ geneFilter[partTypeKey] && geneFilter[partTypeKey]["gene_range"] || [] }
+														onChange={ (options:{[key:string]:string} ) => {this.onChangeGeneRecessiveOptions(partTypeKey as PartType, Object.keys(options)) } }
+													>
+														<Toggle value="d" type={ToggleButtonType.Checkbox} color="#ff00aa">D</Toggle>
+														<Toggle value="r1" type={ToggleButtonType.Checkbox} color="#ff00aa">R1</Toggle>
+														<Toggle value="r2" type={ToggleButtonType.Checkbox} color="#ff00aa">R2</Toggle>
+													</Select2>
 												</div>
+												<div className="parts">
+													<Select2 options={[ geneFilter[partTypeKey] && geneFilter[partTypeKey]["part"] || "" ]} CustomComponent={FlexWrap} deselect={true} 
+														onChange={ (options:{} ) => {this.onChangeGeneFilter(partTypeKey as PartType, Object.keys(options)[0] )} }
+													>
+														{bodyPartsByType[partTypeKey].map(partKey => (
+															<Toggle color={"#ff00aa"} type={ToggleButtonType.Chip} value={partKey.value} style={ {marginRight: "5px", marginBottom: "5px"} }>
+																{partKey.label}
+															</Toggle>
+														))}
+													</Select2>
+												</div>
+
+												</>
 											}
 										/>
 										

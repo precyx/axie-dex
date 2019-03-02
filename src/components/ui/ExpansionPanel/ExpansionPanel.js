@@ -23,13 +23,13 @@ class ExpansionPanel extends React.PureComponent {
 	}
 
 	render() {
-		const label = this.props.label;
-		const content = this.props.content;
-		const closedContent = this.props.closedContent;
-		const open = this.state.open;
+		const {label, content, closedContent} = this.props;
+		const {open} = this.state;
+
+		const Custom = this.props.CustomComponent || StyledExpansionPanel;
 
 		return (
-			<StyledExpansionPanel>
+			<Custom>
 				<div className="panel-label" onClick={this.handleClickLabel}>
 					<div className="label-text">{label}</div>
 					{!open &&
@@ -44,7 +44,7 @@ class ExpansionPanel extends React.PureComponent {
 						{content}
 					</div>
 				}
-			</StyledExpansionPanel>
+			</Custom>
 		);
 	}
 }
