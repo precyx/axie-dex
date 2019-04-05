@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { ExpSyncContract } from '../data/contracts/ExpSyncContract';
 import Web3 from "web3";
+import { consolidateStreamedStyles } from 'styled-components';
 
 /*
     A list of API URL generators for the Axie Infinity Website
@@ -42,8 +43,9 @@ export const AXIE_DATA = {
     getAllAxiesByAddress(address){
         return AXIE_DATA.getAxiesByAddress(address).then((data)=>{
             //var totalAxies = data.totalAxies;
-            var totalPages = data.totalPages;
-            var axiesPerPage = 12;
+            var totalAxies = data.totalAxies;
+            var axiesPerPage = data.axies.length;
+            var totalPages = Math.floor(totalAxies / axiesPerPage);
             var axies_cache = [];
             //
             var promises = [];
@@ -147,9 +149,10 @@ export const AXIE_DATA_V1 = {
      */
     getAllAxiesByAddress(address, additionalParams, callback){
         return AXIE_DATA.getAxiesByAddress(address, 0, additionalParams).then((data)=>{
-            //var totalAxies = data.totalAxies;
-            var totalPages = data.totalPages;
-            var axiesPerPage = 12;
+            console.log("d", data);
+            var totalAxies = data.totalAxies;
+            var axiesPerPage = data.axies.length;
+            var totalPages = Math.floor(totalAxies/axiesPerPage);
             var axies_cache = [];
             if(callback) callback({loaded: 0, total: totalPages * axiesPerPage});
             //
@@ -236,7 +239,14 @@ export const AXIE_DATA_V1 = {
         return axios.get(url).then(data=>{
             return data.data;
         });
-    }
+    },
+    getTeamById(teamID){
+        if(!teamID) throw new Error("teamID required");
+        const url = `https://api.axieinfinity.com/v1/battle/teams/${teamID}`;
+        return axios.get(url).then(data=>{
+            return data.data;
+        })
+    },
 }
 
 
@@ -266,6 +276,7 @@ export const AXIE_DATA_TRANSFORM = {
         axies_v1.forEach(axie_v1 => {
             axies_v0.forEach(axie_v0 => {
                 if(axie_v1.id == axie_v0.id) {
+                    console.log("vvv", axie_v1, axie_v0);
                     axie_v1["exp"]            = axie_v0.exp
                     axie_v1["expForBreeding"] = axie_v0.expForBreeding
                 }

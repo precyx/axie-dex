@@ -56,6 +56,8 @@ enum FilterType {
   Title = "title",
   Auction = "auction",
   Owner = "owner",
+  Breeding = "breeding",
+  Mystics = "mystics",
 }
 
 enum PartType {
@@ -128,7 +130,7 @@ const axieClasses = [
  "beast", "plant", "aquatic", "reptile", "bug", "bird", "hidden_1", "hidden_2", "hidden_3"
 ];
 
-const axieClassColors:{[key:string]:string} = {
+const axieClassColors:{[classType:string]:string} = {
 	"aquatic"   : "#00B8CF",
 	"beast"     : "#FFB70F",
 	"plant"     : "#6BBF00",
@@ -385,11 +387,16 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 		const {viewMode, filter, geneFilter, sorting} = this.state;
 
 		//const axieBodyParts = bodyparts.map(part => ({label: part.name, value: part.id}));
-		const bodyPartsByType:{[partTypeKey:string]:Array<{label:string, value:string}> } = {};
+		const bodyPartsByType:{[partTypeKey:string]:Array<{label:string, value:string, mystic:boolean, class:string}> } = {};
 		["eyes", "ears", "mouth", "horn", "back", "tail"].forEach(partType => {
 			bodyPartsByType[partType] = bodyparts
 				.filter(part => part.type == partType)
-				.map(part => ({label: part.name, value: part.id}));
+				.map(part => ({
+					label: part.name, 
+					value: part.id,
+					mystic: part.mystic,
+					class: part.class,
+				}));
 			})
 		console.log("xd", bodyPartsByType);
 		return (
@@ -415,14 +422,7 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 				{viewMode == FilterViewMode.Axie && (
 					<React.Fragment>
 
-						<Row>
-							<Label>Color</Label>
-							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["color"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
-								{Object.keys(body_colors).map(colorKey => 
-									<Toggle value={body_colors[colorKey]} CustomComponent={ColorDrop} color={"#"+body_colors[colorKey]} style={{marginRight: "5px", marginBottom: "5px"}}/>
-									)}
-							</Select2>
-						</Row>
+
 						
 						<Row>
 							<Label>Class</Label>
@@ -467,6 +467,16 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 								))}
 							</Select2>
 						</Row>
+						<Row>
+							<Label>Mystics</Label>
+							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["mystics"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Mystics, Object.keys(options)[0] || "") } }>
+								{["1","2","3","4","5","6"].map((mystics, i) => (
+									<Toggle key={i} value={mystics} color="#ff00aa" type={ToggleButtonType.Modern} style={{marginRight: "5px", marginBottom: "5px"}}>
+										{mystics}
+									</Toggle>
+								))}
+							</Select2>
+						</Row>
 
 						<Row>
 							<Label>Tag</Label>
@@ -487,6 +497,26 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 										{auctionType}
 									</Toggle>
 								))}
+							</Select2>
+						</Row>
+
+						<Row>
+							<Label>Breeding</Label>
+							<Select2 deselect={true} options={[ filter["breeding"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Breeding, Object.keys(options)[0] || "") } }>
+								{["breedable"].map(breedingType => (
+									<Toggle value={breedingType} type={ToggleButtonType.Checkbox} color={"#ff00aa"} style={{marginRight: "5px", marginBottom: "5px"}}>
+										{breedingType}
+									</Toggle>
+								))}
+							</Select2>
+						</Row>
+
+						<Row>
+							<Label>Color</Label>
+							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["color"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
+								{Object.keys(body_colors).map(colorKey => 
+									<Toggle value={body_colors[colorKey]} CustomComponent={ColorDrop} color={"#"+body_colors[colorKey]} style={{marginRight: "5px", marginBottom: "5px"}}/>
+									)}
 							</Select2>
 						</Row>
 						
@@ -513,7 +543,6 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 											} 
 											closedContent={
 												<>
-
 													{geneFilter[partTypeKey] && geneFilter[partTypeKey]["part"] && 
 														<Toggle disabled type={ToggleButtonType.Chip} isOn={true}>
 
@@ -544,11 +573,13 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 													<Select2 options={[ geneFilter[partTypeKey] && geneFilter[partTypeKey]["part"] || "" ]} CustomComponent={FlexWrap} deselect={true} 
 														onChange={ (options:{} ) => {this.onChangeGeneFilter(partTypeKey as PartType, Object.keys(options)[0] )} }
 													>
-														{bodyPartsByType[partTypeKey].map(partKey => (
-															<Toggle color={"#ff00aa"} type={ToggleButtonType.Chip} value={partKey.value} style={ {marginRight: "5px", marginBottom: "5px"} }>
+														{bodyPartsByType[partTypeKey]
+															.map(partKey => (
+																<Toggle color={axieClassColors[partKey.class]} type={ToggleButtonType.Chip} value={partKey.value} style={ {marginRight: "5px", marginBottom: "5px"} }>
 																{partKey.label}
 															</Toggle>
 														))}
+
 													</Select2>
 												</div>
 

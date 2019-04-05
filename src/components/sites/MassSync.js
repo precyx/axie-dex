@@ -12,6 +12,7 @@ import Button from "../ui/Button";
 //import Axie from "../Axie/Axie/Axie";
 import {AXIE_DATA_V1, AXIE_DATA_TRANSFORM} from "../../services/axie-data-service";
 import {ExpSyncContract} from "../../data/contracts/ExpSyncContract";
+import {breedingCosts} from "../../data/axie-data";
 //
 import axios from "axios";
 //
@@ -94,8 +95,6 @@ class MassSync extends React.PureComponent{
 		for(let i=0; i < rows; i++){
 			axieGrid.push(axiesClone.splice(0, columns));
 		}
-		console.log("Axies", axies);
-		console.log("Axie Grid", axieGrid);
 		if(axies.length == 0){
 			axieGrid = null;
 		}
@@ -131,7 +130,6 @@ class MassSync extends React.PureComponent{
 					this.setState({
 						status: {code:"loading-complete", msg:""}
 					})
-					console.log("axieData2", axies2);
 				})
 			});
 			if(initialLoad){
@@ -158,7 +156,6 @@ class MassSync extends React.PureComponent{
 				status: {code: "loading", msg: "loaded: " + progress.loaded + " / " + progress.total }
 			})
 		})).then((axies)=>{
-			console.log("axies loaded", axies);
 			this.setState({ status: {code:"loading", msg:"Loading Axies V1"} });
 			// load axies V1
 			var ids = axies.map(axie => axie.id);
@@ -181,15 +178,18 @@ class MassSync extends React.PureComponent{
 					})
 				})
 			});
-		})
+		});
 	}
 
 	selectBreedableAxies(){
+		console.log("kKKKK");
 		let selectedAxies = {};
 		this.state.axies.forEach(axie => {
-			//console.log(axie.exp)
-			let hasEnoughXpPendingToBreed = (axie.pendingExp - axie.pendingExp2 + axie.exp) > axie.expForBreeding;
-			let hasEnoughXpAlreadyToBreed = axie.exp > axie.expForBreeding;
+			const expForBreeding = breedingCosts[axie.breedCount+1];
+			let hasEnoughXpPendingToBreed = (axie.pendingExp - axie.pendingExp2 + axie.exp) > expForBreeding;
+			let hasEnoughXpAlreadyToBreed = axie.exp > expForBreeding;
+
+			console.log("ko", expForBreeding,hasEnoughXpPendingToBreed, hasEnoughXpAlreadyToBreed);
 			//
 			if(hasEnoughXpPendingToBreed && !hasEnoughXpAlreadyToBreed) selectedAxies[axie.id] = axie;
 		});
@@ -261,7 +261,6 @@ class MassSync extends React.PureComponent{
 		window.web3.eth.getAccounts((err, accounts)=>{
 			let sender = accounts[0];
 			AXIE_WEB3.send(this.expSyncContract, "checkpointForMulti", params, sender).then((data)=>{
-				//console.log("SUPPP", data)
 				this.setState({
 					syncTxHash: data,
 					showSuccessBox: true,
@@ -327,8 +326,6 @@ class MassSync extends React.PureComponent{
 		const axie = this.state.axieGrid[rowIndex][columnIndex];
 		if(!axie) return;
 		const isFirst = (columnIndex == 0 && rowIndex == 0) ? true : false;
-		console.log("AXX", isFirst);
-		//console.log("AXX penXp2", axie.pendingExp2);
 		let realPendingExp = (axie.pendingExp2||0) - (axie.pendingExp||0);
 		const axieFeatures = this.state.axieFeatures;
 		return (
@@ -392,8 +389,6 @@ class MassSync extends React.PureComponent{
 				<p className="text">{status.msg}</p>
 			</div>
 		);
-
-		console.log("dom ref", this.firstAxieDomRef.current);
 
 		return (
 			<WindowScroller>

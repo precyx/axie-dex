@@ -103,17 +103,19 @@ class Encyclopedia extends Component {
 		if(this.validFilter(filter["title"])) query += `&title=${filter["title"]}`;
 		if(this.validFilter(filter["auction"])) query += `&auction.type=${filter["auction"]}`;
 		if(this.validFilter(filter["owner"])) query += `&owner=${filter["owner"].toLowerCase()}`;
+		if(this.validFilter(filter["breeding"])) query += `&canBreed=true`;
+		if(this.validFilter(filter["mystics"])) query += `&mysticCount=${filter["mystics"]}`;
 
 		Object.keys(geneFilter).forEach(geneKey => {
 			const partKey = geneFilter[geneKey]["part"];
 			console.log("kl", partKey);
-			if(this.validFilter(partKey)) query+= `&parts.${geneKey}.id=${partKey}`;
 			const geneRange = geneFilter[geneKey]["gene_range"];
 			if(this.validFilter(geneRange) && this.validFilter(partKey)) {
 				geneRange.map(geneVal => {
 					query+= `&gene_detail.${geneKey}.${geneVal}.id=${partKey}`;
 				})
 			}
+			if(this.validFilter(partKey)) query+= `&parts.${geneKey}.id=${partKey}`;
 			/*if(this.validFilter(partKey)){
 
 			}*/
