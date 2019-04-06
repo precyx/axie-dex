@@ -17,7 +17,7 @@ import styled, {css} from "styled-components";
 
 
 const StyledAxieFilter:any = styled.div`
-  background: white; z-index:100; width:410px; padding: 20px; box-shadow: 0 2px 2px #0000002e; border-radius: 10px; position:absolute; left:0; top:20px;}
+  background: white; z-index:100; width:410px; padding: 20px; box-shadow: 0 2px 2px #0000002e; border-radius: 10px; position:absolute; left:15px; top:20px;}
 	.headbar {display:flex; justify-content:space-between; border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
 	.headbar > .radiogroup {border:none;}
 	.radiogroup { flex-flow: wrap; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 8px 0; }

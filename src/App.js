@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 import {axieTraits} from "./data/axie-traits";
 import {getMinMaxStatsOfPartsByType} from "./services/axie-part-and-stats-transform";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 // own components
 import AxieDexLogo from "./components/AxieDexLogo";
 // router
@@ -24,13 +24,83 @@ import Lunacia from './components/sites/Lunacia';
 import Teams from './components/sites/Teams';
 
 
+import {Toggle} from "./components/ui/Toggle/Toggle";
+import {MenuToggle} from "./components/ui/MenuToggle";
+
 const StyledApp = styled.div`
-  .logo {display: flex; align-items: center; margin-right:30px;}
-  .header {width:100%; height:50px; background: #f7f7f7; margin-bottom:20px;}
-  .header .center {padding:0 35px; height:100%; display:flex; }
-  .header a { display: flex; align-items: center; margin-right:10px; color: #5d5d5d; font-size:14px; padding:0 15px; }
-  .header a.selected { border-bottom:2px solid #a146ef; color:#a146ef; font-weight:bold; }
 `;
+
+const StyledLogo = styled.div`
+  display: flex; 
+  align-items: center; 
+  margin-right:0;
+`;
+
+const StyledHeadbar = styled.div`
+
+  display:flex;
+  padding:0 15px;
+  width:100%; 
+  height:50px; 
+  background: white; 
+  margin-bottom:20px;
+  box-shadow:0 2px 2px black;
+  box-shadow: 0 0px 4px rgba(0, 0, 0, 0.2);
+
+  .center {
+    padding:0 35px; 
+    height:100%; 
+    display:flex; 
+    flex: 1;
+    justify-content: center;
+  }
+`;
+
+const NavLinkBaseStyle = css`
+  position:relative;
+  display: flex; 
+  align-items: center; 
+  color: #5d5d5d; 
+  font-size:14px; 
+  padding:0 15px;
+  &:hover {
+    text-decoration:none;
+    background:#ececec;
+  }
+  &.selected { 
+    border-bottom:2px solid #a146ef; 
+    color:#a146ef; 
+    font-weight:bold; 
+  }
+`;
+
+const StyledNavLink = styled(NavLink)`
+  ${NavLinkBaseStyle}
+`;
+const StyledMenuToggler = styled(MenuToggle)`
+  ${NavLinkBaseStyle}
+  cursor:pointer;
+`;
+const MenuOption = styled(NavLink)`
+  ${NavLinkBaseStyle}
+  padding: 8px 10px;
+`;
+
+const Menu = styled.div`
+  position: absolute;
+  z-index:1000;
+  left: 0px;
+  top: 50px;
+  min-width:150px;
+  background: white;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.18);
+`;
+
+
+
+
+
+
 
 class App extends Component {
   constructor(props){
@@ -42,24 +112,38 @@ class App extends Component {
     return (
       <Router>
         <StyledApp>
-          <div className="header">
-            <div className="center">
+          <StyledHeadbar className="header">
+          <StyledLogo>
               <AxieDexLogo className="logo" logo={"./img/logo/ad_logo.svg"}> </AxieDexLogo>
-              <NavLink activeClassName="selected" to="/teambuilder">Teambuilder</NavLink>
-              <NavLink activeClassName="selected" to="/dex">Dex</NavLink>
-              <NavLink activeClassName="selected" to="/market">Encyclopedia</NavLink>
-              <NavLink activeClassName="selected" to="/profile">Profile</NavLink>
-              <NavLink activeClassName="selected" to="/body-shapes">Bodyshapes</NavLink>
-              <NavLink activeClassName="selected" to="/xmas-skins">Xmas Skins</NavLink>
-              <NavLink activeClassName="selected" to="/part-tierlist">Part Tierlist</NavLink>
-              <NavLink activeClassName="selected" to="/mass-sync">Mass Sync</NavLink>
-              <NavLink activeClassName="selected" to="/comps">Comps</NavLink>
-              <NavLink activeClassName="selected" to="/contracts">Contracts</NavLink>
-              <NavLink activeClassName="selected" to="/lunacia-map">Lunacia</NavLink>
-              <NavLink activeClassName="selected" to="/teams">Teams</NavLink>
-              {/* <NavLink activeClassName="selected" to="/zr">ZR</NavLink> */}
+          </StyledLogo>
+            <div className="center">
+
+              <StyledNavLink activeClassName="selected" to="/market">Dex</StyledNavLink>
+              <StyledNavLink activeClassName="selected" to="/mass-sync">Mass Sync</StyledNavLink>
+              <StyledNavLink activeClassName="selected" to="/part-tierlist">Battle Tierlist</StyledNavLink>
+              <StyledNavLink activeClassName="selected" to="/teambuilder">Teambuilder</StyledNavLink>
+              <StyledNavLink activeClassName="selected" to="/lunacia-map">Lunacia</StyledNavLink>
+              
+              <StyledMenuToggler render={isOn => (
+                <>
+                  More
+                {isOn && 
+                  <Menu>
+                    <MenuOption activeClassName="selected" to="/dex">Dex Old</MenuOption>
+                    <MenuOption activeClassName="selected" to="/body-shapes">Bodyshapes</MenuOption>
+                    <MenuOption activeClassName="selected" to="/xmas-skins">Xmas Skins</MenuOption>
+                    <MenuOption activeClassName="selected" to="/comps">Comps</MenuOption>
+                    <MenuOption activeClassName="selected" to="/contracts">Contracts</MenuOption>
+                    <MenuOption activeClassName="selected" to="/teams">Teams</MenuOption>
+                    <MenuOption activeClassName="selected" to="/profile">Profile</MenuOption>
+                    <MenuOption activeClassName="selected" to="/zr">ZR</MenuOption>
+                  </Menu>
+                }
+                </>
+              )}/>
+
             </div>
-          </div>
+          </StyledHeadbar>
           <Switch>
             <Route exact path="/teambuilder" component={Teambuilder}/>
             <Route exact path="/dex" component={Dex}/>
