@@ -9,8 +9,6 @@ import RadioGroup from './ui/RadioGroup/RadioGroup';
 //CSS
 const StyledAxieListControl = styled.div`
 
-	margin-bottom:40px;
-
 	.centerControl {display:flex; justify-content:center; align-items:center; margin-bottom:10px;}
 	.centerControl .title {font-size:14px; font-weight:bold; color:#8e8e8e; margin-right:15px;}
 	.centerControl .group { margin-right:20px; display:flex; justify-content:center; align-items:center; }

@@ -17,16 +17,27 @@ import styled, {css} from "styled-components";
 
 
 const StyledAxieFilter:any = styled.div`
-  background: white; z-index:100; width:410px; padding: 20px; box-shadow: 0 2px 2px #0000002e; border-radius: 10px; position:absolute; left:15px; top:20px;}
-	.headbar {display:flex; justify-content:space-between; border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+	background: white; 
+	z-index:100; 
+	position:relative;
+
+	border-right: 1px solid rgba(0,0,0,0.1);
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+	border-radius: 0 0 20px 0;
+	
+	.headbar {display:flex; justify-content:space-between; border-bottom: 1px solid rgba(0, 0, 0, 0.1);      align-items: center;   padding: 10px 15px;}
 	.headbar > .radiogroup {border:none;}
 	.radiogroup { flex-flow: wrap; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 8px 0; }
 
+	.partGroup{
+		padding: 0 20px;
+		&:last-child {
+			border:0;
+		}
+	}
+
 	.loadDataButton {
-		position: absolute;
-		top: 55px;
-    right: -80px;
-    border-radius: 50px;
+    border-radius: 50px;	
     background: #55adfb;
     border: none;
     color: white;
@@ -38,7 +49,10 @@ const StyledAxieFilter:any = styled.div`
 		background:#6ca6ff;
 	}
 
-	.tfield {margin-top:10px;}
+	.tfield {
+		margin-top:10px;
+		padding: 0 20px;
+	}
 `;
 
 enum FilterViewMode {
@@ -204,8 +218,16 @@ const Row = styled.div`
 	align-items:center;
 	border-bottom: 1px solid rgba(0,0,0,0.1);
 	padding: 10px 0;
+	margin-left: 20px;
 
-	.ui-select {flex:8; margin-bottom: -5px;}
+	&:last-child {
+		border:0;
+	}
+
+	.ui-select {
+		flex:4; 
+		margin-bottom: -5px;
+	}
 `;
 
 const FlexCenter = styled.div`
@@ -417,6 +439,8 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 						<Toggle value="price_asc" label="Lowest Price" CustomComponent={StyledOption}/>
 						<Toggle value="price_desc" label="Highest Price" CustomComponent={StyledOption}/>
 					</SimpleSelect>
+
+					{this.renderLoadButton()}
 				</div>
 
 				{viewMode == FilterViewMode.Axie && (
@@ -432,6 +456,15 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 										<ClassIcon className="classIcon" class={axieClass}/>
 									</Toggle>
 								))}
+							</Select2>
+						</Row>
+
+						<Row>
+							<Label>Color</Label>
+							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["color"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
+								{Object.keys(body_colors).map(colorKey => 
+									<Toggle value={body_colors[colorKey]} CustomComponent={ColorDrop} color={"#"+body_colors[colorKey]} style={{marginRight: "5px", marginBottom: "5px"}}/>
+									)}
 							</Select2>
 						</Row>
 
@@ -511,17 +544,9 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 							</Select2>
 						</Row>
 
-						<Row>
-							<Label>Color</Label>
-							<Select2 CustomComponent={FlexWrap} deselect={true} options={[ filter["color"] ]} onChange={(options:{}) => { this.onChangeFilter(FilterType.Color, Object.keys(options)[0] || "") } }>
-								{Object.keys(body_colors).map(colorKey => 
-									<Toggle value={body_colors[colorKey]} CustomComponent={ColorDrop} color={"#"+body_colors[colorKey]} style={{marginRight: "5px", marginBottom: "5px"}}/>
-									)}
-							</Select2>
-						</Row>
+
 						
-						{this.renderLoadButton()}
-					
+
 					</React.Fragment>)
 				}	
 
@@ -591,7 +616,6 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 								)
 							}
 						)}
-						{this.renderLoadButton()}
 					</React.Fragment>
         }
         
@@ -603,7 +627,6 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
 							value={this.state.filter[FilterType.Owner]}
 							onChange={(value:string) => { this.onChangeFilter(FilterType.Owner, value) }}
 							/>
-							{this.renderLoadButton()}
 					</>
         }
 

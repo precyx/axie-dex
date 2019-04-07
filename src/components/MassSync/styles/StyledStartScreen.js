@@ -7,6 +7,9 @@ export const StyledStartScreen = styled.div`
 	.bar { flex-flow: row; margin:10px 0; }
 	.textfield { justify-content:center; }
 
+	.title {margin-bottom:20px; font-size: 22px; font-weight: 500;}
+	.tfield input {    min-width: 350px; text-align:center;  padding: 14px 10px; }
+
 	/* state x */
 	${({ x }) => x && css``}
 

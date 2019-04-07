@@ -281,15 +281,16 @@ class MassSync extends React.PureComponent{
 	}
 
 	handleClickLoadBreedableAxies = () => {
+		console.log("xd")
 		this.setState({
 			view: "breedable-axies"
 		});
 		this.loadAllBreedableAxies();
 	}
 
-	handleChangeAddress = (evt) => {
+	handleChangeAddress = (newAddress) => {
 		this.setState({
-			address: evt.target.value
+			address: newAddress,
 		})
 	}
 

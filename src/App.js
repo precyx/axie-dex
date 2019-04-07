@@ -44,8 +44,8 @@ const StyledHeadbar = styled.div`
   height:50px; 
   background: white; 
   margin-bottom:20px;
-  box-shadow:0 2px 2px black;
-  box-shadow: 0 0px 4px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 0px 4px rgba(0, 0, 0, 0.2); */
+  border-bottom: 1px solid #e2e2e2;
 
   .center {
     padding:0 35px; 
@@ -62,10 +62,16 @@ const NavLinkBaseStyle = css`
   align-items: center; 
   color: #5d5d5d; 
   font-size:14px; 
-  padding:0 15px;
+  padding:0 5px;
+  margin: 0 10px;
+  border-bottom: 2px solid transparent;
   &:hover {
-    text-decoration:none;
-    background:#ececec;
+    &{
+      text-decoration:none;
+    color: #9d57da;
+    font-weight:500;
+    }
+
   }
   &.selected { 
     border-bottom:2px solid #a146ef; 
@@ -129,6 +135,7 @@ class App extends Component {
                   More
                 {isOn && 
                   <Menu>
+                    <MenuOption activeClassName="selected" to="/part-dex">Part Dex</MenuOption>
                     <MenuOption activeClassName="selected" to="/dex">Dex Old</MenuOption>
                     <MenuOption activeClassName="selected" to="/body-shapes">Bodyshapes</MenuOption>
                     <MenuOption activeClassName="selected" to="/xmas-skins">Xmas Skins</MenuOption>

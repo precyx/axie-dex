@@ -41,7 +41,7 @@ const StyledTeamBuilder = styled.div`
 	/* component */
 	margin-top:20px;
 	canvas { width:100%; height:100%;}
-	h2 {margin-bottom:15px; font-size:32px; color:#444;}
+	h1 {margin-top:0;}
 	h3 { color: grey; font-weight: normal; font-size: 18px; margin-bottom: 10px;}
 	.titlebar {display:flex; justify-content:center;}
 	.buttonbar {display:flex; margin-bottom:10px;}
@@ -78,7 +78,7 @@ const StyledTeamBuilder = styled.div`
 	/* close btn */
 	.closeButton {position:relative; top: 40px; left:200px; z-index:10;}
 	/* filtering */
-	.filterBar {display:inline-flex; border: 1px solid #e8e8e8; margin-bottom:10px; border-radius:8px; background:white;}
+	.filterBar {display:inline-flex; border: 1px solid #e8e8e8; border-bottom:0; border-radius:8px 8px 0 0; background:white;}
 	.filterGroup {display:flex; position:relative;  border-right: 1px solid #e8e8e8; align-items:center; /*margin-right:10px;*/ padding:10px 15px;   }
 	.filterGroup:last-child {border:none; margin:0; }
 	.filterGroup > div { margin-right:5px;}
@@ -862,11 +862,11 @@ class Teambuilder extends React.PureComponent {
 				<BasicCenterContainer>
 					{/* TitleBar */}
 					<div className="titlebar">
-						<h2>Axie Team Builder</h2>
-						<h2 className="count">
+						<h1>Axie Team Builder 						<span className="count">
 							{this.state.axies_with_spine ? this.state.axies_with_spine.length : 0} 
 							{this.state.axie_groups["all"] ? " / " + this.state.axie_groups["all"].length : ""} 
-						</h2>
+						</span></h1>
+
 						
 						<div className="addressContainer">
 								<Button name="Toggle Address" onClick={this.toggleAddress}/>

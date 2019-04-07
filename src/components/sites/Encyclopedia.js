@@ -13,8 +13,24 @@ import {AxieFilter} from '../ui/Filter/AxieFilter';
 //CSS
 const StyledEncyclopedia = styled.div`
 	position:relative;
+	display:flex;
+	margin-top:-20px;
 
-	h1 {margin-top:15px;}
+	.col {
+		position:relative;
+	}
+	.col-left {
+		flex-basis: 20%;
+    min-width: 400px;
+	}
+	.col-right {
+		flex-basis: 80%;
+		margin-left:20px;
+		margin-right:20px;
+	}
+	
+
+	h1 {margin-top:15px; margin-bottom:10px; text-align:left;}
 	.count {font-weight: normal; color: grey; font-size: 14px;}
 
 	.filterSwitch {}
@@ -23,14 +39,23 @@ const StyledEncyclopedia = styled.div`
 	.getAxieByAddressContainer {width:90%; margin:0 auto; padding:30px; }
 	.center {display:flex; justify-content:center;}
 	.button {margin:5px;}
-	.loadDataButton {}
+	.loadDataButton {    
+		top: 52px;
+		right: -20px;
+	}
 
-	.headerBar {display:flex; justify-content:center; flex-flow: column; align-items: center;}
-	.pageBar {display:inline-flex; margin-bottom:30px; justify-content: center; align-items: center; font-size: 14px; color: #757575;}
+	.statusBox {position:absolute; right:20px; top:20px;}
+
+	.headerBar {display:flex; flex-flow:column;}
+
+	.pageBar {display:flex; justify-content:center; margin-bottom:20px; font-size: 14px; color: #757575;}
+	.pager {display:flex; align-items:center; }
 	.pageBar label {display:none;}
 	.pageBar input {width: 60px; text-align: center; margin: 0 10px;}
 	.pageBar .button {width: 60px; text-align: center; margin: 0 10px;}
 	.pageBar .text {white-space:pre;}
+
+	.bottomBar {margin-top:20px; margin-bottom:20px; display:flex; align-items:center; justify-content:center;}
 
 	.partGroup {border-bottom: 1px solid #e6e6e6;}
 	.partGroup .panel-label {display: flex; cursor:pointer; align-items: center; justify-content: space-between;}
@@ -40,7 +65,12 @@ const StyledEncyclopedia = styled.div`
 	.partGroup .parts {}
 	.partGroup .radiogroup {border:none;}
 
-	.axieList { margin-left: 370px; justify-content: flex-start; width: 1300px;}
+	.axieList {
+		justify-content: left;
+		background: #f9f9f9;
+    border-radius: 20px;
+		padding: 20px;
+	}
 `;
 
 // Class
@@ -263,39 +293,44 @@ class Encyclopedia extends Component {
 			const totalPages = this.state.totalPages;
 			return (
 					<StyledEncyclopedia>
-					
-					<div className="getAxiesContainer">
-					<div className="headerBar">
-					<h1>Encyclopedia</h1>
-					<h2 className="count">{totalAxies} Axies</h2>
-					<div className="pageBar">
-					<Button type="color" color="#a146ef" className="prev" onClick={this.loadPrevPage} name={"Prev"} />
-					<div>Page</div>
-								<Textfield id="market_getaxies_page" value={this.state.page} name="" placeholder="Page" onChange={this.handleChange("page")} />
-								<div className="text">of {totalPages}</div>
-								<Button type="color" color="#a146ef" className="next" onClick={this.loadNextPage} name={"Next"} />
-							</div>
-							{/* <Textfield id="market_getaxies_additionalParams" value={this.state.additionalParams} name="Params" placeholder="Params" onChange={this.handleChange("additionalParams")} /> */}
 
-						<div className="filterBoard">
-							<AxieFilter 
+					<div className="col col-left">
+						<AxieFilter 
 								onChangeFilter={this.onChangeFilter}
 								onChangeGeneFilter={this.onChangeGeneFilter}
 								onChangeSorting={this.onChangeSorting}
 								onLoadData={this.onLoadData}
 							/>
+					</div>
+					<div className="col col-right">
+
+						<div className="headerBar">
+							<h1>Encyclopedia</h1>
+							<h2 className="count">{totalAxies} Axies</h2>
 						</div>
 
+
+						<div className="pageBar">
+								<div className="pager">
+									<Button type="color" color="#a146ef" className="prev" onClick={this.loadPrevPage} name={"Prev"} />
+									<div>Page</div>
+									<Textfield id="market_getaxies_page" value={this.state.page} name="" placeholder="Page" onChange={this.handleChange("page")} />
+									<div className="text">of {totalPages}</div>
+									<Button type="color" color="#a146ef" className="next" onClick={this.loadNextPage} name={"Next"} />
+								</div>
 						</div>
 
-					</div>
-					{this.state.status.code !== "all_loaded" ? 
-					<div className="center">
-						<StatusBox status={this.state.status} />
-					</div>
-					: "" }
+						{this.state.status.code !== "all_loaded" ? 
+						<div className="statusBox">
+							<StatusBox status={this.state.status} />
+						</div>
+						: "" }
 				
-				<AxieListControl className="axieList" axies={this.state.axies} />
+					<AxieListControl className="axieList" axies={this.state.axies} />
+
+
+											
+				</div>
 			</StyledEncyclopedia>
 		);
 	}

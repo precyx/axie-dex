@@ -1,12 +1,13 @@
 import React from "react";
 
 import styled, {css} from "styled-components";
-
+import _ from 'lodash';
 interface TextFieldProps {
   value:string,
   label:string,
   onChange?:Function,
   className?:string,
+  isControlled?:boolean,
 }
 interface TextFieldState {
   isControlled:boolean;
@@ -45,9 +46,10 @@ const StyledTextField = styled.div`
 export class TextField extends React.PureComponent<TextFieldProps, TextFieldState>{
   constructor(props:TextFieldProps){
     super(props);
+    console.log("kkk", props);
     this.state = {
-      isControlled: this.props.value ? false : true,
-      value: "",
+      isControlled: !_.isNil(this.props.isControlled) ? this.props.isControlled : this.props.value ? false : true,
+      value: props.value,
     }
   }
 
@@ -72,7 +74,7 @@ export class TextField extends React.PureComponent<TextFieldProps, TextFieldStat
         type="text" 
         name={label}
         placeholder={label}
-        value={isControlled ? value : value} 
+        value={isControlled ? value : this.state.value} 
         onChange={this.handleChange}
         />
       </div>

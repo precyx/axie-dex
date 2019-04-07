@@ -8,7 +8,7 @@ import BasicCenterContainer from './containers/BasicCenterContainer';
 const StyledAxieList = styled.div`
 	display:flex;
 	flex-flow: wrap;
-	justify-content:center;
+	justify-content:left;
 `;
 
 /**
