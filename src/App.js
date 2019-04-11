@@ -22,7 +22,7 @@ import ContractViewer from './components/sites/ContractViewer';
 import EventWatcher from './components/sites/EventWatcher';
 import Lunacia from './components/sites/Lunacia';
 import Teams from './components/sites/Teams';
-
+import {PartDex} from './components/sites/PartDex';
 
 import {Toggle} from "./components/ui/Toggle/Toggle";
 import {MenuToggle} from "./components/ui/MenuToggle";
@@ -153,6 +153,7 @@ class App extends Component {
           </StyledHeadbar>
           <Switch>
             <Route exact path="/teambuilder" component={Teambuilder}/>
+            <Route exact path="/part-dex" component={PartDex}/>
             <Route exact path="/dex" component={Dex}/>
             <Route exact path="/market" component={Encyclopedia}/>
             <Route exact path="/profile" component={Profile}/>
