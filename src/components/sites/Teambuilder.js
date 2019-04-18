@@ -33,6 +33,7 @@ import AxiePartList from '../TeamBuilder/AxiePartList';
 import {Grid} from "../classes/Grid";
 import {Axie} from "../classes/Axie";
 import AxiePartClass from "../classes/AxiePart"
+import { AxieV2 } from '../../services/axie-data-service2';
 
 //CSS
 const StyledTeamBuilder = styled.div`
@@ -247,20 +248,35 @@ class Teambuilder extends React.PureComponent {
 	}
 	getAllAxies = () => {
 		this.setState({
-			loading_status: "Loading Images",
+			loading_status: "Loading Axies",
 			is_loading: true,
-		}, ()=>{
-			AXIE_DATA.getAllAxiesByAddress(this.state.address).then((axies)=>{
-				//console.log("many axies", axies);
+		}, async ()=>{
+
+			var axx = await AxieV2.getAllAxiesByAddress(this.state.address, {});
+			console.log("axxx", axx);
+
+			//filter out axies without figures
+			var axx2 = axx.filter(axie => 
+				axie.figure && axie.figure.images["axie.png"]
+			);
+			console.log("axxxx2", axx2);
+
+			this.setState({
+				axies : axx,
+			}, this.loadAxieSpines);
+
+			/*AXIE_DATA.getAllAxiesByAddress(this.state.address).then((axies)=>{
+				console.log("many axies", axies);
 				this.setState({
 					axies : axies,
 				}, this.loadStaticAxieImages);
-			});
+			});*/
 		});
 	}
 	loadStaticAxieImages(){
 		AXIE_DATA_V1.getStaticImagesByAxies(this.state.axies, (axie)=>{
-			//console.log(axie.id);
+
+			console.log("bb", axie.id);
 			this.setState((prevState) => ({
 				numStaticImagesLoaded: prevState.numStaticImagesLoaded + 1,
 				loading_status: "Loading Images " + this.state.numStaticImagesLoaded + " / " + this.state.axies.length,
@@ -274,12 +290,12 @@ class Teambuilder extends React.PureComponent {
 	}
 	loadAxieSpines(){
 		AXIE_PIXI.getSpinesOfAxies(this.state.axies, (axie) =>{
-			//console.log(axie);
 			this.setState((prevState) => ({
 				numSpinesLoaded: prevState.numSpinesLoaded + 1,
 				loading_status: "Loading Spine Data " + this.state.numSpinesLoaded + " / " + this.state.axies.length,
 			}));
 		}).then((axieSpines)=>{
+			console.log("spinoo", axieSpines);
 			this.setState({
 				axie_spines: axieSpines,
 				loading_status: "Complete",
@@ -293,7 +309,7 @@ class Teambuilder extends React.PureComponent {
 		for(let i = 0; i < this.state.axies.length; i++){
 			var newAxie = new Axie(this.state.axies[i], this.state.axie_spines[i]);
 			newAxie.ratings = calcBadges(this.state.axies[i]);
-			newAxie.image = this.state.static_axie_images[i];
+			newAxie.image = this.state.axies[i].image;
 			axiesWithSpine.push(newAxie);
 		}
 		var newAxieGroups = Object.assign(this.state.axie_groups, {"all": axiesWithSpine});
@@ -362,6 +378,7 @@ class Teambuilder extends React.PureComponent {
 	 * @param {Number} y
 	 */
 	renderAxie(axie, x, y){
+		//console.log("sss", axie);
 		if(!axie.spineData) return; // needs spine to be rendered
 		var CRISP = this.state.CRISP_MULTIPLIER;
 		var ZOOM = this.state.ZOOM;
@@ -388,6 +405,7 @@ class Teambuilder extends React.PureComponent {
 		//
 		// add child
 		this.axieContainer.addChild(axie.spineData);
+		console.log("spinn", axie);
 		// check disabled
 		if(axie.otherData.disabled) {
 			axie.spineData.alpha = 0.2;
@@ -789,10 +807,11 @@ class Teambuilder extends React.PureComponent {
 			 this.state.ZOOM > 0.8 &&
 			 this.state.loading_complete && 
 			 !this.state.hide_UI){
-			axie_overlays = this.state.axies_with_spine.map((axie) => { 
+			axie_overlays = this.state.axies_with_spine.map((axie, i) => { 
+				//console.log("cc", axie);
 				var nowPrice;
 				var endPrice;
-				if(axie.axieData.auction !== null){
+				if(axie.axieData.auction != null){
 					var nowPrice = web3.utils.fromWei(axie.axieData.auction.buyNowPrice, 'ether');
 					var endPrice = web3.utils.fromWei(axie.axieData.auction.endingPrice, 'ether');
 					var msg;
@@ -807,7 +826,7 @@ class Teambuilder extends React.PureComponent {
 					return (axie.spineData) ? 
 					<div 
 					className="overlayUI" 
-					key={axie.axieData.id} 
+					key={i} 
 					style={{ 
 						left:this.getPositionOfAxie(axie.spineData, "top_left").x - 35*this.state.ZOOM + "px", 
 						top: this.getPositionOfAxie(axie.spineData, "top_left").y - 50*this.state.ZOOM + "px"

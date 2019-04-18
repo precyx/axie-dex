@@ -149,7 +149,7 @@ export const AXIE_DATA_V1 = {
      */
     getAllAxiesByAddress(address, additionalParams, callback){
         return AXIE_DATA.getAxiesByAddress(address, 0, additionalParams).then((data)=>{
-            console.log("d", data);
+            //console.log("d", data);
             var totalAxies = data.totalAxies;
             var axiesPerPage = data.axies.length;
             var totalPages = Math.floor(totalAxies/axiesPerPage);
@@ -208,6 +208,7 @@ export const AXIE_DATA_V1 = {
             var p = new Promise((resolve, reject)=>{
                 this.getAxieById(axie.id).then((data) => {
                     var staticImage = data.figure ? data.figure.static.idle : ""; 
+                    console.log("eee", staticImage);
                     resolve(staticImage);
                     onDataCallback(axie);
                 });

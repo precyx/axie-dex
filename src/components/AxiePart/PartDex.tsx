@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Spinner from 'react-spinner-material';
 
 // service
-import {AxieV2, BodyPart} from "../../services/axie-data-service2"; 
+import {AxieV2, BodyPart, GenericResponse, Axie, AxieAdult} from "../../services/axie-data-service2"; 
 
 
 const StyledPartDex = styled.div`
@@ -88,8 +88,15 @@ export const PartDex = () => {
 	const [addr, setAddr]:[string, Function] = useState("0x288bf6134BeB79D63173A13d65bc92F4EBD718B2"); // @todo make address dynamic
 
 	useEffect(()=>{
+
+
 		getData();
+		play();
 	}, []);
+
+	const play = async () => {
+		var axie:GenericResponse<Axie> = await AxieV2.getAxie(50400);
+	}
 
 	const getData = async () => {
 		const bodyParts:BodyPart[] = await AxieV2.getBodyParts();

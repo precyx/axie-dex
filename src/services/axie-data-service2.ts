@@ -1,4 +1,4 @@
-import axios, { AxiosPromise } from 'axios';
+import axios, { AxiosPromise, AxiosResponse } from 'axios';
 import AxiePartClasses from '../components/Axie/AxiePartClasses';
 import { async } from 'q';
 
@@ -37,9 +37,83 @@ export interface AxieParams {
 }
 
 export interface Axie {
-	axies:[],
-	totalAxies:number,
+  id?: number;
+  name?: string;
+  genes?: string;
+  owner?: string;
+  birthDate?: number;
+  sireId?: number;
+  sireClass?: AxieClass;
+  matronId?: number;
+  matronClass?: AxieClass;
+  stage?: number;
+  class?: AxieClass;
+  title?: string;
+  parts?: Object[];
+  image?: string;
+  figure?: {
+    images?: {
+      "axie.png"?: string;
+    };
+    atlas?: string;
+    model?: string;
+  };
+  stats?: {
+    hp?: number;
+    speed?: number;
+    skill?: number;
+    morale?: number;
+  };
+  exp?: number;
+  breedCount?: number;
+  breedable?: boolean;
+  level?: number;
+  unlocked?: boolean;
 }
+
+
+export interface AxieAdult {
+  id: number;
+  name: string;
+  genes?: string;
+  owner?: string;
+  birthDate?: number;
+  sireId?: number;
+  sireClass?: AxieClass;
+  matronId?: number;
+  matronClass?: AxieClass;
+  stage: number;
+  class: AxieClass;
+  title: string;
+  parts?: Object[];
+  image?: string;
+  figure: {
+    images: {
+      "axie.png": string;
+    };
+    atlas: string;
+    model: string;
+  };
+  stats: {
+    hp: number;
+    speed: number;
+    skill: number;
+    morale: number;
+  };
+  exp: number;
+  breedCount: number;
+  breedable: boolean;
+  level: number;
+  unlocked: boolean;
+}
+
+
+
+export interface AxieResponse {
+	axies:Axie[];
+	totalAxies:number;
+}
+
 
 export interface BodyPart {
 	partId:string;
@@ -47,6 +121,12 @@ export interface BodyPart {
 	type:AxieType;
 	class:AxieClass;
 	specialGenes:string | null;
+}
+
+
+export interface GenericResponse<T> {
+	error: Object | boolean;
+	data: T;
 }
 
 export const AxieV2 = {
@@ -62,7 +142,17 @@ export const AxieV2 = {
 	}*/
 
 
-	getAxiesByAddress : async (address:string, params:AxieParams):Promise<Axie[]> => {
+	getAxie : async (id:number):Promise<GenericResponse<Axie>> => {
+		let url = `${baseUrl}/axies/${id}`;
+		const response:AxiosResponse<Axie> = await axios.get(url);
+		return {
+			error: false,
+			data: response.data,
+		}
+	},
+
+
+	getAxiesByAddress : async (address:string, params:AxieParams):Promise<AxieResponse> => {
 		let url = `${baseUrl}/addresses/${address}/axies?a=1`;
 		url = AxieV2.appendParam(url, "breedable", params.breedable);
 		url = AxieV2.appendParam(url, "offset", params.offset);
@@ -76,7 +166,7 @@ export const AxieV2 = {
 		}
 		//console.log("url", url);
 		const response = await axios.get(url);
-		const data:Axie[] = response.data;
+		const data:AxieResponse = response.data;
 		return data;
 	},
 
@@ -95,6 +185,27 @@ export const AxieV2 = {
 		//console.log("url", url);
 		const response:AxiosPromise = axios.get(url);
 		return response;
+	},
+
+
+	getAllAxiesByAddress : async (address:string, params:AxieParams):Promise<Axie[]> => {
+		let params2:AxieParams = Object.assign({offset:"0"}, params);
+		const response:AxieResponse = await AxieV2.getAxiesByAddress(address, params2);
+
+		const totalAxies = response.totalAxies;
+		const axiesPerPage = response.axies.length;
+		const totalPages = Math.floor(totalAxies / axiesPerPage);
+		let axies_cache:Axie[] = [];
+		
+		for(let i = 0; i < totalPages; i++){
+			let newParams = Object.assign({}, params)
+			params.offset = (i * axiesPerPage + "");
+			
+			let axies:AxieResponse = await AxieV2.getAxiesByAddress(address, newParams)
+			axies_cache = [...axies.axies, ...axies_cache];
+		}
+
+		return axies_cache;
 	},
 
 

@@ -13,12 +13,16 @@ export const AXIE_PIXI = {
 	getAxieSpine(axie){
 		let axieModel = axie.figure.model;
 		let axieAtlas = axie.figure.atlas;
-		let axieImg = axie.figure.images[axie.id+".png"];
+		let axieImg = axie.figure.images["axie.png"];
+
 		//
 		var newDateParam = ("?" + new Date().getTime());
 		return axios.get(axieModel + newDateParam).then((axieModel)=> {
 			return axios.get(axieAtlas + newDateParam).then((axieAtlas)=> {
 				const rawAtlasData = axieAtlas.data;
+				
+				//console.log("attulasu", axieModel.data, axieAtlas.data);
+
 				const spineAtlas = new PIXI.spine.core.TextureAtlas(rawAtlasData, (line, callback)=> {
 						callback(PIXI.BaseTexture.from(axieImg + newDateParam));
 				});
