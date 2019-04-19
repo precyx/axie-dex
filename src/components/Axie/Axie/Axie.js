@@ -48,7 +48,7 @@ class Axie extends React.PureComponent {
   constructor(props){
     super(props);
     //
-    var idleImg = (this.props.data.figure && this.props.data.figure.static) ? this.props.data.figure.static.idle : null;
+    var idleImg = this.props.data.image || "";
     //
     this.state = {
       axieData:         this.props.data,

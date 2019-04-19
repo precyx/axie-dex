@@ -23,6 +23,7 @@ import {StyledMassSync} from "./styles/StyledMassSync";
 //
 import { Grid, AutoSizer, WindowScroller } from 'react-virtualized';
 import 'react-virtualized/styles.css'; // only needs to be imported once
+import { AxieV2 } from '../../services/axie-data-service2';
 
 class MassSync extends React.PureComponent{
 	constructor(props){
@@ -110,22 +111,24 @@ class MassSync extends React.PureComponent{
 
 
 	/**
-	 * Loads axies from {address} and merges data from V0, V1 and Blockchain API
+	 * Loads axies from {address} and merges data from V0, V2 and Blockchain API
 	 * @param {Boolean} initialLoad 
 	 */
 	loadAxiesPages(initialLoad){
 		this.setState({status: {code:"loading", msg:"Loading Axies"} });
 		// get axies
-		AXIE_DATA_V1.getAxiesByAddress(this.state.address, this.state.offset, "&stage=4").then((axieData)=>{
-			this.setState({ status: {code:"loading", msg:"Loading Axies V1"} });
-			// get axies from V1 API
+		//	AxieV2.getAxiesByAddress(this.state.address, {"offset": this.state.offset, "stage":4})
+		AxieV2.getAxiesByAddress(this.state.address, this.state.offset, "&stage=4").then((axieData)=>{
+			this.setState({ status: {code:"loading", msg:"Loading Axies V2"} });
+			// get axies from V2 API
 			var ids = axieData.axies.map(axie => axie.id);
-			AXIE_DATA_V1.getAxiesByIds(ids).then((axies2)=>{
+			//AxieV2.getAxiesByIds(ids)
+			AxieV2.getAxiesByIds(ids).then((axies2)=>{
 				//
 				this.setState({ status: {code:"loading", msg:"Loading Exp"} });
 				// add exp field
-				AXIE_DATA_TRANSFORM.mergeXPDataIntoV1API(axies2, axieData.axies);
-				AXIE_DATA_TRANSFORM.getAndMergePendingBlockchainXPIntoV1API(axies2, this.expSyncContract).then(()=>{
+				AXIE_DATA_TRANSFORM.mergeXPDataIntoV2API(axies2, axieData.axies);
+				AXIE_DATA_TRANSFORM.getAndMergePendingBlockchainXPIntoV2API(axies2, this.expSyncContract).then(()=>{
 					this.setAxieState(axies2, true);
 					this.setState({
 						status: {code:"loading-complete", msg:""}
@@ -151,25 +154,31 @@ class MassSync extends React.PureComponent{
 	loadAllBreedableAxies(){
 		this.setState({status: {code: "loading", msg: "loading all axies"}});
 		// load all axies by address
-		AXIE_DATA_V1.getAllAxiesByAddress(this.state.address, "&stage=4", (progress => {
+		/*AxieV2.getAllAxiesByAddress(this.state.address, {"stage":4}, (progress => {
+			this.setState({
+				status: {code: "loading", msg: "loaded: " + progress.loaded + " / " + progress.total }
+			})
+		}))*/
+
+		AxieV2.getAllAxiesByAddress(this.state.address, {"stage":4}, (progress => {
 			this.setState({
 				status: {code: "loading", msg: "loaded: " + progress.loaded + " / " + progress.total }
 			})
 		})).then((axies)=>{
-			this.setState({ status: {code:"loading", msg:"Loading Axies V1"} });
-			// load axies V1
+			this.setState({ status: {code:"loading", msg:"Loading Axies V2"} });
+			// load axies V2
 			var ids = axies.map(axie => axie.id);
-			AXIE_DATA_V1.getAxiesByIds(ids, progress=>{
+			AxieV2.getAxiesByIds(ids, progress=>{
 				this.setState({
-					status: {code: "loading", msg: "v1 loaded: " + progress.loaded + " / " + progress.total }
+					status: {code: "loading", msg: "v2 loaded: " + progress.loaded + " / " + progress.total }
 				})
 			}).then((_axies2)=>{
 				// filter out CORRUPTED undefined axies
 				let axies2 = _axies2.filter(axie => axie);
 				this.setState({ status: {code:"loading", msg:"Loading Exp"} });
 				// add exp field
-				AXIE_DATA_TRANSFORM.mergeXPDataIntoV1API(axies2, axies);
-				AXIE_DATA_TRANSFORM.getAndMergePendingBlockchainXPIntoV1API(axies2, this.expSyncContract).then(()=>{
+				AXIE_DATA_TRANSFORM.mergeXPDataIntoV2API(axies2, axies);
+				AXIE_DATA_TRANSFORM.getAndMergePendingBlockchainXPIntoV2API(axies2, this.expSyncContract).then(()=>{
 					this.setAxieState(axies2, true);
 					this.setState({
 						status: {code:"loading-complete", msg:""}
@@ -182,7 +191,6 @@ class MassSync extends React.PureComponent{
 	}
 
 	selectBreedableAxies(){
-		console.log("kKKKK");
 		let selectedAxies = {};
 		this.state.axies.forEach(axie => {
 			const expForBreeding = breedingCosts[axie.breedCount+1];

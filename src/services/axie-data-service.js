@@ -273,22 +273,23 @@ export const AXIE_DATA_V2 = {
 
 export const AXIE_DATA_TRANSFORM = {
 
-    mergeXPDataIntoV1API(axies_v1, axies_v0){
-        axies_v1.forEach(axie_v1 => {
+    mergeXPDataIntoV2API(axies_v2, axies_v0){
+        axies_v2.forEach(axie_v2 => {
             axies_v0.forEach(axie_v0 => {
-                if(axie_v1.id == axie_v0.id) {
-                    console.log("vvv", axie_v1, axie_v0);
-                    axie_v1["exp"]            = axie_v0.exp
-                    axie_v1["expForBreeding"] = axie_v0.expForBreeding
+                if(axie_v2.id == axie_v0.id) {
+                    console.log("vvv", axie_v2, axie_v0);
+                    axie_v2["exp"]            = axie_v0.exp
+                    axie_v2["expForBreeding"] = axie_v0.expForBreeding
                 }
             })
         });
     },
 
-    getAndMergePendingBlockchainXPIntoV1API(axies_v1, ExpSyncContract){
+    getAndMergePendingBlockchainXPIntoV2API(axies_v2, ExpSyncContract){
         var promises = [];
-        axies_v1.forEach(axie=>{
+        axies_v2.forEach(axie=>{
             var p = new Promise((resolve,reject)=>{
+                console.log("kkkK", axie);
                 ExpSyncContract.methods.getCheckpoint(axie.id.toString()).call((err, res)=>{
                     console.log("XP", res);
                     axie["pendingExp2"] = (res && res._exp) ? res._exp : 0;

@@ -188,7 +188,7 @@ export const AxieV2 = {
 	},
 
 
-	getAllAxiesByAddress : async (address:string, params:AxieParams):Promise<Axie[]> => {
+	getAllAxiesByAddress : async (address:string, params:AxieParams, callback?:Function):Promise<Axie[]> => {
 		let params2:AxieParams = Object.assign({offset:"0"}, params);
 		const response:AxieResponse = await AxieV2.getAxiesByAddress(address, params2);
 
@@ -197,11 +197,14 @@ export const AxieV2 = {
 		const totalPages = Math.floor(totalAxies / axiesPerPage);
 		let axies_cache:Axie[] = [];
 		
+		if(callback) callback({loaded: 0, total: totalPages * axiesPerPage});
+
 		for(let i = 0; i < totalPages; i++){
 			let newParams = Object.assign({}, params)
 			params.offset = (i * axiesPerPage + "");
 			
 			let axies:AxieResponse = await AxieV2.getAxiesByAddress(address, newParams)
+			if(callback) callback({loaded: axies_cache.length, total: totalPages * axiesPerPage});
 			axies_cache = [...axies.axies, ...axies_cache];
 		}
 
@@ -214,6 +217,21 @@ export const AxieV2 = {
 		const response = await axios.get(url);
 		const data:BodyPart[] = response.data;
 		return data;
+	},
+
+  getAxiesByIds: async (ids:number[], callback:Function) => {
+			var promises:Array<any> = [];
+			var loaded = 0;
+			ids.forEach(id=>{
+					var p:Promise<any> = new Promise((resolve,reject)=>{
+							AxieV2.getAxie(id).then((axieData:GenericResponse<Axie>)=>{
+									if(callback) callback({loaded: ++loaded, total: ids.length});
+									resolve(axieData.data);
+							})
+					})
+					promises.push(p);
+			})
+			return Promise.all(promises);
 	},
 
 	appendParam : (url:string, name:string, value:string | undefined) => {
