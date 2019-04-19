@@ -91,6 +91,30 @@ const StyledTeamBuilder = styled.div`
 	.partList .part {user-select:none; cursor:pointer;}
 `;
 
+const StyledBoard = styled.div`
+    position: absolute;
+    background: white;
+    top: 60px;
+    left: 0;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #00000042;
+    font-size: 14px;
+    height: 200px;
+		width:360px;
+    z-index: 10;
+    overflow-y: scroll;
+`;
+const StyledRow = styled.div`
+	cursor: pointer;
+	padding:0 10px;
+	color:#999999;
+
+	&:hover {
+		color:black;
+	}
+`;
+
 // class
 class Teambuilder extends React.PureComponent {
 	// vars
@@ -144,6 +168,7 @@ class Teambuilder extends React.PureComponent {
 			selectedAxie: null,
 			showAddressUI: false,
 			showAllParts: false,
+			showAnimationPanel: false,
 			// loading
 			is_loading: false,
 			loading_complete: false,
@@ -357,6 +382,7 @@ class Teambuilder extends React.PureComponent {
 		let grid = new Grid(num_rows, num_cols);
 		// fill axies into {2d grid}
 		grid.insertElems(this.state.axies_with_spine);
+		console.log("axies w/spine", this.state.axies_with_spine);
 		// render axies in a grid
 		for(let i = 0; i < grid.rows; i++){
 			for(let j = 0; j < grid.cols; j++){
@@ -401,7 +427,7 @@ class Teambuilder extends React.PureComponent {
 			(y * gapY + startY) * CRISP,
 		);
 		// set animation
-		//axie.spineData.state.setAnimation(0, "walking", true);
+		//axie.spineData.state.setAnimation(0, "action/evolve", true);
 		//
 		// add child
 		this.axieContainer.addChild(axie.spineData);
@@ -577,6 +603,14 @@ class Teambuilder extends React.PureComponent {
 		}
 	}
 
+	handleClickAnimationName = (animationName) => {
+		console.log("anim", animationName);
+		this.state.axies_with_spine.forEach(axie => {
+			console.log("aaaa", axie);
+			axie.spineData.state.setAnimation(0, animationName, true);
+		})
+	}
+
 
 	areAxiesLoaded = () => {
 		var axies = this.state.axie_groups['all'];
@@ -709,6 +743,11 @@ class Teambuilder extends React.PureComponent {
 	toggleAllParts = () => {
 		this.setState((prevState) => ({
 			showAllParts: !prevState.showAllParts,
+		}));
+	}
+	toggleAnimationPanel = () => {
+		this.setState((prevState) => ({
+			showAnimationPanel: !prevState.showAnimationPanel,
 		}));
 	}
 	closeSelectedAxie = () => {
@@ -907,7 +946,18 @@ class Teambuilder extends React.PureComponent {
 					{/* FilterBar */}
 					<div className="filterBar">
 						<div className="filterGroup">
-							<Button name={"Reset"} onClick={this.showAllAxies} />
+							<Button type="outline" name={"Reset"} onClick={this.showAllAxies} />
+						</div>
+						<div className="filterGroup">
+							<Button type="outline" name={"Animations"} onClick={this.toggleAnimationPanel} />
+							{this.state.showAnimationPanel &&
+								<StyledBoard>
+									{this.state.axies_with_spine && 
+									this.state.axies_with_spine[0].spineData.spineData.animations.map(animation => 
+										<StyledRow onClick={() => {this.handleClickAnimationName(animation.name)}}>{animation.name}</StyledRow>
+									)}
+								</StyledBoard>
+							}
 						</div>
 						<div className="filterGroup">
 							<ReactTooltip id={"sale_filter"} type='dark' effect='solid' place="top">Sale filter</ReactTooltip>
