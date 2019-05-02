@@ -107,13 +107,13 @@ class Encyclopedia extends Component {
 		const AXIES_PER_PAGE = 10;
 		const skip = Math.max(0, this.state.page * AXIES_PER_PAGE - AXIES_PER_PAGE);
 		let axiesData = await AXIE_ICU.getAxies(`skip=${skip}${query}`);
-		let axies = axiesData.results;
+		let axies = axiesData.axies;
 		console.log("ax", axiesData);
 
 		this.setState({
 			axies: axies,
-			totalPages: Math.ceil(axiesData.total / AXIES_PER_PAGE),
-			totalAxies: axiesData.total,
+			totalPages: Math.ceil(axiesData.count / AXIES_PER_PAGE),
+			totalAxies: axiesData.count,
 			status: {type:"completed", code:"all_loaded", msg: "loading complete!"},
 		});
 	}
@@ -125,15 +125,15 @@ class Encyclopedia extends Component {
 		const address = this.state.address;
 		let query = "";
 
-		if(this.validFilter(filter["color"])) query += `&gene_detail.color.d=${filter["color"]}`;
-		if(this.validFilter(filter["pattern"])) query += `&gene_detail.pattern.d=${filter["pattern"]}`;
+		if(this.validFilter(filter["color"])) query += `&parts.body.color.d=${filter["color"]}`;
+		if(this.validFilter(filter["pattern"])) query += `&parts.body.pattern.d=${filter["pattern"]}`;
 		if(this.validFilter(filter["class"])) query += `&class=${filter["class"]}`;
 		if(this.validFilter(filter["stage"])) query += `&stage=${filter["stage"]}`;
-		if(this.validFilter(filter["pureness"])) query += `&pureness.purest.count=${filter["pureness"]}`;
+		if(this.validFilter(filter["pureness"])) query += `&parts.pureness.purest.count=${filter["pureness"]}`;
 		if(this.validFilter(filter["title"])) query += `&title=${filter["title"]}`;
 		if(this.validFilter(filter["auction"])) query += `&auction.type=${filter["auction"]}`;
 		if(this.validFilter(filter["owner"])) query += `&owner=${filter["owner"].toLowerCase()}`;
-		if(this.validFilter(filter["breeding"])) query += `&canBreed=true`;
+		if(this.validFilter(filter["breeding"])) query += `&breedable=true`;
 		if(this.validFilter(filter["mystics"])) query += `&mysticCount=${filter["mystics"]}`;
 
 		Object.keys(geneFilter).forEach(geneKey => {
@@ -305,7 +305,7 @@ class Encyclopedia extends Component {
 					<div className="col col-right">
 
 						<div className="headerBar">
-							<h1>Encyclopedia</h1>
+							<h1>Search Axies</h1>
 							<h2 className="count">{totalAxies} Axies</h2>
 						</div>
 

@@ -102,7 +102,7 @@ export const StyledAxie = styled.div`
 		.breedingData * {line-height:100%;}
 		.breedingData .xp {font-size:10px;}
     .axieOwner  {display:none!important;}
-    .staticImg, canvas {width:78px!important; height:auto!important; margin-left:-5px;}
+    .staticImg, canvas {width:80px!important; height:auto!important; margin-left:-5px;}
     .salesData {display:none!important;}
   `}
 	${({ size, features }) => size === "tiny" && features === "breeding" && css`

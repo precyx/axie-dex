@@ -14,6 +14,7 @@ import {Icon} from "../Icon/Icon";
 import {bodyparts} from "../../../data/axie-body-parts";
 
 import styled, {css} from "styled-components";
+import { filters } from "pixi.js";
 
 
 const StyledAxieFilter:any = styled.div`
@@ -327,7 +328,8 @@ export class AxieFilter extends React.PureComponent<AxieFilterProps, AxieFilterS
     super(props);
     this.state = {
       viewMode: FilterViewMode.Axie,
-      filter: {},
+      filter: {
+			},
       geneFilter: {},
 			sorting : "",
 			address: "",
