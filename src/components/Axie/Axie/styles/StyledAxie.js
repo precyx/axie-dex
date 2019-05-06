@@ -95,7 +95,7 @@ export const StyledAxie = styled.div`
     margin:2px;
     .axieTitleContainer {height:auto;}
     .cardController {display:none!important;}
-    .axieTitle .name {font-size:10px; margin:0;}
+    .axieTitle .name {font-size:10px; margin:0; height:12px; overflow:hidden;}
     .axieTitle .icon, .axieTitle .id  {display:none;}
     .axieTitle .title {display:none;}
 		.breedingData .xpProgress {display:none;}

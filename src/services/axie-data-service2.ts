@@ -152,7 +152,7 @@ export const AxieV2 = {
 	},
 
 
-	getAxiesByAddress : async (address:string, params:AxieParams):Promise<AxieResponse> => {
+	getAxiesByAddress : async (address:string, params:AxieParams, callback?:(a:AxieResponse) => void):Promise<AxieResponse> => {
 		let url = `${baseUrl}/addresses/${address}/axies?a=1`;
 		url = AxieV2.appendParam(url, "breedable", params.breedable);
 		url = AxieV2.appendParam(url, "offset", params.offset);
@@ -164,9 +164,9 @@ export const AxieV2 = {
 				url =  AxieV2.appendParam(url, "part", part);
 			});
 		}
-		//console.log("url", url);
 		const response = await axios.get(url);
 		const data:AxieResponse = response.data;
+		if(callback) {callback(data);}
 		return data;
 	},
 
@@ -182,7 +182,6 @@ export const AxieV2 = {
 				url =  AxieV2.appendParam(url, "part", part);
 			});
 		}
-		//console.log("url", url);
 		const response:AxiosPromise = axios.get(url);
 		return response;
 	},
@@ -194,21 +193,25 @@ export const AxieV2 = {
 
 		const totalAxies = response.totalAxies;
 		const axiesPerPage = response.axies.length;
-		const totalPages = Math.floor(totalAxies / axiesPerPage);
-		let axies_cache:Axie[] = [];
+		const totalPages = Math.ceil(totalAxies / axiesPerPage);
+		let axies_cache:AxieResponse[] = [];
+		let num_axies_loaded = 0;
 		
-		if(callback) callback({loaded: 0, total: totalPages * axiesPerPage});
+		if(callback) callback({loaded: num_axies_loaded, total: totalPages * axiesPerPage});
 
 		for(let i = 0; i < totalPages; i++){
 			let newParams = Object.assign({}, params)
-			params.offset = (i * axiesPerPage + "");
+			newParams.offset = (i * axiesPerPage + "");
 			
-			let axies:AxieResponse = await AxieV2.getAxiesByAddress(address, newParams)
-			if(callback) callback({loaded: axies_cache.length, total: totalPages * axiesPerPage});
-			axies_cache = [...axies.axies, ...axies_cache];
+			let axies:any = AxieV2.getAxiesByAddress(address, newParams, (ar:AxieResponse)=>{
+				num_axies_loaded += ar.axies.length;
+				if(callback) callback({loaded: num_axies_loaded, total: totalPages * axiesPerPage});
+			})
+			axies_cache.push(axies);
 		}
 
-		return axies_cache;
+		var returnAxies:any = await Promise.all(axies_cache);
+		return returnAxies.map((axies:any) => axies.axies).flat();
 	},
 
 
@@ -240,3 +243,4 @@ export const AxieV2 = {
 	},
 	
 }
+//# sourceFile=axie-data-service2.ts

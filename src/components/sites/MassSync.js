@@ -118,7 +118,7 @@ class MassSync extends React.PureComponent{
 		this.setState({status: {code:"loading", msg:"Loading Axies"} });
 		// get axies
 		//	AxieV2.getAxiesByAddress(this.state.address, {"offset": this.state.offset, "stage":4})
-		AxieV2.getAxiesByAddress(this.state.address, this.state.offset, "&stage=4").then((axieData)=>{
+		AxieV2.getAxiesByAddress(this.state.address, {"stage":4, "offset": this.state.offset}).then((axieData)=>{
 			this.setState({ status: {code:"loading", msg:"Loading Axies V2"} });
 			// get axies from V2 API
 			var ids = axieData.axies.map(axie => axie.id);
@@ -136,11 +136,14 @@ class MassSync extends React.PureComponent{
 				})
 			});
 			if(initialLoad){
+				let axiesPerPage = axieData.axies.length;
+				let totalAxies = axieData.totalAxies;
+				let totalPages = Math.ceil(totalAxies/axiesPerPage);
 				this.setState({
 					currentPage: 1,
-					currentAxies: 12,
-					totalAxies: axieData.totalAxies,
-					totalPages: axieData.totalPages,
+					currentAxies: axiesPerPage,
+					totalAxies: totalAxies,
+					totalPages: totalPages,
 				})
 			}
 		})
@@ -165,6 +168,7 @@ class MassSync extends React.PureComponent{
 				status: {code: "loading", msg: "loaded: " + progress.loaded + " / " + progress.total }
 			})
 		})).then((axies)=>{
+			console.log("ak", axies);
 			this.setState({ status: {code:"loading", msg:"Loading Axies V2"} });
 			// load axies V2
 			var ids = axies.map(axie => axie.id);
@@ -289,7 +293,6 @@ class MassSync extends React.PureComponent{
 	}
 
 	handleClickLoadBreedableAxies = () => {
-		console.log("xd")
 		this.setState({
 			view: "breedable-axies"
 		});
@@ -298,7 +301,7 @@ class MassSync extends React.PureComponent{
 
 	handleChangeAddress = (newAddress) => {
 		this.setState({
-			address: newAddress,
+			address: newAddress.trim(),
 		})
 	}
 
@@ -494,3 +497,4 @@ class MassSync extends React.PureComponent{
 
 
 export default MassSync;
+//# sourceFile=MassSync.js
