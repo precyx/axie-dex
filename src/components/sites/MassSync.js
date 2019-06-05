@@ -211,6 +211,17 @@ class MassSync extends React.PureComponent{
 		})
 	}
 
+	capAxies(_axiesObj, _cap){
+		let newAxies = Object.assign(_axiesObj);
+		let axieArr = Object.entries(newAxies);
+		axieArr = axieArr.slice(0, Math.min(_cap, axieArr.length));
+		let newAxies2 = {};
+		for(let i = 0; i < axieArr.length; i++){
+			newAxies2[axieArr[i][0]] = axieArr[i][1];
+		}
+		return newAxies2;
+	}
+
 
 
 	handleClickNextPage = () => {
@@ -249,6 +260,18 @@ class MassSync extends React.PureComponent{
 		});
 	}
 
+	handleClickCap50 = () => {
+		this.setState(prevState => ({
+				selectedAxies: this.capAxies(prevState.selectedAxies, 50),
+		}));
+	}
+
+	handleClickCap100 = () => {
+		this.setState(prevState => ({
+			selectedAxies: this.capAxies(prevState.selectedAxies, 100),
+		}));
+	}
+
 	/**
 	 * Sends a sync multiple TX to the ExpSyncContract
 	 */
@@ -259,6 +282,7 @@ class MassSync extends React.PureComponent{
 		let signatureList = [];
 		const selectedAxies = this.state.selectedAxies;
 		// prepare arrays
+		console.log("s", selectedAxies);
 		Object.keys(selectedAxies).forEach(axieKey=>{
 			const axie = selectedAxies[axieKey];
 			idList.push(parseInt(axieKey));
@@ -444,6 +468,8 @@ class MassSync extends React.PureComponent{
 						{hasSelectedAxies &&
 							<SyncContoller axies={selectedAxies} 
 								onClickClearAll={this.handleClickClearAll}
+								onClickCap50={this.handleClickCap50}
+								onClickCap100={this.handleClickCap100}
 								onClickSync={this.handleClickSyncSelectedAxies}
 								onClickRemoveOne={this.handleClickRemoveOneSelectedAxie}
 								> 
