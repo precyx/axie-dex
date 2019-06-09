@@ -76,7 +76,8 @@ class LunaciaMap extends React.PureComponent {
 	async getChestEvents (){
 
 		let uniqueBuyers = [];
-		const uniqueBuyers1 = await this.getUniqueBuyersOfContract(AI_CONTRACTS.land_sale, this.LAND_SALE_GENESIS_BLOCK)
+		//this.getUniqueBuyersOfContract(AI_CONTRACTS.land_sale, this.LAND_SALE_GENESIS_BLOCK);
+		const uniqueBuyers1 = await this.getUniqueBuyersOfContract(AI_CONTRACTS.land_sale, this.LAND_SALE_GENESIS_BLOCK, this.LAND_SALE_V2_GENESIS_BLOCK)
 		const uniqueBuyers2 = await this.getUniqueBuyersOfContract(AI_CONTRACTS.land_sale_v2, this.LAND_SALE_V2_GENESIS_BLOCK)
 		uniqueBuyers = Array.from(new Set(uniqueBuyers1.concat(uniqueBuyers2)));
 
@@ -91,23 +92,59 @@ class LunaciaMap extends React.PureComponent {
 		//console.log("uniqueBuyers", uniqueBuyers);
 	}
 
-	async getUniqueBuyersOfContract(_contractData, _fromBlock){
+	async getUniqueBuyersOfContract(_contractData, _fromBlock, _toBlock){
 		const addr = _contractData.address;
 		const abi = _contractData.abi;
 		const contract = new window.web3.eth.Contract(abi, addr);
 
 		this.setState({status: {msg: "loading addresses.."}});
 		const latestBlock = await window.web3.eth.getBlockNumber();
-		const events = await contract.getPastEvents("ChestPurchased", {
-			fromBlock: _fromBlock,
-			toBlock: latestBlock
-		});
+		console.log(_fromBlock, latestBlock);
+
+		const events = await this.getPastEventsInChunks(contract, "ChestPurchased", _fromBlock, _toBlock || latestBlock, this.onGetChestPurchasedEvent)
 		console.log("evt", events);
 
 		const buyers = events.map(event => { return event.returnValues["_owner"] });
 		const uniqueBuyers = Array.from(new Set(buyers));
 		return uniqueBuyers;
 	}
+
+	async getPastEventsInChunks(_contract, _eventName, _fromBlock, _toBlock, _onUpdateFunc){
+		const chunkSize = 1900;
+		let returnEvents = [];
+
+		let fromBlock = _fromBlock;
+		let toBlock = _toBlock;
+
+		for(let i = 0; i < Math.round((_toBlock - _fromBlock) / chunkSize); i++){
+			
+			fromBlock = _fromBlock + (i * chunkSize);
+			toBlock = _fromBlock + ((i+1) * chunkSize);
+			toBlock = Math.min(toBlock, _toBlock);
+
+			
+			let events = await _contract.getPastEvents(_eventName, {
+				fromBlock: fromBlock,
+				toBlock: toBlock,
+			});
+			returnEvents = [...returnEvents, ...events];
+			_onUpdateFunc(returnEvents, _fromBlock, fromBlock, _toBlock);
+
+			//console.log("bb", fromBlock, toBlock, returnEvents);
+		}
+
+
+
+		return returnEvents;
+	}
+
+	onGetChestPurchasedEvent = (_events, _startBlock, _curBlock, _toBlock) =>{
+		//console.log("pp", _startBlock, _curBlock, _toBlock);
+		var perc = Math.round((_curBlock - _startBlock) / (_toBlock - _startBlock) * 100);
+		this.setState({status: {msg: "blocks loaded: " + _events.length + " | " + perc + "%"}});
+	}
+
+
 
 	renderPlots(){
 		const plots= this.state.plots;
@@ -119,7 +156,7 @@ class LunaciaMap extends React.PureComponent {
 	}
 
 	renderPlotsPerPlayer(){
-		console.log(this.state.zoom);
+		//console.log(this.state.zoom);
 		const plotsPerPlayer = this.state.plotsPerPlayer;
 		const mapSize= Math.round(this.state.mapSize * this.state.zoom);
 		const numPlots= this.state.numPlots;
@@ -161,7 +198,7 @@ class LunaciaMap extends React.PureComponent {
 		const BASE_MAP_SIZE = this.state.BASE_MAP_SIZE;
 		const mapSize = Math.round(this.state.mapSize * this.state.zoom);
 		const dragLimitY = Math.round((BASE_MAP_SIZE - mapSize)/2);
-		console.log("mapsize", mapSize);
+		//console.log("mapsize", mapSize);
 		const status = this.state.status;
 		const lastUpdated = this.state.lastUpdated;
 		const uniqueBuyers = this.state.uniqueBuyers;
@@ -173,7 +210,7 @@ class LunaciaMap extends React.PureComponent {
 			<StyledLunacia mapSize={mapSize + "px"} >
 				<div className="mapGroup">
 				<div className="mapOuterContainer">
-					{status && <StatusBox className="status" status={status}/>}
+					{status && <StatusBox className="status" theme={"dark"} status={status}/>}
 					<Draggable bounds={{left: 0, top: dragLimitY}}>
 						<div className="mapContainer">
 							{this.renderPlotsPerPlayer()}
