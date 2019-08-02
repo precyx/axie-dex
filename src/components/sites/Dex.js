@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 // custom
 //import Axie from "../Axie/Axie/Axie";
-import {AXIE_DATA_V1} from "../../services/axie-data-service";
+import {AXIE_DATA_V2} from "../../services/axie-data-service";
 import Textfield from "../ui/Textfield";
 import Button from "../ui/Button";
 import BasicCenterContainer from "../containers/BasicCenterContainer";
@@ -66,7 +66,7 @@ class Dex extends React.PureComponent {
 		var axiesLoaded = 0;
 		var promises = [];
 		this.state.axieIdList.forEach(id => {
-			var api = AXIE_DATA_V1.buildAxieByIdAPI(id);
+			var api = AXIE_DATA_V2.buildAxieByIdAPI(id);
 			var p = new Promise((resolve,reject)=>{
 				axios.get(api).then((data)=>{
 					axiesLoaded++;
@@ -92,7 +92,7 @@ class Dex extends React.PureComponent {
 	 * @memberof AxieList
 	 */
 	getAxieById = () => {
-		var api = AXIE_DATA_V1.buildAxieByIdAPI(this.state.axie_id);
+		var api = AXIE_DATA_V2.buildAxieByIdAPI(this.state.axie_id);
 		axios.get(api).then((data) => {
 			var newAxie = data.data;
 			console.log("X", data);
@@ -119,7 +119,6 @@ class Dex extends React.PureComponent {
       [name]: event.target.value,
     });
 	};
-	
 	
 	render() {
 			const status = this.state.status;
