@@ -38,6 +38,8 @@ class MassSync extends React.PureComponent{
 			status: {code:"", msg:""},
 			view: "",
 			selectedAxies: {},
+			axiesSynced: {},
+			axiesAfterSync: {},
 			axiesCache: null,
 			axies: null,
 			// axie card options
@@ -259,7 +261,7 @@ class MassSync extends React.PureComponent{
 			selectedAxies: {}
 		});
 	}
-
+/*
 	handleClickCap50 = () => {
 		this.setState(prevState => ({
 				selectedAxies: this.capAxies(prevState.selectedAxies, 50),
@@ -270,7 +272,7 @@ class MassSync extends React.PureComponent{
 		this.setState(prevState => ({
 			selectedAxies: this.capAxies(prevState.selectedAxies, 100),
 		}));
-	}
+	}*/
 
 	/**
 	 * Sends a sync multiple TX to the ExpSyncContract
@@ -280,14 +282,33 @@ class MassSync extends React.PureComponent{
 		let expList = [];
 		let createdAtList = [];
 		let signatureList = [];
-		const selectedAxies = this.state.selectedAxies;
+		let oldSelectedAxies = Object.assign({}, this.state.selectedAxies);
+		//const selectedAxies = Object.keys(newSelectedAxies).length > 99 ? 
+
+		let newSelectedAxies = {};
+		let _max = 100;
+		if( Object.keys(oldSelectedAxies).length > _max) {
+			let _i = 0;
+			for (let [key, value] of Object.entries(oldSelectedAxies)) {
+				_i ++;
+				if(_i < _max) {
+					newSelectedAxies[key] = value;
+					delete oldSelectedAxies[key];
+				}
+			}
+		}
+		else {
+			newSelectedAxies = Object.assign({}, this.state.selectedAxies);
+			oldSelectedAxies = {};
+		}
+	
 		// prepare arrays
-		console.log("s", selectedAxies);
-		Object.keys(selectedAxies).forEach(axieKey=>{
-			const axie = selectedAxies[axieKey];
+		console.log("s", newSelectedAxies);
+		Object.keys(newSelectedAxies).forEach(axieKey=>{
+			const axie = newSelectedAxies[axieKey];
 			idList.push(parseInt(axieKey));
 			expList.push(axie.pendingExp);
-			createdAtList.push(selectedAxies[axieKey].expSubmittedAt);	
+			createdAtList.push(newSelectedAxies[axieKey].expSubmittedAt);	
 			signatureList.push(axie.expSignature);
 		})
 		// prepare signature
@@ -298,6 +319,8 @@ class MassSync extends React.PureComponent{
 			let sender = accounts[0];
 			AXIE_WEB3.send(this.expSyncContract, "checkpointForMulti", params, sender).then((data)=>{
 				this.setState({
+					axiesSynced: newSelectedAxies,
+					axiesAfterSync: oldSelectedAxies,
 					syncTxHash: data,
 					showSuccessBox: true,
 				})
@@ -330,8 +353,12 @@ class MassSync extends React.PureComponent{
 	}
 
 	handleClickOkSuccessBox = () => {
+		let newSelectedAxies = Object.assign({}, this.state.axiesAfterSync);
+
 		this.setState({
-			selectedAxies: {},
+			selectedAxies: newSelectedAxies,
+			axiesAfterSync: {},
+			axiesSynced: {},
 			showSuccessBox: false,
 			syncTxHash: "",
 		})
@@ -386,6 +413,7 @@ class MassSync extends React.PureComponent{
 		const view = this.state.view;
 		const showSuccessBox = this.state.showSuccessBox;
 		// selected axies
+		const axiesSynced = this.state.axiesSynced;
 		const selectedAxies = this.state.selectedAxies;
 		const hasSelectedAxies = Object.keys(selectedAxies).length !== 0;
 		// axie options
@@ -435,7 +463,7 @@ class MassSync extends React.PureComponent{
 					{showSuccessBox &&
 						<ConfirmationBox 
 							syncTxHash={this.state.syncTxHash}
-							selectedAxies={selectedAxies}
+							selectedAxies={axiesSynced}
 							onClickOkSuccessBox={this.handleClickOkSuccessBox}
 						/>
 					}
@@ -470,7 +498,7 @@ class MassSync extends React.PureComponent{
 								onClickClearAll={this.handleClickClearAll}
 								onClickCap50={this.handleClickCap50}
 								onClickCap100={this.handleClickCap100}
-								onClickSync={this.handleClickSyncSelectedAxies}
+								onClickSync={() => {this.handleClickSyncSelectedAxies()}}
 								onClickRemoveOne={this.handleClickRemoveOneSelectedAxie}
 								> 
 							</SyncContoller>
