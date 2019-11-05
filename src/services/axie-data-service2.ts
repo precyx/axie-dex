@@ -236,7 +236,7 @@ export const AxieV2 = {
     var promises: Array<any> = [];
     var loaded = 0;
 
-    var idChunks = AxieV2.chunkArray(ids, 250);
+    var idChunks = AxieV2.chunkArray(ids, 50);
     console.log("idchunks", idChunks);
 
     let _axieData: any = [];
